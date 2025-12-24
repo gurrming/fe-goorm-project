@@ -1,1 +1,13 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-primary-100: rgb(34 40 49);
+  --color-primary-300: rgb(92 101 112);
+  --color-primary-500: rgb(130 139 150);
+  --color-primary-700: rgb(225 64 64);
+  --color-primary-900: rgb(52 116 255);
+}
+
+:root {
+  background-color: #e1e5ea;
+}
