@@ -6,6 +6,9 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
 export default [
+  {
+    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.vite/**', '**/*.config.js'],
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -26,6 +29,16 @@ export default [
               pattern: 'react',
               group: 'external',
               position: 'before',
+            },
+            {
+              pattern: 'react-dom',
+              group: 'external',
+              position: 'before',
+            },
+            {
+              pattern: '@tanstack/**',
+              group: 'external',
+              position: 'after',
             },
           ],
           alphabetize: {
