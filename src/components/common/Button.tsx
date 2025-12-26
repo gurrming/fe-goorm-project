@@ -16,7 +16,7 @@ export default function Button({ children, colorType, onClick, ...props }: IButt
   };
   return (
     <button
-      className={cn('rounded-md px-4 py-2 w-full', colorStyle[colorType], 'hover:cursor-pointer')}
+      className={cn('rounded-md px-4 py-2 w-full font-[14px]', colorStyle[colorType], 'hover:cursor-pointer')}
       onClick={onClick}
       {...props}
     >
