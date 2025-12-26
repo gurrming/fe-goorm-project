@@ -1,12 +1,8 @@
-import Button from '../components/common/Button';
+import Right from '../components/right/right';
 export default function MainPage() {
   return (
     <div>
-      <Button colorType="white">Button</Button>
-      <Button colorType="blue">Button</Button>
-      <Button colorType="indigo">Button</Button>
-      <Button colorType="gray">Button</Button>
-      <Button colorType="red">Button</Button>
+      <Right />
     </div>
   );
 }
