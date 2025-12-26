@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Asset from './contents/asset';
 import Buy from './contents/buy';
 import Sell from './contents/sell';
-import Transaction from './contents/transaction';
+import Transaction from './contents/transaction/transaction';
 import Tab from './tab';
 
 const Right = () => {
@@ -12,7 +12,7 @@ const Right = () => {
   };
 
   return (
-    <div className="w-[500px] bg-white p-4 flex flex-col gap-4">
+    <div className="w-[550px] bg-white p-4 flex flex-col gap-4">
       <Tab handleTab={handleTab} tab={tab} />
       {tab === 'buy' && <Buy />}
       {tab === 'sell' && <Sell />}
