@@ -1,3 +1,9 @@
+import SignupForm from '../components/signup/signupForm';
+
 export default function SignupPage() {
-  return <div>SignupPage</div>;
+  return (
+    <div className="w-[600px] flex flex-col justify-center items-center mt-20 gap-5">
+      <SignupForm />
+    </div>
+  );
 }
