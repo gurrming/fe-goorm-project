@@ -12,8 +12,9 @@ import { cn } from '../../lib/utils';
 interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   colorType: 'white' | 'blue' | 'indigo' | 'gray' | 'red';
+  disabled?: boolean;
 }
-export default function Button({ children, colorType, onClick, ...props }: IButtonProps) {
+export default function Button({ children, colorType, onClick, disabled, ...props }: IButtonProps) {
   const colorStyle = {
     white: 'bg-[#EDEEF1] text-primary-100',
     blue: 'bg-[#0062DF] text-white',
@@ -23,8 +24,14 @@ export default function Button({ children, colorType, onClick, ...props }: IButt
   };
   return (
     <button
-      className={cn('rounded-md px-4 py-2 w-full font-[14px]', colorStyle[colorType], 'hover:cursor-pointer')}
+      className={cn(
+        'rounded-md px-4 py-2 w-full font-[14px]',
+        colorStyle[colorType],
+        'hover:cursor-pointer',
+        disabled && 'opacity-50 hover:cursor-not-allowed',
+      )}
       onClick={onClick}
+      disabled={disabled}
       {...props}
     >
       {children}
