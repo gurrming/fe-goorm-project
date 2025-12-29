@@ -1,30 +1,32 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import loginSchema from './loginSchema';
+import signupSchema from './SignupSchema';
 import Button from '../common/Button';
 
-type TLoginForm = {
+type TSignupForm = {
   email: string;
   password: string;
+  passwordConfirm: string;
+  nickname: string;
 };
 
-const LoginForm = () => {
+const SignupForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
-    resolver: yupResolver(loginSchema),
+    resolver: yupResolver(signupSchema),
     mode: 'onChange',
   });
 
-  const onSubmit = async (data: TLoginForm) => {
+  const onSubmit = async (data: TSignupForm) => {
     console.log(data);
   };
 
   return (
     <form className="flex flex-col justify-center items-center gap-5 w-[400px]" onSubmit={handleSubmit(onSubmit)}>
-      <p className="text-2xl font-bold">로그인</p>
+      <p className="text-2xl font-bold">회원가입</p>
       <div className="flex flex-col gap-2 w-full">
         <p className="text-sm font-bold">이메일</p>
         <input
@@ -44,12 +46,30 @@ const LoginForm = () => {
           {...register('password')}
         />
         {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+        <input
+          type="password"
+          className="w-full outline-none rounded-md p-2 bg-white"
+          placeholder="비밀번호를 다시 입력해주세요."
+          {...register('passwordConfirm')}
+        />
+        {errors.passwordConfirm && <p className="text-sm text-red-500">{errors.passwordConfirm.message}</p>}
+      </div>
+
+      <div className="flex flex-col gap-2 w-full">
+        <p className="text-sm font-bold">닉네임</p>
+        <input
+          type="text"
+          className="w-full outline-none rounded-md p-2 bg-white"
+          placeholder="닉네임을 입력해주세요."
+          {...register('nickname')}
+        />
+        {errors.nickname && <p className="text-sm text-red-500">{errors.nickname.message}</p>}
       </div>
       <Button colorType="blue" type="submit" disabled={!isValid}>
-        로그인
+        회원가입
       </Button>
     </form>
   );
 };
 
-export default LoginForm;
+export default SignupForm;
