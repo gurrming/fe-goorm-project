@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import loginSchema from './loginSchema';
+import loginSchema from './LoginSchema';
 import Button from '../common/Button';
 
 type TLoginForm = {

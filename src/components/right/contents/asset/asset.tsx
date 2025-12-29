@@ -1,5 +1,5 @@
-import AssetList from './assetList';
-import MyAsset from './myAsset';
+import AssetList from './AssetList';
+import MyAsset from './MyAsset';
 
 const Asset = () => {
   return (

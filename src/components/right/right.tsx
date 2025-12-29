@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import Asset from './contents/asset/asset';
-import Buy from './contents/buy';
-import Sell from './contents/sell';
-import Transaction from './contents/transaction/transaction';
-import Tab from './tab';
+import Asset from './contents/asset/Asset';
+import Buy from './contents/Buy';
+import Sell from './contents/Sell';
+import Transaction from './contents/transaction/Transaction';
+import Tab from './Tab';
 
 const Right = () => {
   const [tab, setTab] = useState('buy');

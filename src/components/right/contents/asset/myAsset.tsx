@@ -1,4 +1,4 @@
-import Text from './text';
+import Text from './Text';
 const MyAsset = () => {
   return (
     <div className="flex flex-col items-center gap-3">

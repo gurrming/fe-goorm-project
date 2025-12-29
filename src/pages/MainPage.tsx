@@ -1,4 +1,4 @@
-import Right from '../components/right/right';
+import Right from '../components/right/Right';
 export default function MainPage() {
   return (
     <div>
