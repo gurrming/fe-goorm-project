@@ -7,7 +7,7 @@ export default function Header() {
       <div className="flex items-center justify-between px-10 py-3 mx-auto">
         <Link to="/" className="flex items-center">
           <span className="text-white text-2xl font-bold">
-            <span className="relative inline-block">UPbit</span>
+            <span className="relative inline-block">HeartBit</span>
           </span>
         </Link>
 
