@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Asset from './contents/asset/Asset';
-import Buy from './contents/Buy';
-import Sell from './contents/Sell';
+import Buy from './contents/order/Buy';
+import Sell from './contents/order/Sell';
 import Transaction from './contents/transaction/Transaction';
 import Tab from './Tab';
 
