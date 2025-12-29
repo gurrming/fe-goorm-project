@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Settled from './Settled';
-import UnSettled from './UnSettled';
+import UnSettled from './unSettled';
 
 const Transaction = () => {
   const [settled, setSettled] = useState(true);
