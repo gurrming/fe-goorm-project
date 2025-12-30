@@ -1,10 +1,11 @@
-import CanvasChart from '../components/chart/CanvasChart';
-import Chart from '../components/chart/Chart';
+import React from 'react';
+import InfoCoin from '../components/chart/InfoCoin';
+import Right from '../components/right/Right';
 export default function MainPage() {
   return (
     <div className="flex justify-center items-center gap-10">
-      <Chart />
-      <CanvasChart />
+      <InfoCoin />
+      <Right />
     </div>
   );
 }
