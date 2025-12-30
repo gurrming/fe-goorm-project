@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Tab = ({ title, tab, handleTab }: { title: string; tab: string; handleTab: (tab: string) => void }) => {
+const Tab = ({ title, tab, handleTab }: { title?: string; tab: string; handleTab: (tab: string) => void }) => {
   return (
     <div className="flex gap-2 items-center bg-white px-4 border-b border-gray-200 text-[#333333]">
       <p className="w-[50%]">{title}</p>
