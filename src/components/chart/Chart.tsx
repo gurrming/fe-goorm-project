@@ -1,43 +1,32 @@
 import { createChart, CandlestickSeries, ColorType, LineSeries } from 'lightweight-charts';
-import { mockData } from './mockData';
-import type { Time } from 'lightweight-charts';
-// eslint-disable-next-line import/order
-import { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { calculateMovingAverageSeriesData } from './CalculateMovingAverageSeries';
+import type { TUpBitData } from '../../types/upBit';
+import type { CandlestickData, LineData, Time } from 'lightweight-charts';
 
-type TData = {
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  time: Time;
-};
-function calculateMovingAverageSeriesData(candleData: TData[], maLength: number) {
-  const maData = [];
-
-  for (let i = 0; i < candleData.length; i++) {
-    if (i < maLength) {
-      maData.push({ time: candleData[i].time });
-    } else {
-      let sum = 0;
-      for (let j = 0; j < maLength; j++) {
-        sum += candleData[i - j].close;
-      }
-      const maValue = sum / maLength;
-      maData.push({ time: candleData[i].time, value: maValue });
-    }
-  }
-
-  return maData;
-}
-
-const Chart = () => {
+const Chart = ({ data }: { data: TUpBitData[] }) => {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (!chartContainerRef.current) return;
+    if (!chartContainerRef.current || !data) return;
+
+    const sortedData = [...data].sort((a: TUpBitData, b: TUpBitData) => a.timestamp - b.timestamp);
+
+    const candlestickData: CandlestickData[] = sortedData.map((item: TUpBitData) => ({
+      time: item.candle_date_time_kst.split('T')[0],
+      open: item.opening_price,
+      high: item.high_price,
+      low: item.low_price,
+      close: item.trade_price,
+    }));
+
+    console.log('sortedData', sortedData);
+
+    console.log('candlestickData', candlestickData);
+
     const chartOptions = {
-      layout: { textColor: 'black', background: { type: ColorType.Solid, color: 'white' } },
-      width: 500,
-      height: 300,
+      layout: { textColor: 'black', background: { type: ColorType.Solid, color: 'white' }, fontSize: 10 },
+      width: 1000,
+      height: 450,
       grid: {
         vertLines: { color: '#f2f2f2', style: 0 },
         horzLines: { color: '#f2f2f2', style: 0 },
@@ -53,26 +42,25 @@ const Chart = () => {
       wickDownColor: '#0062DF',
     });
 
-    const ma5Data = calculateMovingAverageSeriesData(mockData, 5);
-    const ma10Data = calculateMovingAverageSeriesData(mockData, 10);
+    const ma5Data = calculateMovingAverageSeriesData(candlestickData, 5);
+    const ma10Data = calculateMovingAverageSeriesData(candlestickData, 10);
 
     const ma5Series = chart.addSeries(LineSeries, { color: '#EC7871', lineWidth: 1 });
     const ma10Series = chart.addSeries(LineSeries, { color: '#48B888', lineWidth: 1 });
 
-    ma5Series.setData(ma5Data);
-    ma10Series.setData(ma10Data);
-    candlestickSeries.setData(mockData);
+    ma5Series.setData(ma5Data as LineData<Time>[]);
+    ma10Series.setData(ma10Data as LineData<Time>[]);
+    candlestickSeries.setData(candlestickData);
 
     chart.timeScale().fitContent();
 
     return () => {
       chart.remove();
     };
-  }, []);
+  }, [data]);
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <h1>1. lightweight-charts</h1>
       <div ref={chartContainerRef} className="w-full" />
     </div>
   );
