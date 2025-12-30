@@ -7,7 +7,7 @@ const Transaction = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex gap-2">
+      <div className="flex gap-2 px-4">
         <input type="radio" name="transaction" id="unsettled" checked={!settled} onChange={() => setSettled(false)} />
         <label htmlFor="unsettled" className="text-sm text-[#333333]">
           미체결
