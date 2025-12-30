@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import Chart from './Chart';
+import Chatting from './chatting/Chatting';
 import PriceInfo from './PriceInfo';
 import Tab from './Tab';
 import getUpBit from '../../api/getUpBit';
@@ -24,7 +25,7 @@ const InfoCoin = () => {
           <Chart data={data} />
         </div>
       )}
-      {tab === 'community' && <div>community</div>}
+      {tab === 'community' && <Chatting />}
     </div>
   );
 };
