@@ -1,8 +1,8 @@
 import React from 'react';
 import Text from '../Text';
-import type { TUpBitData } from '../../types/upBit';
+import type { TDayData } from '../../types/upBit';
 
-const PriceInfo = ({ data }: { data: TUpBitData[] }) => {
+const PriceInfo = ({ data }: { data: TDayData[] }) => {
   console.log(data);
   const MARKET = data?.[0]?.market;
   const UNIT = MARKET.split('-')[1];
