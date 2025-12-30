@@ -13,6 +13,12 @@ export type TUpBitData = {
   candle_acc_trade_volume: number;
 };
 
+export type TDayData = TUpBitData & {
+  prev_closing_price: number;
+  change_price: number;
+  change_rate: number;
+};
+
 export type TLightweightChartsData = {
   time: Time;
   open: number;
