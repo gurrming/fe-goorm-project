@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
-import Chart from './chart';
+import Chart from './Chart';
 import PriceInfo from './PriceInfo';
 import Tab from './Tab';
 import getUpBit from '../../api/getUpBit';
@@ -18,7 +18,7 @@ const InfoCoin = () => {
   return (
     <div className="flex flex-col bg-white">
       <Tab title={data?.[0]?.market} tab={tab} handleTab={handleTab} />
-      {tab === 'price' && (
+      {tab === 'price' && data && (
         <div className="flex flex-col">
           <PriceInfo data={data} />
           <Chart data={data} />
