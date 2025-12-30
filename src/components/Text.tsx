@@ -19,19 +19,24 @@ const Text = ({
   size,
   text,
   price,
-  minus,
+  priceColor,
   type,
 }: {
   size: 'xs' | 'sm';
   text: string;
   price: string;
-  minus: boolean;
+  priceColor: 'blue' | 'red' | 'black';
   type?: string;
 }) => {
+  const priceColorStyle = {
+    blue: 'text-[#0062DF]',
+    red: 'text-[#DD3C44]',
+    black: 'text-[#333333]',
+  };
   return (
     <div className="flex w-full justify-center items-center">
       <p className="text-xs text-gray-500 ">{text}</p>
-      <span className={`text-${size}  flex-1 text-right ${minus ? 'text-[#0062DF]]' : 'text-[#333333]'}`}>{price}</span>
+      <span className={`text-${size}  flex-1 text-right ${priceColorStyle[priceColor]}`}>{price}</span>
       <p className={`text-xs text-gray-500 ml-1`}>{type}</p>
     </div>
   );
