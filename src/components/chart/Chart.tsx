@@ -1,17 +1,17 @@
 import { createChart, CandlestickSeries, ColorType, LineSeries } from 'lightweight-charts';
 import React, { useRef, useEffect } from 'react';
 import { calculateMovingAverageSeriesData } from './CalculateMovingAverageSeries';
-import type { TUpBitData } from '../../types/upBit';
+import type { TDayData } from '../../types/upBit';
 import type { CandlestickData, LineData, Time } from 'lightweight-charts';
 
-const Chart = ({ data }: { data: TUpBitData[] }) => {
+const Chart = ({ data }: { data: TDayData[] }) => {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!chartContainerRef.current || !data) return;
 
-    const sortedData = [...data].sort((a: TUpBitData, b: TUpBitData) => a.timestamp - b.timestamp);
+    const sortedData = [...data].sort((a: TDayData, b: TDayData) => a.timestamp - b.timestamp);
 
-    const candlestickData: CandlestickData[] = sortedData.map((item: TUpBitData) => ({
+    const candlestickData: CandlestickData[] = sortedData.map((item: TDayData) => ({
       time: item.candle_date_time_kst.split('T')[0],
       open: item.opening_price,
       high: item.high_price,
