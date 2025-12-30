@@ -1,8 +1,10 @@
-import Right from '../components/right/Right';
+import CanvasChart from '../components/chart/CanvasChart';
+import Chart from '../components/chart/Chart';
 export default function MainPage() {
   return (
-    <div>
-      <Right />
+    <div className="flex justify-center items-center gap-10">
+      <Chart />
+      <CanvasChart />
     </div>
   );
 }
