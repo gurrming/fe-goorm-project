@@ -16,7 +16,7 @@ const PriceInfo = ({ data }: { data: TDayData[] }) => {
         </p>
         <div className="flex items-center gap-3">
           <p className={`text-sm ${data?.[0]?.change_rate < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
-            {data?.[0]?.change_rate.toFixed(2)}%
+            {Math.ceil(data?.[0]?.change_rate * 100) / 100}%
           </p>
           <p className={`text-sm ${data?.[0]?.change_rate < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
             {data?.[0]?.change_price.toLocaleString('ko-KR')}
