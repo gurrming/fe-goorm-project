@@ -1,18 +1,22 @@
 import { createChart, CandlestickSeries, ColorType, LineSeries } from 'lightweight-charts';
 import React, { useRef, useEffect } from 'react';
 import { calculateMovingAverageSeriesData } from './CalculateMovingAverageSeries';
-import type { TDayData } from '../../types/upBit';
+import type { TMinuteData } from '../../types/upBit';
 import type { CandlestickData, LineData, Time } from 'lightweight-charts';
 
-const Chart = ({ data }: { data: TDayData[] }) => {
+const Chart = ({ data }: { data: TMinuteData[] }) => {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!chartContainerRef.current || !data) return;
 
-    const sortedData = [...data].sort((a: TDayData, b: TDayData) => a.timestamp - b.timestamp);
+    const sortedData = [...data].sort((a: TMinuteData, b: TMinuteData) => {
+      const aTime = new Date(a.candle_date_time_kst).getTime();
+      const bTime = new Date(b.candle_date_time_kst).getTime();
+      return aTime - bTime;
+    });
 
-    const candlestickData: CandlestickData[] = sortedData.map((item: TDayData) => ({
-      time: item.candle_date_time_kst.split('T')[0],
+    const candlestickData: CandlestickData[] = sortedData.map((item: TMinuteData) => ({
+      time: (new Date(item.candle_date_time_kst).getTime() / 1000) as Time,
       open: item.opening_price,
       high: item.high_price,
       low: item.low_price,
@@ -30,6 +34,11 @@ const Chart = ({ data }: { data: TDayData[] }) => {
       grid: {
         vertLines: { color: '#f2f2f2', style: 0 },
         horzLines: { color: '#f2f2f2', style: 0 },
+      },
+      timeScale: {
+        timeVisible: true,
+        secondsVisible: false,
+        borderColor: '#f2f2f2',
       },
     };
     const chart = createChart(chartContainerRef.current, chartOptions);
