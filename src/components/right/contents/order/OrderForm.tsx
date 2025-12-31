@@ -1,7 +1,7 @@
 import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-import { getPriceTickSize } from '../../../../lib/price';
+import { changeNumber, dotQuantity, formatNumber, getPriceTickSize } from '../../../../lib/price';
 import Button from '../../../common/Button';
 import type { BuyOrderInitialData, SellOrderInitialData } from './types';
 
@@ -18,15 +18,6 @@ const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
   const data = initialData as BuyOrderInitialData | SellOrderInitialData;
 
   const initialPrice = data.currentPrice ?? 0;
-  const formatNumber = (point: number): string => {
-    return point.toLocaleString('ko-KR');
-  };
-
-  // 문자열을 숫자로 변환하면서 쉼표 제거해주기
-  // 빈 문자열이나 숫자가 아닌 문자열이 들어오면 0으로 변환, 매수 가격 지웠을 때 문제가 생김.
-  const changeNumber = (strPoint: string): number => parseFloat(strPoint.replace(/,/g, '')) || 0;
-  // 소숫점 8째자리까지 표시하기 (소숫점 9째자리부터는 반올림되어 표시되지 않음)
-  const dotQuantity = (point: number): string => (point === 0 ? '' : point.toFixed(8));
 
   const [price, setPrice] = useState<string>(formatNumber(initialPrice));
   const [quantity, setQuantity] = useState<string>('');
