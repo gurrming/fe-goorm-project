@@ -19,6 +19,10 @@ export type TDayData = TUpBitData & {
   change_rate: number;
 };
 
+export type TMinuteData = TUpBitData & {
+  unit: number;
+};
+
 export type TLightweightChartsData = {
   time: Time;
   open: number;
