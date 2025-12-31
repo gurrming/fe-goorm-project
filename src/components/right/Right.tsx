@@ -12,7 +12,7 @@ const Right = () => {
   };
 
   return (
-    <div className="w-[550px] bg-white p-4 flex flex-col gap-4">
+    <div className="w-[550px] bg-white flex flex-col gap-4">
       <Tab handleTab={handleTab} tab={tab} />
       {tab === 'buy' && <Buy />}
       {tab === 'sell' && <Sell />}

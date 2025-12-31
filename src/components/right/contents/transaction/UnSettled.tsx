@@ -3,7 +3,7 @@ import { mockUnSettledData } from './mockData';
 const UnSettled = () => {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center px-4">
         <p className="text-xs text-[#333333]">총 {mockUnSettledData.length}건</p>{' '}
         <button className="text-xs text-[#DD3C44] bg-[#ffdad9] px-2 py-1 rounded-sm hover:cursor-pointer">
           전체 취소
