@@ -14,7 +14,7 @@ interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   colorType: 'white' | 'blue' | 'indigo' | 'gray' | 'red';
   disabled?: boolean;
 }
-export default function Button({ children, colorType, onClick, disabled, ...props }: IButtonProps) {
+export default function Button({ children, colorType, onClick, disabled, className, ...props }: IButtonProps) {
   const colorStyle = {
     white: 'bg-[#EDEEF1] text-primary-100',
     blue: 'bg-[#0062DF] text-white',
@@ -29,6 +29,7 @@ export default function Button({ children, colorType, onClick, disabled, ...prop
         colorStyle[colorType],
         'hover:cursor-pointer',
         disabled && 'opacity-50 hover:cursor-not-allowed',
+        className,
       )}
       onClick={onClick}
       disabled={disabled}
