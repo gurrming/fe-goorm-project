@@ -13,7 +13,7 @@ const InfoCoin = () => {
   };
   const { data: dayData } = useQuery({
     queryKey: ['candles-data-day'],
-    queryFn: () => getUpBit('KRW-BTC', 100),
+    queryFn: () => getUpBit('KRW-BTC', 1),
   });
   const { data: minuteData } = useQuery({
     queryKey: ['candles-data-minute'],
