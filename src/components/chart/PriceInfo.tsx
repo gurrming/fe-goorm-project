@@ -14,7 +14,7 @@ const PriceInfo = ({ data }: { data: TDayData[] }) => {
         <p className={`text-[20px] font-bold ${data?.[0]?.change_rate < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
           {data?.[0]?.trade_price.toLocaleString('ko-KR')} <span className="text-sm">{QUOTE}</span>
         </p>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-3">
           <p className={`text-sm ${data?.[0]?.change_rate < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
             {data?.[0]?.change_rate.toFixed(2)}%
           </p>
