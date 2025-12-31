@@ -15,7 +15,7 @@ const CanvasChart = ({ data }: { data: TMinuteData[] }) => {
     }) || [];
 
   if (!sortedData) return;
-  const dps1 = [];
+  const dps1: { x: Date; y: number[] }[] = [];
 
   for (let i = 0; i < sortedData.length; i++) {
     dps1.push({

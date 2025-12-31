@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import CanvasChart from './CanvasChart';
 import { getUpBit, getUpBitMinute } from '../../../api/getUpBit';
 import Chatting from '../chatting/Chatting';
