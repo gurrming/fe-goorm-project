@@ -6,13 +6,13 @@ const Tab = ({ title, tab, handleTab }: { title?: string; tab: string; handleTab
       <p className="w-[50%]">{title}</p>
       <div className="w-[50%] flex gap-2 justify-between items-center ">
         <p
-          className={`w-full text-sm font-bold text-center py-2 ${tab === 'price' ? 'border-b-[3px] border-[#0062DF]' : ''}`}
+          className={`w-full text-sm font-bold text-center py-3 ${tab === 'price' ? 'border-b-[3px] border-[#0062DF]' : ''}`}
           onClick={() => handleTab('price')}
         >
           시세
         </p>
         <p
-          className={`w-full text-sm font-bold text-center py-2 ${tab === 'community' ? 'font-extrabold border-b-[3px]' : ''}`}
+          className={`w-full text-sm font-bold text-center py-3 ${tab === 'community' ? 'font-extrabold border-b-[3px]' : ''}`}
           onClick={() => handleTab('community')}
         >
           커뮤니티
