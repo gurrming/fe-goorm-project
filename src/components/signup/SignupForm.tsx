@@ -1,14 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import signupSchema from './SignupSchema';
+import { postSignup } from '../../api/member';
 import Button from '../common/Button';
-
-type TSignupForm = {
-  email: string;
-  password: string;
-  passwordConfirm: string;
-  nickname: string;
-};
+import type { TSignupForm } from '../../types/member';
 
 const SignupForm = () => {
   const {
@@ -19,9 +16,18 @@ const SignupForm = () => {
     resolver: yupResolver(signupSchema),
     mode: 'onChange',
   });
-
+  const navigate = useNavigate();
+  const { mutate: signupMutation } = useMutation({
+    mutationFn: postSignup,
+    onSuccess: () => {
+      navigate('/login');
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
   const onSubmit = async (data: TSignupForm) => {
-    console.log(data);
+    signupMutation(data);
   };
 
   return (
