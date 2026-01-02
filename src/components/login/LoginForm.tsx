@@ -1,12 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import loginSchema from './LoginSchema';
+import { postLogin } from '../../api/member';
+import useUserStore from '../../store/useUserStore';
 import Button from '../common/Button';
-
-type TLoginForm = {
-  email: string;
-  password: string;
-};
+import type { TLoginForm, TLoginResponse } from '../../types/member';
 
 const LoginForm = () => {
   const {
@@ -17,9 +17,23 @@ const LoginForm = () => {
     resolver: yupResolver(loginSchema),
     mode: 'onChange',
   });
+  const setUser = useUserStore((state) => state.setUser);
+  const navigate = useNavigate();
+
+  const { mutate: loginMutation } = useMutation({
+    mutationFn: postLogin,
+    onSuccess: (data: TLoginResponse) => {
+      localStorage.setItem('accessToken', data.accessToken);
+      setUser(data.nickname);
+      navigate('/');
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   const onSubmit = async (data: TLoginForm) => {
-    console.log(data);
+    loginMutation(data);
   };
 
   return (
