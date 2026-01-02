@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { postLogout } from '../api/member';
 
 interface IUserStore {
   user: string | null;
@@ -9,7 +10,11 @@ interface IUserStore {
 const useUserStore = create<IUserStore>((set) => ({
   user: null,
   setUser: (user) => set({ user }),
-  logout: () => set({ user: null }),
+  logout: () => {
+    localStorage.removeItem('accessToken');
+    postLogout();
+    set({ user: null });
+  },
 }));
 
 export default useUserStore;
