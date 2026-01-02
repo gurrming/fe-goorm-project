@@ -39,6 +39,32 @@ const Chart = ({ data }: { data: TMinuteData[] }) => {
         timeVisible: true,
         secondsVisible: false,
         borderColor: '#f2f2f2',
+        tickMarkFormatter: (time: Time) => {
+          return new Date((time as number) * 1000).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          });
+        },
+      },
+
+      localization: {
+        priceFormatter: (price: number) => {
+          return price.toLocaleString('ko-KR');
+        },
+
+        timeFormatter: (time: Time) => {
+          return new Date((time as number) * 1000).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          });
+        },
       },
     };
     const chart = createChart(chartContainerRef.current, chartOptions);
