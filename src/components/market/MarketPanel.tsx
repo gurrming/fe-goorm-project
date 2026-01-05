@@ -3,8 +3,11 @@ import MarketSearchBar from './MarketSearchBar';
 import MarketTableHeader from './MarketTableHeader';
 import MarketTableItem from './MarketTableItem';
 import MarketTabs from './MarketTabs';
-import { mockHoldings, mockKrwMarketItems } from './mockData';
-import type { TabKey, SortTable, SortPriceArray, MarketItem } from '../../types/market';
+import { useDeleteFavorite } from '../../api/favorite/useDeleteFavorite';
+import { useGetFavorite } from '../../api/favorite/useGetFavorite';
+import { usePostFavorite } from '../../api/favorite/usePostFavorite';
+import { useGetMarketItems } from '../../api/useGetMarketItems';
+import type { TabKey, SortTable, SortPriceArray, Category } from '../../types/market';
 
 function getNextSortOrder(current: SortPriceArray): SortPriceArray {
   if (current === 'none') return 'descending';
@@ -13,39 +16,51 @@ function getNextSortOrder(current: SortPriceArray): SortPriceArray {
 }
 
 export default function MarketPanel() {
+  // 실제 멤버 ID로 교체 필요
+  const memberId = 1;
+
   const [activeTab, setActiveTab] = useState<TabKey>('krw');
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [marketItems, setMarketItems] = useState<MarketItem[]>(mockKrwMarketItems);
   const [sortTable, setSortTable] = useState<SortTable>('lastPrice');
   const [sortPriceArray, setSortPriceArray] = useState<SortPriceArray>('none');
 
+  // 마켓 데이터 조회
+  const { data: categories } = useGetMarketItems();
+
+  // 관심 종목 목록 조회
+  const { data: Interest } = useGetFavorite(memberId);
+  const postFavorite = usePostFavorite();
+  const deleteFavorite = useDeleteFavorite();
+
+  const isFavoriteCategory = (categoryId: number) =>
+    Interest?.some((interest) => interest.categoryId === categoryId) || false;
+
+  // Category 배열 그대로 사용 (lastPrice, changeRate, tradeAmount는 다른 API에서 받아와서 병합 예정)
+  const categoryList: Category[] = Array.isArray(categories) ? categories : [];
+
   // 탭별 필터링
-  let Tab: MarketItem[] = [];
+  let filteredCategories: Category[] = [];
   if (activeTab === 'krw') {
-    Tab = marketItems;
-  } else if (activeTab === 'like') {
-    Tab = marketItems.filter((marketItem) => marketItem.isFavorite);
+    filteredCategories = categoryList;
+  } else if (activeTab === 'interest') {
+    filteredCategories = categoryList.filter((category) => isFavoriteCategory(category.categoryId));
   } else {
-    const holdingItem = mockHoldings.map((holding) => holding.id);
-    Tab = marketItems.filter((marketItem) => holdingItem.includes(marketItem.id));
+    //보유 종목 API 추후 적용
+    filteredCategories = categoryList;
   }
 
   // 검색 필터
   const keyword = searchKeyword.trim().toLowerCase();
-  const searchFilteredItems = keyword
-    ? Tab.filter((item) => item.symbol.toLowerCase().includes(keyword) || item.name.toLowerCase().includes(keyword))
-    : Tab;
+  const searchFilteredCategories = keyword
+    ? filteredCategories.filter(
+        (category) =>
+          category.categorySymbol.toLowerCase().includes(keyword) ||
+          category.categoryName.toLowerCase().includes(keyword),
+      )
+    : filteredCategories;
 
-  // 정렬
-  const sortedItems = (() => {
-    // 정렬 필터가 none이면 서버에서 받아온 값 그대로 사용
-    if (sortPriceArray === 'none') return searchFilteredItems;
-
-    // descending이면 큰 수부터, ascending이면 작은 수부터 정렬
-    return [...searchFilteredItems].sort(
-      (a, b) => (a[sortTable] - b[sortTable]) * (sortPriceArray === 'descending' ? -1 : 1),
-    );
-  })();
+  // 정렬 (lastPrice, changeRate, tradeAmount가 추가되면 활성화)
+  const sortedCategories = searchFilteredCategories;
 
   const handleSortClick = (item: SortTable) => {
     if (sortTable === item) {
@@ -56,11 +71,26 @@ export default function MarketPanel() {
     }
   };
 
-  // 좋아요 클릭 시 좋아요 필터
-  const handleToggleFavorite = (marketId: number) => {
-    setMarketItems((items) =>
-      items.map((item) => (item.id === marketId ? { ...item, isFavorite: !item.isFavorite } : item)),
-    );
+  // 좋아요 클릭 시 관심 종목 추가/삭제
+  const handleToggleFavorite = (categoryId: number) => {
+    const isCurrentlyFavorite = Interest?.some((interest) => interest.categoryId === categoryId) || false;
+
+    if (isCurrentlyFavorite) {
+      // 관심 종목 삭제
+      const existingInterest = Interest?.find((interest) => interest.categoryId === categoryId);
+      if (existingInterest) {
+        deleteFavorite.mutate({
+          interestId: existingInterest.interestId,
+          memberId,
+        });
+      }
+    } else {
+      // 관심 종목 추가
+      postFavorite.mutate({
+        memberId,
+        categoryId,
+      });
+    }
   };
 
   return (
@@ -76,18 +106,19 @@ export default function MarketPanel() {
           />
         </div>
         <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0" style={{ height: 0 }}>
-          {sortedItems.length === 0 ? (
+          {sortedCategories.length === 0 ? (
             <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">
               <div className="px-4 py-6 text-center text-primary-300- col-span-4 text-xs text-primary-500">
                 표시할 종목이 없습니다.
               </div>
             </div>
           ) : (
-            sortedItems.map((marketItem) => (
+            sortedCategories.map((category) => (
               <MarketTableItem
-                key={marketItem.id}
-                item={marketItem}
-                onToggleFavorite={() => handleToggleFavorite(marketItem.id)}
+                key={category.categoryId}
+                category={category}
+                isFavorite={isFavoriteCategory(category.categoryId)}
+                onToggleFavorite={() => handleToggleFavorite(category.categoryId)}
               />
             ))
           )}

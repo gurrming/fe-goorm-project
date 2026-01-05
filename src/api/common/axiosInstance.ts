@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -21,3 +21,20 @@ axiosInstance.interceptors.request.use(
 );
 
 export default axiosInstance;
+
+interface RequestConfig extends AxiosRequestConfig {
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  url: string;
+  params?: AxiosRequestConfig['params'];
+  data?: AxiosRequestConfig['data'];
+  headers?: AxiosRequestConfig['headers'];
+}
+
+const request = async <T>(config: RequestConfig): Promise<T> => {
+  const { data } = await axiosInstance.request<T>({
+    ...config,
+  });
+  return data;
+};
+
+export { request };
