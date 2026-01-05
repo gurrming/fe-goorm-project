@@ -22,9 +22,9 @@ const SignupForm = () => {
     onSuccess: () => {
       navigate('/login');
     },
-    onError: (error) => {
-      console.log(error);
-    },
+    // onError: (error) => {
+    //   console.log(error);
+    // },
   });
   const onSubmit = async (data: TSignupForm) => {
     signupMutation(data);

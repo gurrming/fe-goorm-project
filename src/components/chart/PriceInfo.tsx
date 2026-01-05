@@ -3,7 +3,6 @@ import Text from '../Text';
 import type { TDayData } from '../../types/upBit';
 
 const PriceInfo = ({ data }: { data: TDayData[] }) => {
-  console.log('dayData', data);
   const MARKET = data?.[0]?.market;
   const UNIT = MARKET?.split('-')[1];
   const QUOTE = MARKET?.split('-')[0];

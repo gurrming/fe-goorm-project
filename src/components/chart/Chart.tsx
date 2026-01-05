@@ -23,10 +23,6 @@ const Chart = ({ data }: { data: TMinuteData[] }) => {
       close: item.trade_price,
     }));
 
-    console.log('sortedData', sortedData);
-
-    console.log('candlestickData', candlestickData);
-
     const chartOptions = {
       layout: { textColor: 'black', background: { type: ColorType.Solid, color: 'white' }, fontSize: 10 },
       width: 1000,
