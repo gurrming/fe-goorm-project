@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
+import { usePostLogout } from '../../api/member/usePostLogout';
 import useUserStore from '../../store/useUserStore';
 import Button from '../common/Button';
 
 export default function Header() {
   const user = useUserStore((state) => state.user);
-  const logout = useUserStore((state) => state.logout);
+  const postLogout = usePostLogout();
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0C3887] w-full">
       <div className="flex items-center justify-between px-10 py-3 mx-auto">
@@ -19,8 +20,7 @@ export default function Header() {
             <Button
               colorType="white"
               onClick={() => {
-                logout();
-                window.location.reload();
+                postLogout.mutate();
               }}
             >
               로그아웃
