@@ -9,7 +9,6 @@ const Chatting = () => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && message.trim() !== '' && !isComposing) {
       setMessage((e.target as HTMLInputElement).value);
-      console.log(message);
       setMessage('');
     }
   };

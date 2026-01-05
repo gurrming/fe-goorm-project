@@ -6,7 +6,7 @@ export const postLogin = async (data: TLoginForm) => {
     const response = await axiosInstance.post<TLoginResponse>('/api/member/login', data);
     return response.data;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return Promise.reject(error);
   }
 };
@@ -16,7 +16,7 @@ export const postSignup = async (data: TSignupForm) => {
     const response = await axiosInstance.post('/api/member/signup', data);
     return response.data;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return Promise.reject(error);
   }
 };
@@ -26,7 +26,7 @@ export const postLogout = async () => {
     const response = await axiosInstance.post('/api/member/logout');
     return response.data;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return Promise.reject(error);
   }
 };

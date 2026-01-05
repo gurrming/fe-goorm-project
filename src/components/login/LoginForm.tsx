@@ -27,9 +27,9 @@ const LoginForm = () => {
       setUser(data.nickname);
       navigate('/');
     },
-    onError: (error) => {
-      console.log(error);
-    },
+    // onError: (error) => {
+    //   console.log(error);
+    // },
   });
 
   const onSubmit = async (data: TLoginForm) => {

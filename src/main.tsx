@@ -8,13 +8,26 @@ import './index.css';
 
 const queryClient = new QueryClient();
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-      <ReactQueryDevtools />
-    </QueryClientProvider>
-  </StrictMode>,
-);
+async function prepareMSW() {
+  if (import.meta.env.MODE === 'development') {
+    const { worker } = await import('./mocks/browser');
+
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+    });
+    console.log('MSW 정상적으로 동작중!');
+  }
+}
+
+prepareMSW().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
+    </StrictMode>,
+  );
+});

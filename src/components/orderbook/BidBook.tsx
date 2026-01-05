@@ -1,7 +1,15 @@
+import { mockBidData } from './mockData';
+import OrderBookItem from './OrderBookItem';
+
 export default function BidBook() {
+  // 최대 물량 계산 (차트 비율 계산용)
+  const maxVolume = Math.max(...mockBidData.map((item) => item.volume));
+
   return (
-    <div className="col-span-2 bg-gray-50 border border-gray-200 p-4 flex flex-col">
-      <div className="text-sm font-semibold mb-2">매수를 위해 올려놓은 호가</div>
+    <div className="col-span-2 flex flex-col">
+      {mockBidData.map((item, index) => (
+        <OrderBookItem key={index} item={item} isAsk={false} maxVolume={maxVolume} />
+      ))}
     </div>
   );
 }
