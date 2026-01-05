@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import axiosInstance from './common/axiosInstance';
+import { request } from '../common/axiosInstance';
 
 export type Interest = {
   interestId: number;
@@ -7,13 +7,14 @@ export type Interest = {
   categoryId: number;
 };
 
-export const getInterests = async (memberId: number): Promise<Interest[]> => {
-  const response = await axiosInstance.get<Interest[]>('/api/interests', {
+export const getInterests = (memberId: number): Promise<Interest[]> => {
+  return request<Interest[]>({
+    method: 'GET',
+    url: '/api/interests',
     params: {
       memberId,
     },
   });
-  return response.data;
 };
 
 export const useGetFavorite = (memberId: number | null) => {
