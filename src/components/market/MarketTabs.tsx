@@ -19,7 +19,7 @@ export default function MarketTabs({ activeTab, onTabChange }: MarketTabsProps) 
       <p className={tabArray('holding')} onClick={() => onTabChange('holding')}>
         보유
       </p>
-      <p className={tabArray('like')} onClick={() => onTabChange('like')}>
+      <p className={tabArray('interest')} onClick={() => onTabChange('interest')}>
         관심
       </p>
     </div>
