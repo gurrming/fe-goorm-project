@@ -7,6 +7,7 @@ import { useDeleteFavorite } from '../../api/favorite/useDeleteFavorite';
 import { useGetFavorite } from '../../api/favorite/useGetFavorite';
 import { usePostFavorite } from '../../api/favorite/usePostFavorite';
 import { useGetMarketItems } from '../../api/useGetMarketItems';
+import useUserStore from '../../store/useUserStore';
 import type { TabKey, SortTable, SortPriceArray, Category } from '../../types/market';
 
 function getNextSortOrder(current: SortPriceArray): SortPriceArray {
@@ -16,8 +17,8 @@ function getNextSortOrder(current: SortPriceArray): SortPriceArray {
 }
 
 export default function MarketPanel() {
-  // 실제 멤버 ID로 교체 필요
-  const memberId = 1;
+  const { user } = useUserStore();
+  const memberId = user?.id;
 
   const [activeTab, setActiveTab] = useState<TabKey>('krw');
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -28,7 +29,7 @@ export default function MarketPanel() {
   const { data: categories } = useGetMarketItems();
 
   // 관심 종목 목록 조회
-  const { data: Interest } = useGetFavorite(memberId);
+  const { data: Interest } = useGetFavorite(memberId ?? null);
   const postFavorite = usePostFavorite();
   const deleteFavorite = useDeleteFavorite();
 
@@ -73,6 +74,8 @@ export default function MarketPanel() {
 
   // 좋아요 클릭 시 관심 종목 추가/삭제
   const handleToggleFavorite = (categoryId: number) => {
+    if (!memberId) return;
+
     const isCurrentlyFavorite = Interest?.some((interest) => interest.categoryId === categoryId) || false;
 
     if (isCurrentlyFavorite) {
@@ -109,7 +112,11 @@ export default function MarketPanel() {
           {sortedCategories.length === 0 ? (
             <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">
               <div className="px-4 py-6 text-center text-primary-300- col-span-4 text-xs text-primary-500">
-                표시할 종목이 없습니다.
+                {!user && activeTab === 'holding'
+                  ? '로그인하면 내 보유자산을 확인할 수 있습니다.'
+                  : !user && activeTab === 'interest'
+                    ? '로그인하면 내 관심코인을 확인할 수 있습니다.'
+                    : '표시할 종목이 없습니다.'}
               </div>
             </div>
           ) : (
