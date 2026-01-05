@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MarketSearchBar from './MarketSearchBar';
 import MarketTableHeader from './MarketTableHeader';
 import MarketTableItem from './MarketTableItem';
@@ -8,6 +9,8 @@ import { useGetFavorite } from '../../api/favorite/useGetFavorite';
 import { usePostFavorite } from '../../api/favorite/usePostFavorite';
 import { useGetMarketItems } from '../../api/useGetMarketItems';
 import useUserStore from '../../store/useUserStore';
+import { useModal } from '../common/Modal/hooks/useModal';
+import { Modal } from '../common/Modal/Modal';
 import type { TabKey, SortTable, SortPriceArray, Category } from '../../types/market';
 
 function getNextSortOrder(current: SortPriceArray): SortPriceArray {
@@ -19,6 +22,8 @@ function getNextSortOrder(current: SortPriceArray): SortPriceArray {
 export default function MarketPanel() {
   const { user } = useUserStore();
   const memberId = user?.id;
+  const navigate = useNavigate();
+  const { openModal, closeModal } = useModal();
 
   const [activeTab, setActiveTab] = useState<TabKey>('krw');
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -74,7 +79,26 @@ export default function MarketPanel() {
 
   // 좋아요 클릭 시 관심 종목 추가/삭제
   const handleToggleFavorite = (categoryId: number) => {
-    if (!memberId) return;
+    if (!memberId) {
+      openModal(
+        <Modal
+          title="로그인 안내"
+          description="관심코인을 추가하려면 로그인이 필요합니다."
+          cancelButtonProps={{
+            text: '취소',
+            onClick: closeModal,
+          }}
+          confirmButtonProps={{
+            text: '로그인',
+            onClick: () => {
+              closeModal();
+              navigate('/login');
+            },
+          }}
+        />,
+      );
+      return;
+    }
 
     const isCurrentlyFavorite = Interest?.some((interest) => interest.categoryId === categoryId) || false;
 
