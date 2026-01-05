@@ -23,6 +23,7 @@ export default function MarketTableItem({ item, onToggleFavorite }: MarketTableI
     <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4">
       <div className="py-3 text-xs min-w-0">
         <div className="flex items-center gap-2">
+          {/* 관심 종목 추가/삭제 버튼 */}
           <button
             type="button"
             onClick={onToggleFavorite}
@@ -30,6 +31,7 @@ export default function MarketTableItem({ item, onToggleFavorite }: MarketTableI
           >
             <FontAwesomeIcon icon={item.isFavorite ? faStarSolid : faStarRegular} />
           </button>
+          {/* 종목명 심볼 표시 */}
           <div className="flex flex-col min-w-0">
             <span className="text-[13px] font-semibold text-primary-100">{item.name}</span>
             <span className="text-[11px] text-primary-300">
