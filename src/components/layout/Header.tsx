@@ -20,6 +20,7 @@ export default function Header() {
               colorType="white"
               onClick={() => {
                 logout();
+                window.location.reload();
               }}
             >
               로그아웃
