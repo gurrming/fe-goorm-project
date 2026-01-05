@@ -28,12 +28,15 @@ export default function MarketPanel() {
   const { data: categories } = useGetMarketItems();
 
   // 관심 종목 목록 조회
-  const { data: Interest } = useGetFavorite(memberId);
+  const { data: interests } = useGetFavorite(memberId);
   const postFavorite = usePostFavorite();
   const deleteFavorite = useDeleteFavorite();
 
+  // interests가 배열이 아니거나 undefined일 경우 빈 배열로 처리
+  const interestsArray = Array.isArray(interests) ? interests : [];
+
   const isFavoriteCategory = (categoryId: number) =>
-    Interest?.some((interest) => interest.categoryId === categoryId) || false;
+    interestsArray.some((interest) => interest.categoryId === categoryId);
 
   // Category 배열 그대로 사용 (lastPrice, changeRate, tradeAmount는 다른 API에서 받아와서 병합 예정)
   const categoryList: Category[] = Array.isArray(categories) ? categories : [];
@@ -73,11 +76,11 @@ export default function MarketPanel() {
 
   // 좋아요 클릭 시 관심 종목 추가/삭제
   const handleToggleFavorite = (categoryId: number) => {
-    const isCurrentlyFavorite = Interest?.some((interest) => interest.categoryId === categoryId) || false;
+    const isCurrentlyFavorite = interestsArray.some((interest) => interest.categoryId === categoryId);
 
     if (isCurrentlyFavorite) {
       // 관심 종목 삭제
-      const existingInterest = Interest?.find((interest) => interest.categoryId === categoryId);
+      const existingInterest = interestsArray.find((interest) => interest.categoryId === categoryId);
       if (existingInterest) {
         deleteFavorite.mutate({
           interestId: existingInterest.interestId,
