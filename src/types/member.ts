@@ -4,6 +4,7 @@ export type TLoginForm = {
 };
 
 export type TLoginResponse = {
+  id: number;
   nickname: string;
   accessToken: string;
   refreshToken: string;
