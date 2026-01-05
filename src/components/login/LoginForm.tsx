@@ -24,7 +24,7 @@ const LoginForm = () => {
     mutationFn: postLogin,
     onSuccess: (data: TLoginResponse) => {
       localStorage.setItem('accessToken', data.accessToken);
-      setUser(data.nickname);
+      setUser({ id: data.id, nickname: data.nickname });
       navigate('/');
     },
     // onError: (error) => {
