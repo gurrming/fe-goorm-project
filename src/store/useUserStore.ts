@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { postLogout } from '../api/member';
 
 interface IUserStore {
   user: {
@@ -16,7 +15,6 @@ const useUserStore = create<IUserStore>((set) => ({
   logout: async () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    await postLogout();
     set({ user: null });
   },
 }));
