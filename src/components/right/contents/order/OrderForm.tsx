@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { changeNumber, dotQuantity, formatNumber, getPriceTickSize } from '../../../../lib/price';
 import useUserStore from '../../../../store/useUserStore';
 import Button from '../../../common/Button';
+import { useModal } from '../../../common/Modal/hooks/useModal';
+import { Modal } from '../../../common/Modal/Modal';
 import type { BuyOrderInitialData, SellOrderInitialData } from './types';
 
 type OrderType = 'buy' | 'sell';
@@ -20,6 +22,7 @@ const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
   const { user } = useUserStore();
   const isBuy = orderType === 'buy';
   const data = initialData as BuyOrderInitialData | SellOrderInitialData;
+  const { openModal, closeModal } = useModal();
 
   const initialPrice = data.currentPrice ?? 0;
 
@@ -81,6 +84,72 @@ const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
   };
 
   const handleOrder = () => {
+    // 주문 수량이 비워져있을 때
+    if (!quantity || quantity.trim() === '' || quantityNum === 0) {
+      openModal(
+        <Modal
+          title={isBuy ? '매수 주문 안내' : '매도 주문 안내'}
+          description={isBuy ? '매수 수량을 확인해 주세요.' : '매도 수량을 확인해 주세요.'}
+          confirmButtonProps={{
+            text: '확인',
+            onClick: closeModal,
+          }}
+        />,
+      );
+      return;
+    }
+
+    // 주문 총액이 5000미만일 때
+    if (totalAmountValue < 5000) {
+      openModal(
+        <Modal
+          title={isBuy ? '매수 주문 안내' : '매도 주문 안내'}
+          description="주문 가능한 최소금액은 5,000 KRW 입니다."
+          confirmButtonProps={{
+            text: '확인',
+            onClick: closeModal,
+          }}
+        />,
+      );
+      return;
+    }
+
+    // 주문 가능 금액이 부족할 때 (매수일 시)
+    if (isBuy && totalAmountValue > (availableAmount as number)) {
+      openModal(
+        <Modal
+          title="매수 주문 안내"
+          description="주문 가능 금액이 부족합니다."
+          cancelButtonProps={{
+            text: 'KRW 입금',
+            onClick: () => {
+              closeModal();
+            },
+          }}
+          confirmButtonProps={{
+            text: '확인',
+            onClick: closeModal,
+          }}
+        />,
+      );
+      return;
+    }
+
+    // 주문 가능 수량이 부족할 때 (매도일 시)
+    if (!isBuy && quantityNum > (availableAmount as number)) {
+      openModal(
+        <Modal
+          title="매도 주문 안내"
+          description="매도 수량을 확인해 주세요."
+          confirmButtonProps={{
+            text: '확인',
+            onClick: closeModal,
+          }}
+        />,
+      );
+      return;
+    }
+
     onOrder(price, quantity, totalAmountValue);
   };
 
