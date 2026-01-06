@@ -24,7 +24,6 @@ export default function MarketPanel() {
   const memberId = user?.id;
   const navigate = useNavigate();
   const { openModal, closeModal } = useModal();
-
   const [activeTab, setActiveTab] = useState<TabKey>('krw');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortTable, setSortTable] = useState<SortTable>('lastPrice');

@@ -1,7 +1,9 @@
 import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { changeNumber, dotQuantity, formatNumber, getPriceTickSize } from '../../../../lib/price';
+import useUserStore from '../../../../store/useUserStore';
 import Button from '../../../common/Button';
 import { useModal } from '../../../common/Modal/hooks/useModal';
 import { Modal } from '../../../common/Modal/Modal';
@@ -16,6 +18,8 @@ type OrderFormProps = {
 };
 
 const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
+  const navigate = useNavigate();
+  const { user } = useUserStore();
   const isBuy = orderType === 'buy';
   const data = initialData as BuyOrderInitialData | SellOrderInitialData;
   const { openModal, closeModal } = useModal();
@@ -222,18 +226,41 @@ const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
         />
       </div>
 
-      {/* 초기화, 매도/매수 버튼 */}
+      {/* 하단 버튼 */}
       <div className="flex gap-2 mt-4">
-        <button
-          onClick={handleReset}
-          className="flex flex-1 px-4 py-2 text-white bg-gray-400 rounded-[2px] text-[13px] items-center justify-center gap-1 cursor-pointer"
-        >
-          <FontAwesomeIcon icon={faArrowRotateRight} />
-          <span>초기화</span>
-        </button>
-        <Button colorType={buttonColorType} onClick={handleOrder} className="flex-4 w-full rounded-[2px] text-[13px]">
-          {orderButtonText}
-        </Button>
+        {user ? (
+          <>
+            <button
+              onClick={handleReset}
+              className="flex flex-1 px-4 py-2 text-white bg-gray-400 rounded-[2px] text-[13px] items-center justify-center gap-1 cursor-pointer"
+            >
+              <FontAwesomeIcon icon={faArrowRotateRight} />
+              <span>초기화</span>
+            </button>
+            <Button
+              colorType={buttonColorType}
+              onClick={handleOrder}
+              className="flex-4 w-full rounded-[2px] text-[13px]"
+            >
+              {orderButtonText}
+            </Button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => navigate('/signup')}
+              className="flex flex-1 px-4 py-2 text-white bg-blue-800 rounded-[2px] text-[13px] items-center justify-center cursor-pointer"
+            >
+              <span>회원가입</span>
+            </button>
+            <button
+              onClick={() => navigate('/login')}
+              className="flex flex-4 w-full px-4 py-2 text-white bg-blue-500 rounded-[2px] text-[13px] items-center justify-center cursor-pointer"
+            >
+              <span>로그인</span>
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
