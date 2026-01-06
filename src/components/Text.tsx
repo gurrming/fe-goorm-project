@@ -35,7 +35,7 @@ const Text = ({
   };
   return (
     <div className="flex w-full justify-center items-center">
-      <p className="text-xs text-gray-500 ">{text}</p>
+      <p className="text-[13px] text-gray-500 ">{text}</p>
       <span className={`text-${size}  flex-1 text-right ${priceColorStyle[priceColor]}`}>{price}</span>
       <p className={`text-xs text-gray-500 ml-1`}>{type}</p>
     </div>
