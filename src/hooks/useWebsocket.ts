@@ -2,6 +2,16 @@ import * as Stomp from '@stomp/stompjs';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 
+/**
+ * websocket hook
+ *
+ * connect: 웹소켓 연결 (토큰 필요)
+ * disconnect: 웹소켓 연결 해제
+ *
+ * @returns
+ *
+ */
+
 export const useWebsocket = () => {
   const [isConnected, setIsConnected] = useState(false);
   const stompClientRef = useRef<Stomp.Client | null>(null);
