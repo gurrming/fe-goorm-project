@@ -21,10 +21,10 @@ export const mockUnSettledData = [
     orderTime: '2025.12.26 16:29',
     type: '매도',
     watchPrice: 0,
-    watchAmount: 130500000000,
+    watchAmount: 130500000,
     watchQuantity: 0.0015653,
-    unSettledPrice: 130500000000,
-    unSettledAmount: 130500000000,
+    unSettledPrice: 130500000,
+    unSettledAmount: 130500000,
     unSettledQuantity: 0.0015653,
   },
 ];

@@ -3,7 +3,7 @@ import Text from '../../../Text';
 
 const MyAsset = () => {
   return (
-    <div className="flex flex-col items-center gap-3 px-4">
+    <div className="flex flex-col items-center gap-3">
       <div className="flex justify-center w-full gap-8 border-b-[0.3px] border-gray-200 pb-3">
         <Text size="sm" text="보유잔액" price="100,000,000" priceColor="black" type="KRW" />
         <Text size="sm" text="총 보유자산" price="100,000,000" priceColor="black" type="KRW" />
