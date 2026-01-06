@@ -1,5 +1,6 @@
 import { formatNumber } from '../../lib/price';
 import { cn } from '../../lib/utils';
+import { useTradesStore } from '../../store/websocket/useTradesStore';
 
 // 호가창 아이템 데이터 타입
 
@@ -16,9 +17,16 @@ type OrderBookItemProps = {
 };
 
 export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderBookItemProps) {
-  const priceColor = item.changeRate === 0 ? 'text-black' : isAsk ? 'text-blue-500' : 'text-red-500';
-  const changePrefix = item.changeRate < 0 ? '+' : '';
-  const changeText = item.changeRate === 0 ? '0.00%' : `${changePrefix}${item.changeRate.toFixed(2)}%`;
+  const { tradesData } = useTradesStore();
+  const currentPrice = tradesData?.price ?? 0; // 체결가, 없으면 0.00
+  const openPrice = tradesData?.openPrice ?? 0; // 전일종가, 없으면 0
+
+  // 등락률 계산: (체결가 - 전일종가) / 전일종가 * 100
+  const changeRate = openPrice > 0 ? ((currentPrice - openPrice) / openPrice) * 100 : 0;
+
+  const priceColor = changeRate === 0 ? 'text-black' : isAsk ? 'text-blue-500' : 'text-red-500';
+  const changePrefix = changeRate > 0 ? '+' : '';
+  const changeText = changeRate === 0 ? '0.00%' : `${changePrefix}${changeRate.toFixed(2)}%`;
 
   // volumeRate를 퍼센트로 변환
   const volumeRate = maxVolume > 0 ? item.volume / maxVolume : 0;
@@ -45,7 +53,7 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
         {isAsk && (
           <>
             <div className={`${priceColor}`}>
-              <span className="font-semibold">{formatNumber(item.price)}</span>
+              <span className="font-semibold">{formatNumber(currentPrice)}</span>
               <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
             </div>
           </>
@@ -78,7 +86,7 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
         {!isAsk && (
           <>
             <div className={cn(priceColor)}>
-              <span className="font-semibold">{formatNumber(item.price)}</span>
+              <span className="font-semibold">{formatNumber(currentPrice)}</span>
               <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
             </div>
           </>
