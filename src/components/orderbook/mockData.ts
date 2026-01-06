@@ -33,6 +33,9 @@ export type CurrentTradeData = {
   previousClose: number; // 전일종가
   todayHigh: number; // 당일고가
   todayLow: number; // 당일저가
+  volume: number; // 거래량
+  tradeAmount: number; // 거래대금 (백만원)
+  symbol: string; // 심볼
 };
 
 // 현재 거래 정보 목 데이터
@@ -40,6 +43,9 @@ export const mockCurrentTradeData: CurrentTradeData = {
   previousClose: 6320000, // 전일종가
   todayHigh: 6358000, // 당일고가
   todayLow: 6303000, // 당일저가
+  volume: 238316577, // 거래량
+  tradeAmount: 2532, // 거래대금 (백만원)
+  symbol: 'ANIME', // 심볼
 };
 
 // 체결 내역 데이터 타입
@@ -52,6 +58,11 @@ export type TradeTapeItem = {
 // 체결강도 데이터 타입
 export type TradeStrength = {
   value: number; // 체결강도 값 (퍼센트)
+};
+
+// 체결강도 목 데이터
+export const mockTradeStrength: TradeStrength = {
+  value: 50.28, // 체결강도 값 (퍼센트)
 };
 
 // 체결 내역 목 데이터
