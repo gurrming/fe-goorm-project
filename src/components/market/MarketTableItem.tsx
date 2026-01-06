@@ -1,6 +1,7 @@
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useTickerStore } from '../../store/websocket/useTickerStore';
 import type { Category, PortfolioAsset, TabKey } from '../../types/market';
 
 type MarketTableItemProps = {
@@ -81,11 +82,11 @@ export default function MarketTableItem({
   // 기본 탭 (원화, 관심)
   if (!category) return null;
 
-  // lastPrice, changeRate, tradeAmount는 다른 API에서 받아와서 병합 예정
-  // 현재는 임시로 0으로 표시
-  const lastPrice = 0;
-  const changeRate = 0;
-  const tradeAmount = 0;
+  // /topic/ticker에서 데이터 가져옴
+  const { tickerData } = useTickerStore();
+  const lastPrice = tickerData?.price ?? 0;
+  const changeRate = tickerData?.changeRate ?? 0;
+  const tradeAmount = tickerData?.amount ?? 0;
 
   // + 이면 primary-700, - 이면 primary-900, 그냥 변동사항 없으면 primary-100
   const changeColor = changeRate > 0 ? 'text-primary-700' : changeRate < 0 ? 'text-primary-900' : 'text-primary-100';
