@@ -38,6 +38,7 @@ export default function MarketTableItem({
     const rightAlignClass = 'flex justify-end items-center';
 
     return (
+      // 보유 탭입니다
       <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4">
         <div className="text-xs min-w-0 flex ">
           <div className="flex items-center gap-2 font-bold py-4">
@@ -47,8 +48,10 @@ export default function MarketTableItem({
         </div>
         <div className={`text-xs text-right text-primary-100 min-w-[90px] ${rightAlignClass}`}>
           <div className="flex flex-col">
+            {/* 보유 수량 */}
             <span className="font-semibold">{formatQuantity(portfolioAsset.quantity)}</span>
             <span className="text-[11px] text-primary-300 font-normal">
+              {/* 보유 금액 한국 돈으로 바꿨을 때 */}
               {portfolioAsset.evaluateAmount.toLocaleString('ko-KR')}
               <span className="text-[11px] text-primary-500 font-normal ml-1">KRW</span>
             </span>
@@ -56,20 +59,19 @@ export default function MarketTableItem({
         </div>
         <div className={`text-xs text-right text-primary-100 font-semibold min-w-[80px] ${rightAlignClass}`}>
           <div className="flex flex-col">
+            {/* 매수 평균 가격 */}
             <span>{portfolioAsset.avgBuyPrice.toLocaleString('ko-KR')}</span>
             <span className="text-[11px] text-primary-500 font-normal">KRW</span>
           </div>
         </div>
         <div className={`text-xs text-right min-w-[100px] font-semibold ${profitColor} ${rightAlignClass}`}>
+          {/* 수익률 */}
           <div className="flex flex-col">
             <span>
               {profitPrefix}
               {profitRate.toFixed(2)}%
             </span>
-            <span className="text-[11px]">
-              {profitPrefix}
-              {Math.abs(portfolioAsset.profit).toLocaleString('ko-KR')}
-            </span>
+            <span className="text-[11px]">{portfolioAsset.profit.toLocaleString('ko-KR')}</span>
           </div>
         </div>
       </div>
