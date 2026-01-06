@@ -4,7 +4,7 @@ import { useGetChatList } from '../api/useGetChatList';
 import type { TChat } from '../types/chat';
 
 export const useChatting = ({ categoryId }: { categoryId: number }) => {
-  const { isConnected, stompClientRef, connect } = useWebsocket();
+  const { isConnected, stompClientRef } = useWebsocket();
   const [chatHistory, setChatHistory] = useState<TChat[]>([]);
 
   useEffect(() => {
@@ -13,12 +13,12 @@ export const useChatting = ({ categoryId }: { categoryId: number }) => {
     refetch();
   }, [categoryId]);
 
-  useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      connect(token);
-    }
-  }, [connect]);
+  //   useEffect(() => {
+  //     const token = localStorage.getItem('accessToken');
+  //     if (token) {
+  //       connect(token);
+  //     }
+  //   }, [connect]);
 
   useEffect(() => {
     if (isConnected && stompClientRef.current) {
