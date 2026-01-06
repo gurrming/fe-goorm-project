@@ -1,15 +1,25 @@
-import { mockTradeTapeData } from './mockData';
+import { mockTradeTapeData, mockTradeStrength } from './mockData';
 import { formatNumber } from '../../lib/price';
 
 export default function TradeTapeSection() {
+  // 체결강도 포맷팅
+  const formatTradeStrength = (value: number): string => {
+    const sign = value >= 0 ? '+' : '';
+    return `${sign}${value.toFixed(2)}%`;
+  };
+
   return (
     <div className="bg-white p-4">
       {/* 체결강도 헤더 */}
+      <div className="flex justify-between items-center pb-2 mb-2 border-b border-gray-300">
+        <div className="text-[10px] text-primary-300">체결강도</div>
+        <div className="text-[10px] text-primary-100 font-semibold">{formatTradeStrength(mockTradeStrength.value)}</div>
+      </div>
 
       {/* 테이블 헤더 */}
       <div className="grid grid-cols-2 gap-2 pb-2 mb-2">
-        <div className="text-[10px] text-gray-600 text-center">체결가</div>
-        <div className="text-[10px] text-gray-600 text-center border-l border-gray-300">체결액</div>
+        <div className="text-[10px] text-primary-300 text-center">체결가</div>
+        <div className="text-[10px] text-primary-300 text-center border-l border-gray-300">체결액</div>
       </div>
 
       {/* 체결 내역 리스트 */}
