@@ -8,10 +8,11 @@ import { useDeleteFavorite } from '../../api/favorite/useDeleteFavorite';
 import { useGetFavorite } from '../../api/favorite/useGetFavorite';
 import { usePostFavorite } from '../../api/favorite/usePostFavorite';
 import { useGetMarketItems } from '../../api/useGetMarketItems';
+import { useGetPortfolio } from '../../api/useGetPortfolio';
 import useUserStore from '../../store/useUserStore';
 import { useModal } from '../common/Modal/hooks/useModal';
 import { Modal } from '../common/Modal/Modal';
-import type { TabKey, SortTable, SortPriceArray, Category } from '../../types/market';
+import type { TabKey, SortTable, SortPriceArray, Category, PortfolioAsset } from '../../types/market';
 
 function getNextSortOrder(current: SortPriceArray): SortPriceArray {
   if (current === 'none') return 'descending';
@@ -32,6 +33,9 @@ export default function MarketPanel() {
   // 마켓 데이터 조회
   const { data: categories } = useGetMarketItems();
 
+  // 포트폴리오 - 보유 데이터 조회
+  const { data: portfolio } = useGetPortfolio();
+
   // 관심 종목 목록 조회
   const { data: Interest } = useGetFavorite(memberId ?? null);
   const postFavorite = usePostFavorite();
@@ -45,13 +49,15 @@ export default function MarketPanel() {
 
   // 탭별 필터링
   let filteredCategories: Category[] = [];
+  let portfolioAssets: PortfolioAsset[] = [];
+
   if (activeTab === 'krw') {
     filteredCategories = categoryList;
   } else if (activeTab === 'interest') {
     filteredCategories = categoryList.filter((category) => isFavoriteCategory(category.categoryId));
-  } else {
-    //보유 종목 API 추후 적용
-    filteredCategories = categoryList;
+  } else if (activeTab === 'holding') {
+    // 보유 탭일 때 포트폴리오 데이터 사용
+    portfolioAssets = portfolio?.assets || [];
   }
 
   // 검색 필터
@@ -64,8 +70,48 @@ export default function MarketPanel() {
       )
     : filteredCategories;
 
-  // 정렬 (lastPrice, changeRate, tradeAmount가 추가되면 활성화)
+  const searchFilteredPortfolioAssets = keyword
+    ? portfolioAssets.filter(
+        (asset) =>
+          asset.categorySymbol.toLowerCase().includes(keyword) || asset.categoryName.toLowerCase().includes(keyword),
+      )
+    : portfolioAssets;
+
+  // 정렬
   const sortedCategories = searchFilteredCategories;
+  let sortedPortfolioAssets = searchFilteredPortfolioAssets;
+
+  if (activeTab === 'holding') {
+    // 보유 탭 정렬
+    sortedPortfolioAssets = [...searchFilteredPortfolioAssets].sort((a, b) => {
+      let aValue: number;
+      let bValue: number;
+
+      switch (sortTable) {
+        case 'evaluateAmount':
+          aValue = a.evaluateAmount;
+          bValue = b.evaluateAmount;
+          break;
+        case 'avgBuyPrice':
+          aValue = a.avgBuyPrice;
+          bValue = b.avgBuyPrice;
+          break;
+        case 'profitRate':
+          aValue = a.profitRate ?? 0;
+          bValue = b.profitRate ?? 0;
+          break;
+        default:
+          return 0;
+      }
+
+      if (sortPriceArray === 'ascending') {
+        return aValue - bValue;
+      } else if (sortPriceArray === 'descending') {
+        return bValue - aValue;
+      }
+      return 0;
+    });
+  }
 
   const handleSortClick = (item: SortTable) => {
     if (sortTable === item) {
@@ -126,26 +172,44 @@ export default function MarketPanel() {
       <div className="w-full bg-white flex flex-col flex-1 min-h-0 overflow-hidden">
         <div className="bg-white overflow-x-hidden">
           <MarketTableHeader
+            activeTab={activeTab}
             activeSortTable={sortTable}
             activeSortPriceArray={sortPriceArray}
             onSortClick={handleSortClick}
           />
         </div>
         <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0" style={{ height: 0 }}>
-          {sortedCategories.length === 0 ? (
+          {activeTab === 'holding' ? (
+            sortedPortfolioAssets.length === 0 ? (
+              <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">
+                <div className="px-4 py-6 text-center text-primary-300- col-span-4 text-xs text-primary-500">
+                  {!user ? '로그인하면 내 보유자산을 확인할 수 있습니다.' : '표시할 종목이 없습니다.'}
+                </div>
+              </div>
+            ) : (
+              sortedPortfolioAssets.map((asset) => (
+                <MarketTableItem
+                  key={asset.categoryId}
+                  activeTab={activeTab}
+                  portfolioAsset={asset}
+                  isFavorite={isFavoriteCategory(asset.categoryId)}
+                  onToggleFavorite={() => handleToggleFavorite(asset.categoryId)}
+                />
+              ))
+            )
+          ) : sortedCategories.length === 0 ? (
             <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">
               <div className="px-4 py-6 text-center text-primary-300- col-span-4 text-xs text-primary-500">
-                {!user && activeTab === 'holding'
-                  ? '로그인하면 내 보유자산을 확인할 수 있습니다.'
-                  : !user && activeTab === 'interest'
-                    ? '로그인하면 내 관심코인을 확인할 수 있습니다.'
-                    : '표시할 종목이 없습니다.'}
+                {!user && activeTab === 'interest'
+                  ? '로그인하면 내 관심코인을 확인할 수 있습니다.'
+                  : '표시할 종목이 없습니다.'}
               </div>
             </div>
           ) : (
             sortedCategories.map((category) => (
               <MarketTableItem
                 key={category.categoryId}
+                activeTab={activeTab}
                 category={category}
                 isFavorite={isFavoriteCategory(category.categoryId)}
                 onToggleFavorite={() => handleToggleFavorite(category.categoryId)}
