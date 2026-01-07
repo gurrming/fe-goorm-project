@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import useUserStore from '../../store/useUserStore';
 import { request } from '../common/axiosInstance';
 
 const patchCancelAll = (memberId: number) => {
@@ -10,9 +11,10 @@ const patchCancelAll = (memberId: number) => {
 
 export const usePatchCancelAll = () => {
   const queryClient = useQueryClient();
+  const memberId = useUserStore((state) => state.user?.id);
 
   return useMutation({
-    mutationFn: ({ memberId }: { memberId: number }) => patchCancelAll(memberId),
+    mutationFn: () => patchCancelAll(memberId!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
