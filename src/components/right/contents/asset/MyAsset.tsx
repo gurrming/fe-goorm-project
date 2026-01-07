@@ -1,7 +1,10 @@
-import React from 'react';
+import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
 import Text from '../../../Text';
 
 const MyAsset = () => {
+  const { data } = useGetMyAsset();
+  console.log(data);
+
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="flex justify-center w-full gap-8 border-b-[0.3px] border-gray-200 pb-3">
