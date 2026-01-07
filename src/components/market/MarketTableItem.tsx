@@ -1,6 +1,7 @@
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useCategoryIdStore from '../../store/useCategoryId';
 import { useTickerStore } from '../../store/websocket/useTickerStore';
 import type { Category, PortfolioAsset, TabKey } from '../../types/market';
 
@@ -38,9 +39,14 @@ export default function MarketTableItem({
     const profitPrefix = profitRate > 0 ? '+' : '';
     const rightAlignClass = 'flex justify-end items-center';
 
+    const { setCategoryId } = useCategoryIdStore();
+
     return (
       // 보유 탭입니다
-      <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4">
+      <div
+        className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4"
+        onClick={() => setCategoryId(portfolioAsset.categoryId)}
+      >
         <div className="text-xs min-w-0 flex ">
           <div className="flex items-center gap-2 font-bold py-4">
             {/* 종목 심볼 */}
@@ -92,8 +98,13 @@ export default function MarketTableItem({
   const changeColor = changeRate > 0 ? 'text-primary-700' : changeRate < 0 ? 'text-primary-900' : 'text-primary-100';
   const changePrefix = changeRate > 0 ? '+' : '';
 
+  const { setCategoryId } = useCategoryIdStore();
+
   return (
-    <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4">
+    <div
+      className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4"
+      onClick={() => setCategoryId(category.categoryId)}
+    >
       <div className="text-xs min-w-0">
         <div className="flex items-center gap-2">
           {/* 관심 종목 추가/삭제 버튼 */}
