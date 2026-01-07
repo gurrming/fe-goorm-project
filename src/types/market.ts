@@ -7,13 +7,13 @@ export type SortPriceArray = 'descending' | 'ascending' | 'none';
 export type Category = {
   categoryId: number;
   categoryName: string;
-  categorySymbol: string;
+  symbol: string;
 };
 
 export type PortfolioAsset = {
   categoryId: number;
   categoryName: string;
-  categorySymbol: string;
+  symbol: string;
   quantity: number;
   avgBuyPrice: number;
   buyAmount: number;
