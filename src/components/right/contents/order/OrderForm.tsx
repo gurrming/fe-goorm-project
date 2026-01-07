@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import OrderFormButtons from './OrderFormButtons';
 import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
+import { useGetMarketItems } from '../../../../api/useGetMarketItems';
 import { useGetPortfolio } from '../../../../api/useGetPortfolio';
 import { changeNumber, dotQuantity, formatNumber, getPriceTickSize } from '../../../../lib/price';
+import useCategoryIdStore from '../../../../store/useCategoryId';
 import { useModal } from '../../../common/Modal/hooks/useModal';
 import { Modal } from '../../../common/Modal/Modal';
 
@@ -10,28 +12,26 @@ type OrderType = 'buy' | 'sell';
 
 type OrderFormProps = {
   orderType: OrderType;
-  onOrder: (price: string, quantity: string, totalAmount: number) => void;
+  onOrder: (price: string, quantity: string) => void;
+  reset?: number | null;
 };
 
-const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
+const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const isBuy = orderType === 'buy';
   const { openModal, closeModal } = useModal();
 
   // 서버에서 데이터 가져오기
   const { data: myAsset } = useGetMyAsset();
   const { data: portfolio } = useGetPortfolio();
+  const { data: marketItems } = useGetMarketItems();
+  const { categoryId } = useCategoryIdStore();
 
-  // 매도일 때 portfolio에서 첫 번째 asset 사용 (추후 선택된 코인으로 변경 가능)
-  const sellAsset = !isBuy && portfolio?.assets && portfolio.assets.length > 0 ? portfolio.assets[0] : null;
+  const selectedCategory = marketItems?.find((item) => item.categoryId === categoryId);
+  const holdingAsset = portfolio?.assets?.find((asset) => asset.categoryId === categoryId);
 
-  const availableAmount = isBuy
-    ? myAsset?.assetCash || 0 // 매수일 때: assetCash 사용
-    : sellAsset?.quantity || 0; // 매도일 때: API 뚫어주시면 다시 불러와야함.
-
-  // portfolio에서 symbol 가져오기
-  // 매수일 때: 추후 선택된 코인 정보로 변경 필요
-  // 매도일 때: Symbol 새 API로 연결 예정
-  const symbol = isBuy ? '' : sellAsset?.symbol || ''; // 다시 불러올게요
+  const selectedSymbol = selectedCategory?.symbol;
+  const buyAvailableCash = myAsset?.assetCash ?? 0;
+  const sellAvailableQuantity = holdingAsset?.quantity ?? 0;
 
   // 현재 가격 (추후 선택된 코인의 현재 가격으로 변경 필요)
   const initialPrice = 0;
@@ -96,6 +96,12 @@ const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
     setUserTotalAmount('');
   };
 
+  // 주문 넣는 행동 자체를 성공 또는 실패 시 초기화
+  useEffect(() => {
+    if (reset == null) return;
+    handleReset();
+  }, [reset]);
+
   const handleOrder = () => {
     // 주문 수량이 비워져있을 때
     if (!quantity || quantity.trim() === '' || quantityNum === 0) {
@@ -128,17 +134,11 @@ const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
     }
 
     // 주문 가능 금액이 부족할 때 (매수일 시)
-    if (isBuy && totalAmountValue > (availableAmount as number)) {
+    if (isBuy && totalAmountValue > buyAvailableCash) {
       openModal(
         <Modal
           title="매수 주문 안내"
           description="주문 가능 금액이 부족합니다."
-          cancelButtonProps={{
-            text: 'KRW 입금',
-            onClick: () => {
-              closeModal();
-            },
-          }}
           confirmButtonProps={{
             text: '확인',
             onClick: closeModal,
@@ -149,7 +149,7 @@ const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
     }
 
     // 주문 가능 수량이 부족할 때 (매도일 시)
-    if (!isBuy && quantityNum > (availableAmount as number)) {
+    if (!isBuy && quantityNum > sellAvailableQuantity) {
       openModal(
         <Modal
           title="매도 주문 안내"
@@ -163,7 +163,7 @@ const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
       return;
     }
 
-    onOrder(price, quantity, totalAmountValue);
+    onOrder(price, quantity);
   };
 
   const buttonColorType = isBuy ? 'red' : 'blue';
@@ -180,8 +180,8 @@ const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100 ">
         <span>주문가능</span>
         <span className="text-sm font-semibold">
-          {formatNumber(availableAmount ?? 0)}
-          <span className="text-primary-300 text-[10px] ml-1 font-medium">{isBuy ? 'KRW' : symbol}</span>
+          {isBuy ? formatNumber(buyAvailableCash) : formatNumber(sellAvailableQuantity)}
+          <span className="text-primary-300 text-[10px] ml-1 font-medium">{isBuy ? 'KRW' : selectedSymbol}</span>
         </span>
       </div>
 
@@ -194,7 +194,7 @@ const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
           <input
             value={price}
             onChange={handlePriceChange}
-            className="w-80 px-2 py-1 text-[13px] text-right border-0 rounded-[2px]-l"
+            className="w-73 px-2 py-1 text-[13px] text-right border-0 rounded-[2px]-l"
           />
           <div className="flex border-l border-gray-300 cursor-pointer">
             <button
@@ -216,13 +216,13 @@ const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
       {/* 주문 수량 */}
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100">
         <span className="flex items-center">
-          주문수량 <span className="text-primary-500 text-[10px] ml-1">({symbol})</span>
+          주문수량 <span className="text-primary-500 text-[10px] ml-1">({selectedSymbol})</span>
         </span>
         <input
           value={quantity}
           onChange={handleQuantityChange}
           placeholder="0"
-          className="w-96 px-2 py-2 text-[13px] text-right border border-gray-300 rounded-[2px]"
+          className="w-90 px-2 py-2 text-[13px] text-right border border-gray-300 rounded-[2px]"
         />
       </div>
 
@@ -235,7 +235,7 @@ const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
           value={totalAmountDisplay}
           onChange={handleTotalAmountChange}
           placeholder="0"
-          className="w-96 px-2 py-2 text-[13px] text-right border border-gray-300 rounded-[2px]"
+          className="w-90 px-2 py-2 text-[13px] text-right border border-gray-300 rounded-[2px]"
         />
       </div>
 
