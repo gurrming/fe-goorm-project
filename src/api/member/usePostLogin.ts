@@ -21,8 +21,8 @@ export const usePostLogin = () => {
     mutationFn: postLogin,
     onSuccess: (data: TLoginResponse) => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      localStorage.setItem('accessToken', data.accessToken);
-      setUser({ id: data.id, nickname: data.nickname });
+      localStorage.setItem('accessToken', data.data.accessToken);
+      setUser({ id: data.data.memberId, nickname: data.data.memberNickname });
       navigate('/');
     },
   });
