@@ -38,3 +38,12 @@ export type OrderbookPayload = {
   sellSide: OrderbookItemData[]; // 매도 호가
   serverTime: number; // 서버 시간
 };
+
+//topic/chart/{categoryId}
+export type ChartData = {
+  t: number;
+  o: number;
+  h: number;
+  l: number;
+  c: number;
+};
