@@ -1,7 +1,11 @@
-import { mockSettledData } from './mockData';
 import SettledItem from './SettledItem';
+import { useGetSettledData } from '../../../../api/transaction/useGetSettledData';
+import type { TSettledData } from '../../../../types/transaction';
 
 const Settled = () => {
+  const { data } = useGetSettledData(0, 10);
+  console.log('채결 내역 : ', data);
+
   return (
     <table className="w-full border-collapse bg-white">
       <thead>
@@ -11,16 +15,21 @@ const Settled = () => {
           <th className="py-3 text-center text-[11px] font-medium text-[#666666] border-r border-gray-200">
             <div className="flex flex-col">
               <span>체결가격</span>
-              <span className="text-[11px] font-normal text-[#666666] mt-1">체결금액</span>
             </div>
           </th>
           <th className="py-3 text-center text-[11px] font-medium text-[#666666]">체결수량</th>
         </tr>
       </thead>
       <tbody>
-        {mockSettledData.map((item, index) => (
-          <SettledItem item={item} index={index} />
-        ))}
+        {data && data.length > 0 ? (
+          data.map((item: TSettledData, index: number) => <SettledItem item={item} index={index} />)
+        ) : (
+          <tr>
+            <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
+              채결 내역이 없습니다.
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

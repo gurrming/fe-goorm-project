@@ -15,6 +15,8 @@ import SockJS from 'sockjs-client';
 export const useWebsocket = () => {
   const [isConnected, setIsConnected] = useState(false);
   const stompClientRef = useRef<Stomp.Client | null>(null);
+  const retryCountRef = useRef(0);
+  const maxRetryCount = 5;
 
   const connect = useCallback((token?: string): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -41,6 +43,11 @@ export const useWebsocket = () => {
         onWebSocketClose: () => {
           console.log('WebSocket Closed');
           setIsConnected(false);
+
+          retryCountRef.current += 1;
+          if (retryCountRef.current < maxRetryCount) {
+            client.deactivate();
+          }
         },
       });
 

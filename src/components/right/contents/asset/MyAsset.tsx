@@ -1,26 +1,69 @@
 import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
+import { useGetPortfolio } from '../../../../api/useGetPortfolio';
 import Text from '../../../Text';
 
 const MyAsset = () => {
-  const { data } = useGetMyAsset();
-  console.log(data);
+  const { data: myAssetData } = useGetMyAsset();
+  const { data: myPortfolioData } = useGetPortfolio();
 
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="flex justify-center w-full gap-8 border-b-[0.3px] border-gray-200 pb-3">
-        <Text size="sm" text="보유잔액" price="100,000,000" priceColor="black" type="KRW" />
-        <Text size="sm" text="총 보유자산" price="100,000,000" priceColor="black" type="KRW" />
+        <Text
+          size="sm"
+          text="보유잔액"
+          price={myAssetData?.assetCash.toLocaleString('ko-KR')}
+          priceColor="black"
+          type="KRW"
+        />
+        <Text
+          size="sm"
+          text="총 보유자산"
+          price={myAssetData?.totalAsset.toLocaleString('ko-KR')}
+          priceColor="black"
+          type="KRW"
+        />
       </div>
       <div className="flex justify-center w-full gap-8">
-        <Text size="sm" text="총 매수" price="350,999" priceColor="black" type="KRW" />
-        <Text size="sm" text="총평가손익" price="-74630" priceColor="blue" type="KRW" />
+        <Text
+          size="sm"
+          text="총 매수"
+          price={myPortfolioData?.summary.totalBuyAmount.toLocaleString('ko-KR')}
+          priceColor="black"
+          type="KRW"
+        />
+        <Text
+          size="sm"
+          text="총평가손익"
+          price={myPortfolioData?.summary.totalProfit.toLocaleString('ko-KR')}
+          priceColor="blue"
+          type="KRW"
+        />
       </div>
       <div className="flex justify-center w-full gap-8">
-        <Text size="sm" text="총 평가" price="276,292" priceColor="black" type="KRW" />
-        <Text size="sm" text="총평가수익률" price="-21.26" priceColor="blue" type="%" />
+        <Text
+          size="sm"
+          text="총 평가"
+          price={myPortfolioData?.summary.totalEvaluateAmount.toLocaleString('ko-KR')}
+          priceColor="black"
+          type="KRW"
+        />
+        <Text
+          size="sm"
+          text="총평가수익률"
+          price={myPortfolioData?.summary.totalProfitRate.toLocaleString('ko-KR')}
+          priceColor="blue"
+          type="%"
+        />
       </div>
 
-      <Text size="sm" text="주문가능" price="622" priceColor="black" type="KRW" />
+      <Text
+        size="sm"
+        text="주문가능"
+        price={myAssetData?.assetCash.toLocaleString('ko-KR')}
+        priceColor="black"
+        type="KRW"
+      />
     </div>
   );
 };
