@@ -16,6 +16,8 @@ const useUserStore = create<IUserStore>()(
       user: null,
       setUser: (user) => set({ user: { id: user.id, nickname: user.nickname } }),
       logout: () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         set({ user: null });
       },
     }),
