@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { request } from './common/axiosInstance';
 import useUserStore from '../store/useUserStore';
-import type { Portfolio } from '../types/market';
+import type { TMyPortfolio } from '../types/asset';
 
-export const getPortfolio = (): Promise<Portfolio> => {
-  return request<Portfolio>({
+export const getPortfolio = (): Promise<TMyPortfolio> => {
+  return request<TMyPortfolio>({
     method: 'GET',
     url: '/api/invest/portfolio',
   });
