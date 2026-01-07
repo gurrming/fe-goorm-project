@@ -80,11 +80,11 @@ const Right = () => {
             />,
           );
         },
-        onError: (error) => {
+        onError: () => {
           openModal(
             <Modal
               title="주문 실패"
-              description={`주문 처리 중 오류가 발생했습니다: ${error.message || '알 수 없는 오류'}`}
+              description="주문 처리 중 오류가 발생했습니다."
               confirmButtonProps={{
                 text: '확인',
                 onClick: closeModal,
