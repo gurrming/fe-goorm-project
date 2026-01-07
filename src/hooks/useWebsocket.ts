@@ -16,17 +16,19 @@ export const useWebsocket = () => {
   const [isConnected, setIsConnected] = useState(false);
   const stompClientRef = useRef<Stomp.Client | null>(null);
 
-  const connect = useCallback((token: string): Promise<void> => {
+  const connect = useCallback((token?: string): Promise<void> => {
     return new Promise((resolve, reject) => {
       if (stompClientRef.current && stompClientRef.current.active) {
         resolve();
         return;
       }
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       const client = new Stomp.Client({
         webSocketFactory: () => new SockJS(`${import.meta.env.VITE_WEBSOCKET_URL}`),
-        connectHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
+        connectHeaders: headers,
         onConnect: () => {
           setIsConnected(true);
           stompClientRef.current = client;
