@@ -1,38 +1,51 @@
-import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import OrderFormButtons from './OrderFormButtons';
+import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
+import { useGetPortfolio } from '../../../../api/useGetPortfolio';
 import { changeNumber, dotQuantity, formatNumber, getPriceTickSize } from '../../../../lib/price';
-import useUserStore from '../../../../store/useUserStore';
-import Button from '../../../common/Button';
 import { useModal } from '../../../common/Modal/hooks/useModal';
 import { Modal } from '../../../common/Modal/Modal';
-import type { BuyOrderInitialData, SellOrderInitialData } from './types';
 
 type OrderType = 'buy' | 'sell';
 
 type OrderFormProps = {
   orderType: OrderType;
-  initialData: BuyOrderInitialData | SellOrderInitialData;
   onOrder: (price: string, quantity: string, totalAmount: number) => void;
 };
 
-const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
-  const navigate = useNavigate();
-  const { user } = useUserStore();
+const OrderForm = ({ orderType, onOrder }: OrderFormProps) => {
   const isBuy = orderType === 'buy';
-  const data = initialData as BuyOrderInitialData | SellOrderInitialData;
   const { openModal, closeModal } = useModal();
 
-  const initialPrice = data.currentPrice ?? 0;
+  // 서버에서 데이터 가져오기
+  const { data: myAsset } = useGetMyAsset();
+  const { data: portfolio } = useGetPortfolio();
 
-  const [price, setPrice] = useState<string>(formatNumber(initialPrice));
+  // 매도일 때 portfolio에서 첫 번째 asset 사용 (추후 선택된 코인으로 변경 가능)
+  const sellAsset = !isBuy && portfolio?.assets && portfolio.assets.length > 0 ? portfolio.assets[0] : null;
+
+  const availableAmount = isBuy
+    ? myAsset?.assetCash || 0 // 매수일 때: assetCash 사용
+    : sellAsset?.quantity || 0; // 매도일 때: API 뚫어주시면 다시 불러와야함.
+
+  // portfolio에서 symbol 가져오기
+  // 매수일 때: 추후 선택된 코인 정보로 변경 필요
+  // 매도일 때: Symbol 새 API로 연결 예정
+  const symbol = isBuy ? '' : sellAsset?.symbol || ''; // 다시 불러올게요
+
+  // 현재 가격 (추후 선택된 코인의 현재 가격으로 변경 필요)
+  const initialPrice = 0;
+
+  const [price, setPrice] = useState<string>(initialPrice > 0 ? formatNumber(initialPrice) : '');
   const [quantity, setQuantity] = useState<string>('');
   const [userTotalAmount, setUserTotalAmount] = useState<string>(''); // 사용자가 직접 입력한 주문 총액
 
-  const availableAmount = isBuy
-    ? (data as BuyOrderInitialData).availableBalance
-    : (data as SellOrderInitialData).availableQuantity;
+  // initialPrice가 변경되면 price 상태 업데이트
+  useEffect(() => {
+    if (initialPrice > 0) {
+      setPrice(formatNumber(initialPrice));
+    }
+  }, [initialPrice]);
 
   const changedPriceNum = changeNumber(price);
   const quantityNum = changeNumber(quantity);
@@ -78,7 +91,7 @@ const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
   };
 
   const handleReset = () => {
-    setPrice(formatNumber(initialPrice));
+    setPrice(initialPrice > 0 ? formatNumber(initialPrice) : '');
     setQuantity('');
     setUserTotalAmount('');
   };
@@ -168,7 +181,7 @@ const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
         <span>주문가능</span>
         <span className="text-sm font-semibold">
           {formatNumber(availableAmount ?? 0)}
-          <span className="text-primary-300 text-[10px] ml-1 font-medium">{isBuy ? 'KRW' : data.symbol}</span>
+          <span className="text-primary-300 text-[10px] ml-1 font-medium">{isBuy ? 'KRW' : symbol}</span>
         </span>
       </div>
 
@@ -203,7 +216,7 @@ const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
       {/* 주문 수량 */}
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100">
         <span className="flex items-center">
-          주문수량 <span className="text-primary-500 text-[10px] ml-1">({data.symbol})</span>
+          주문수량 <span className="text-primary-500 text-[10px] ml-1">({symbol})</span>
         </span>
         <input
           value={quantity}
@@ -227,41 +240,12 @@ const OrderForm = ({ orderType, initialData, onOrder }: OrderFormProps) => {
       </div>
 
       {/* 하단 버튼 */}
-      <div className="flex gap-2 mt-4">
-        {user ? (
-          <>
-            <button
-              onClick={handleReset}
-              className="flex flex-1 px-4 py-2 text-white bg-gray-400 rounded-[2px] text-[13px] items-center justify-center gap-1 cursor-pointer"
-            >
-              <FontAwesomeIcon icon={faArrowRotateRight} />
-              <span>초기화</span>
-            </button>
-            <Button
-              colorType={buttonColorType}
-              onClick={handleOrder}
-              className="flex-4 w-full rounded-[2px] text-[13px]"
-            >
-              {orderButtonText}
-            </Button>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={() => navigate('/signup')}
-              className="flex flex-1 px-4 py-2 text-white bg-blue-800 rounded-[2px] text-[13px] items-center justify-center cursor-pointer"
-            >
-              <span>회원가입</span>
-            </button>
-            <button
-              onClick={() => navigate('/login')}
-              className="flex flex-4 w-full px-4 py-2 text-white bg-blue-500 rounded-[2px] text-[13px] items-center justify-center cursor-pointer"
-            >
-              <span>로그인</span>
-            </button>
-          </>
-        )}
-      </div>
+      <OrderFormButtons
+        onReset={handleReset}
+        onOrder={handleOrder}
+        buttonColorType={buttonColorType}
+        orderButtonText={orderButtonText}
+      />
     </div>
   );
 };

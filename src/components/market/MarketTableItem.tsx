@@ -2,12 +2,14 @@ import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTickerStore } from '../../store/websocket/useTickerStore';
-import type { Category, PortfolioAsset, TabKey } from '../../types/market';
+import type { TAssets } from '../../types/asset';
+import type { Category } from '../../types/category';
+import type { TabKey } from '../../types/market';
 
 type MarketTableItemProps = {
   activeTab: TabKey;
   category?: Category;
-  portfolioAsset?: PortfolioAsset;
+  portfolioAsset?: TAssets;
   isFavorite: boolean;
   onToggleFavorite: () => void;
 };

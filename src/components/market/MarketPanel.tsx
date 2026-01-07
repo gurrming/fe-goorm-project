@@ -12,7 +12,9 @@ import { useGetPortfolio } from '../../api/useGetPortfolio';
 import useUserStore from '../../store/useUserStore';
 import { useModal } from '../common/Modal/hooks/useModal';
 import { Modal } from '../common/Modal/Modal';
-import type { TabKey, SortTable, SortPriceArray, Category, PortfolioAsset } from '../../types/market';
+import type { TAssets } from '../../types/asset';
+import type { Category } from '../../types/category';
+import type { TabKey, SortTable, SortPriceArray } from '../../types/market';
 
 function getNextSortOrder(current: SortPriceArray): SortPriceArray {
   if (current === 'none') return 'descending';
@@ -49,7 +51,7 @@ export default function MarketPanel() {
 
   // 탭별 필터링
   let filteredCategories: Category[] = [];
-  let portfolioAssets: PortfolioAsset[] = [];
+  let portfolioAssets: TAssets[] = [];
 
   if (activeTab === 'krw') {
     filteredCategories = categoryList;

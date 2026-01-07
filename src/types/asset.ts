@@ -17,6 +17,7 @@ export type TAssets = {
   buyAmount: number;
   evaluateAmount: number;
   profit: number;
+  profitRate: number;
 };
 export type TSummary = {
   totalBuyAmount: number;

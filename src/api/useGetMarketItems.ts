@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { request } from './common/axiosInstance';
-import type { Category } from '../types/market';
+import type { Category } from '../types/category';
 
 export const getMarketItems = (): Promise<Category[]> => {
   return request<Category[]>({
