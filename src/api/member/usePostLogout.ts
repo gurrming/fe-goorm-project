@@ -12,11 +12,13 @@ const postLogout = () => {
 export const usePostLogout = () => {
   const queryClient = useQueryClient();
   const logout = useUserStore((state) => state.logout);
+  const clearUser = useUserStore.persist.clearStorage;
 
   return useMutation({
     mutationFn: postLogout,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
+      clearUser();
       logout();
     },
   });
