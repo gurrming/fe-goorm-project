@@ -3,7 +3,7 @@ import { useGetSettledData } from '../../../../api/transaction/useGetSettledData
 import type { TSettledData } from '../../../../types/transaction';
 
 const Settled = () => {
-  const { data } = useGetSettledData();
+  const { data } = useGetSettledData(0, 10);
   console.log('채결 내역 : ', data);
 
   return (
@@ -21,9 +21,15 @@ const Settled = () => {
         </tr>
       </thead>
       <tbody>
-        {data?.map((item: TSettledData, index: number) => (
-          <SettledItem item={item} index={index} />
-        ))}
+        {data && data.length > 0 ? (
+          data.map((item: TSettledData, index: number) => <SettledItem item={item} index={index} />)
+        ) : (
+          <tr>
+            <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
+              채결 내역이 없습니다.
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );
