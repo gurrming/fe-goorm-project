@@ -1,8 +1,11 @@
-import React from 'react';
 import AssetItem from './AssetItem';
-import { mockAssetData } from './mockData';
+import { useGetPortfolio } from '../../../../api/useGetPortfolio';
+import type { TAssets } from '../../../../types/asset';
 
 const AssetList = () => {
+  const { data } = useGetPortfolio();
+  console.log(data);
+
   return (
     <div className="flex flex-col gap-3 border-t-[0.3px] border-gray-200 pt-3">
       <p className="text-[15px] text-[#333333]">보유자산 목록</p>
@@ -28,9 +31,15 @@ const AssetList = () => {
           </tr>
         </thead>
         <tbody>
-          {mockAssetData.map((item, index) => (
-            <AssetItem item={item} index={index} />
-          ))}
+          {data?.assets && data?.assets.length > 0 ? (
+            data?.assets.map((item: TAssets, index: number) => <AssetItem item={item} index={index} />)
+          ) : (
+            <tr>
+              <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
+                보유 자산이 없습니다.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

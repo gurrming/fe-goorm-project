@@ -16,12 +16,3 @@ export type TUnSettledData = {
   unSettledAmount: number;
   unSettledQuantity: number;
 };
-
-export type TAssetData = {
-  asset: string;
-  quantity: number;
-  averagePrice: number;
-  purchaseAmount: number;
-  evaluationAmount: number;
-  profitAndLoss: number;
-};
