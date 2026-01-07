@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { request } from './common/axiosInstance';
+import useUserStore from '../store/useUserStore';
 import type { Portfolio } from '../types/market';
 
 export const getPortfolio = (): Promise<Portfolio> => {
@@ -10,8 +11,12 @@ export const getPortfolio = (): Promise<Portfolio> => {
 };
 
 export const useGetPortfolio = () => {
+  const user = useUserStore((state) => state.user);
+  const isLoggedIn = !!user;
+
   return useQuery({
     queryKey: ['portfolio'],
     queryFn: () => getPortfolio(),
+    enabled: isLoggedIn,
   });
 };
