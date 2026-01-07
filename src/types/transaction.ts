@@ -10,12 +10,16 @@ export type TSettledData = {
 };
 
 export type TUnSettledData = {
+  orderId: number;
+  categoryId: number;
+  symbol: string;
+  categoryName: string;
+  orderType: string;
+  orderStatus: string;
+  orderPrice: number;
+  orderCount: number;
+  remainingCount: number;
+  executedCount: number;
+  totalAmount: number;
   orderTime: string;
-  type: string;
-  watchPrice: number;
-  watchAmount: number;
-  watchQuantity: number;
-  unSettledPrice: number;
-  unSettledAmount: number;
-  unSettledQuantity: number;
 };
