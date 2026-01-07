@@ -4,10 +4,13 @@ export type TLoginForm = {
 };
 
 export type TLoginResponse = {
-  id: number;
-  nickname: string;
-  accessToken: string;
-  refreshToken: string;
+  data: {
+    memberId: number;
+    memberNickname: string;
+    accessToken: string;
+    refreshToken: string;
+  };
+  message: string;
 };
 
 export type TSignupForm = {
