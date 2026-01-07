@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface IUserStore {
   user: {
@@ -9,14 +10,20 @@ interface IUserStore {
   logout: () => void;
 }
 
-const useUserStore = create<IUserStore>((set) => ({
-  user: null,
-  setUser: (user) => set({ user: { id: user.id, nickname: user.nickname } }),
-  logout: async () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    set({ user: null });
-  },
-}));
+const useUserStore = create<IUserStore>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user) => set({ user: { id: user.id, nickname: user.nickname } }),
+      logout: () => {
+        set({ user: null });
+      },
+    }),
+    {
+      name: 'user-storage',
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
 
 export default useUserStore;
