@@ -13,13 +13,6 @@ export const useChatting = ({ categoryId }: { categoryId: number }) => {
     refetch();
   }, [categoryId]);
 
-  //   useEffect(() => {
-  //     const token = localStorage.getItem('accessToken');
-  //     if (token) {
-  //       connect(token);
-  //     }
-  //   }, [connect]);
-
   useEffect(() => {
     if (isConnected && stompClientRef.current) {
       const subscription = stompClientRef.current.subscribe(`/topic/chat/${categoryId}`, (message) => {
