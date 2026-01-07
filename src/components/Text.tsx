@@ -24,7 +24,7 @@ const Text = ({
 }: {
   size: 'xs' | 'sm';
   text: string;
-  price: string;
+  price: string | number | undefined;
   priceColor: 'blue' | 'red' | 'black';
   type?: string;
 }) => {
