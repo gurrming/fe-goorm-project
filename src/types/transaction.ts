@@ -1,9 +1,12 @@
 export type TSettledData = {
-  orderTime: string;
-  type: string;
-  executionPrice: number;
-  executionAmount: number;
-  executionQuantity: number;
+  tradeId: number;
+  tradeTime: string;
+  tradePrice: number;
+  tradeCount: number;
+  tradeClosePrice: number;
+  buyOrderId: number;
+  sellOrderId: number;
+  takerType: string;
 };
 
 export type TUnSettledData = {
