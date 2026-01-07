@@ -42,7 +42,7 @@ export default function MarketTableItem({
         <div className="text-xs min-w-0 flex ">
           <div className="flex items-center gap-2 font-bold py-4">
             {/* 종목 심볼 */}
-            <span className="text-[14px] text-primary-100">{portfolioAsset.categorySymbol}</span>
+            <span className="text-[14px] text-primary-100">{portfolioAsset.symbol}</span>
           </div>
         </div>
         <div className={`text-xs text-right text-primary-100 min-w-[90px] ${rightAlignClass}`}>
@@ -104,7 +104,7 @@ export default function MarketTableItem({
           {/* 종목명 심볼 표시 */}
           <div className="flex flex-col min-w-0">
             <span className="text-[13px] font-semibold text-primary-100">{category.categoryName}</span>
-            <span className="text-[11px] text-primary-300">{category.categorySymbol}/(KRW)</span>
+            <span className="text-[11px] text-primary-300">{category.symbol}/(KRW)</span>
           </div>
         </div>
       </div>

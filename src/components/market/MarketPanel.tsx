@@ -65,15 +65,13 @@ export default function MarketPanel() {
   const searchFilteredCategories = keyword
     ? filteredCategories.filter(
         (category) =>
-          category.categorySymbol.toLowerCase().includes(keyword) ||
-          category.categoryName.toLowerCase().includes(keyword),
+          category.symbol.toLowerCase().includes(keyword) || category.categoryName.toLowerCase().includes(keyword),
       )
     : filteredCategories;
 
   const searchFilteredPortfolioAssets = keyword
     ? portfolioAssets.filter(
-        (asset) =>
-          asset.categorySymbol.toLowerCase().includes(keyword) || asset.categoryName.toLowerCase().includes(keyword),
+        (asset) => asset.symbol.toLowerCase().includes(keyword) || asset.categoryName.toLowerCase().includes(keyword),
       )
     : portfolioAssets;
 
