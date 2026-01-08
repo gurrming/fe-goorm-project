@@ -6,13 +6,20 @@ import PriceInfo from './PriceInfo';
 import Tab from './Tab';
 import { getUpBit, getUpBitMinute } from '../../api/getUpBit';
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
+import { useChart } from '../../hooks/websocket/useChart';
 import useCategoryIdStore from '../../store/useCategoryId';
+import { useChartStore } from '../../store/websocket/useChartStore';
 
 const InfoCoin = () => {
   const [tab, setTab] = useState('price');
   const categoryId = useCategoryIdStore((state) => state.categoryId);
   const { data: categoryInfo } = useGetCategoryInfo(categoryId);
   const TITLE = `${categoryInfo?.categoryName} (${categoryInfo?.symbol}-KRW)`;
+
+  // 웹소켓 구독 시작 (차트 데이터 수신)
+  useChart(categoryId);
+  const { chartData } = useChartStore();
+  console.log('chartData : ', chartData);
 
   const handleTab = (tab: string) => {
     setTab(tab);
@@ -32,7 +39,7 @@ const InfoCoin = () => {
       {tab === 'price' && dayData && minuteData && (
         <div className="flex flex-col">
           <PriceInfo data={dayData} />
-          <Chart data={minuteData} />
+          {chartData && <Chart data={chartData} />}
         </div>
       )}
       {tab === 'community' && <Chatting />}

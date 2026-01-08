@@ -1,26 +1,26 @@
 import { createChart, CandlestickSeries, ColorType, LineSeries } from 'lightweight-charts';
 import React, { useRef, useEffect } from 'react';
 import { calculateMovingAverageSeriesData } from './CalculateMovingAverageSeries';
-import type { TMinuteData } from '../../types/upBit';
+import type { ChartData } from '../../types/websocket';
 import type { CandlestickData, LineData, Time } from 'lightweight-charts';
 
-const Chart = ({ data }: { data: TMinuteData[] }) => {
+const Chart = ({ data }: { data: ChartData[] }) => {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!chartContainerRef.current || !data) return;
 
-    const sortedData = [...data].sort((a: TMinuteData, b: TMinuteData) => {
-      const aTime = new Date(a.candle_date_time_kst).getTime();
-      const bTime = new Date(b.candle_date_time_kst).getTime();
+    const sortedData = [...data].sort((a: ChartData, b: ChartData) => {
+      const aTime = new Date(a.t).getTime();
+      const bTime = new Date(b.t).getTime();
       return aTime - bTime;
     });
 
-    const candlestickData: CandlestickData[] = sortedData.map((item: TMinuteData) => ({
-      time: (new Date(item.candle_date_time_kst).getTime() / 1000) as Time,
-      open: item.opening_price,
-      high: item.high_price,
-      low: item.low_price,
-      close: item.trade_price,
+    const candlestickData: CandlestickData[] = sortedData.map((item: ChartData) => ({
+      time: (new Date(item.t).getTime() / 1000) as Time,
+      open: item.o,
+      high: item.h,
+      low: item.l,
+      close: item.c,
     }));
 
     const chartOptions = {
