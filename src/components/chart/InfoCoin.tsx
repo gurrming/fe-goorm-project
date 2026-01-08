@@ -7,6 +7,7 @@ import Tab from './Tab';
 import { getUpBit, getUpBitMinute } from '../../api/getUpBit';
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
 import { useChart } from '../../hooks/websocket/useChart';
+import { useTicker } from '../../hooks/websocket/useTicker';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useChartStore } from '../../store/websocket/useChartStore';
 
@@ -18,6 +19,7 @@ const InfoCoin = () => {
 
   // 웹소켓 구독 시작 (차트 데이터 수신)
   useChart(categoryId);
+  useTicker([categoryId]);
   const { chartData } = useChartStore();
   console.log('chartData : ', chartData);
 
@@ -38,7 +40,7 @@ const InfoCoin = () => {
       <Tab title={TITLE} tab={tab} handleTab={handleTab} />
       {tab === 'price' && dayData && minuteData && (
         <div className="flex flex-col">
-          <PriceInfo data={dayData} />
+          <PriceInfo categoryId={categoryId} quote="KRW" symbol={categoryInfo?.symbol} />
           {chartData && chartData.length > 0 ? (
             <Chart data={chartData} />
           ) : (

@@ -1,49 +1,42 @@
 import React from 'react';
-import Text from '../Text';
-import type { TDayData } from '../../types/upBit';
+import { formatNumber } from '../../lib/price';
+import { useTickerStore } from '../../store/websocket/useTickerStore';
+import Text from '../common/Text';
 
-const PriceInfo = ({ data }: { data: TDayData[] }) => {
-  const MARKET = data?.[0]?.market;
-  const UNIT = MARKET?.split('-')[1];
-  const QUOTE = MARKET?.split('-')[0];
+type PriceInfoProps = {
+  categoryId: number;
+  quote?: string;
+  symbol?: string;
+};
+
+const PriceInfo = ({ categoryId, quote = 'KRW', symbol }: PriceInfoProps) => {
+  const ticker = useTickerStore((item) => item.tickerByCategoryId[categoryId]);
 
   return (
     <div className="flex items-center my-2">
       <div className="flex flex-col px-4 w-1/2">
-        <p className={`text-[20px] font-bold ${data?.[0]?.change_rate < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
-          {data?.[0]?.trade_price.toLocaleString('ko-KR')} <span className="text-sm">{QUOTE}</span>
+        <p className={`text-[20px] font-bold ${(ticker?.changeRate ?? 0) < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
+          {formatNumber(ticker?.price ?? 0)} <span className="text-sm">{quote}</span>
         </p>
         <div className="flex items-center gap-3">
-          <p className={`text-sm ${data?.[0]?.change_rate < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
-            {Math.ceil(data?.[0]?.change_rate * 100) / 100}%
+          <p className={`text-sm ${(ticker?.changeRate ?? 0) < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
+            {Math.ceil((ticker?.changeRate ?? 0) * 100) / 100}%
           </p>
-          <p className={`text-sm ${data?.[0]?.change_rate < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
-            {data?.[0]?.change_price.toLocaleString('ko-KR')}
+          <p className={`text-sm ${(ticker?.changeRate ?? 0) < 0 ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
+            {formatNumber(ticker?.changeAmount ?? 0)}
           </p>
         </div>
       </div>
       <div className="flex justify-end gap-2 px-4 py-2 w-1/2">
         <div className="flex flex-col gap-2 w-full">
-          <Text size="xs" text="고가" price={data?.[0]?.high_price.toLocaleString('ko-KR')} priceColor="red" />
+          <Text size="xs" text="고가" price={formatNumber(ticker?.high ?? 0)} priceColor="red" />
           <div className="h-[0.5px] bg-gray-200 w-full" />
-          <Text size="xs" text="저가" price={data?.[0]?.low_price.toLocaleString('ko-KR')} priceColor="blue" />
+          <Text size="xs" text="저가" price={formatNumber(ticker?.low ?? 0)} priceColor="blue" />
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <Text
-            size="xs"
-            text="거래량"
-            price={data?.[0]?.candle_acc_trade_volume.toLocaleString('ko-KR')}
-            priceColor="black"
-            type={UNIT}
-          />
+          <Text size="xs" text="거래량" price={formatNumber(ticker?.volume ?? 0)} priceColor="black" type={symbol} />
           <div className="h-[0.5px] bg-gray-200 w-full" />
-          <Text
-            size="xs"
-            text="거래대금"
-            price={data?.[0]?.candle_acc_trade_price.toLocaleString('ko-KR')}
-            priceColor="black"
-            type={QUOTE}
-          />
+          <Text size="xs" text="거래대금" price={formatNumber(ticker?.amount ?? 0)} priceColor="black" type={quote} />
         </div>
       </div>
     </div>
