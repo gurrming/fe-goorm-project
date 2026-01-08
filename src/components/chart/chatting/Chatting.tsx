@@ -21,27 +21,35 @@ const Chatting = () => {
   };
 
   return (
-    <div className="flex flex-col justify-end gap-2 w-[1000px] h-[450px] overflow-y-auto p-4">
-      {chatHistory.map((chat, index) => {
-        const prevChat = index > 0 ? chatHistory[index - 1] : null;
-        let hideDay = false;
-        const sendDay = chat.chatTime.split('T')[0];
+    <div className="flex flex-col gap-2 w-[1000px] h-[537px] overflow-y-auto p-4">
+      {chatHistory.length === 0 && (
+        <div className="flex justify-center items-center h-full">
+          <p className="text-center text-gray-500">채팅 내역이 없습니다.</p>
+        </div>
+      )}
+      <div className="flex-1 overflow-y-auto">
+        {chatHistory.length > 0 &&
+          chatHistory.map((chat, index) => {
+            const prevChat = index > 0 ? chatHistory[index - 1] : null;
+            let hideDay = false;
+            const sendDay = chat.chatTime.split('T')[0];
 
-        if (prevChat) {
-          // 날짜가 다르면 hideDay = false (날짜 표시), 같으면 hideDay = true (날짜 숨김)
-          hideDay = sendDay === prevChat.chatTime.split('T')[0];
-        }
+            if (prevChat) {
+              // 날짜가 다르면 hideDay = false (날짜 표시), 같으면 hideDay = true (날짜 숨김)
+              hideDay = sendDay === prevChat.chatTime.split('T')[0];
+            }
 
-        return (
-          <Chat
-            key={index}
-            nickname={chat.memberNickname}
-            message={chat.chatContent}
-            time={chat.chatTime}
-            hideDay={hideDay}
-          />
-        );
-      })}
+            return (
+              <Chat
+                key={index}
+                nickname={chat.memberNickname}
+                message={chat.chatContent}
+                time={chat.chatTime}
+                hideDay={hideDay}
+              />
+            );
+          })}
+      </div>
       {user && (
         <input
           type="text"
