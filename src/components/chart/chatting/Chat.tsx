@@ -12,7 +12,13 @@ const Chat = ({
   hideDay: boolean;
 }) => {
   const DAY = time.split('T')[0];
-  const TIME = time.split('T')[1].slice(0, 5);
+  // UTC 시간에 9시간을 더해 한국 시간(KST)으로 변환
+  const date = new Date(time);
+  date.setHours(date.getHours() + 9);
+  const TIME = date.toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   return (
     <div className="flex flex-col gap-1 mb-3">
