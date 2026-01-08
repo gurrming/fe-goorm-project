@@ -123,7 +123,7 @@ export default function MarketTableItem({
 
   return (
     <div
-      className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4"
+      className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4 py-2"
       onClick={() => setCategoryId(category.categoryId)}
     >
       <div className="text-xs min-w-0">
