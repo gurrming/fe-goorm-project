@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import { useWebsocket } from '../useWebsocket';
-import type { TAssets, TSummary } from '../../types/asset';
+import type { TWSAssets, TSummary } from '../../types/asset';
 
 export const useAsset = (memberId: number) => {
   const { isConnected, stompClientRef } = useWebsocket();
@@ -12,7 +12,7 @@ export const useAsset = (memberId: number) => {
       console.log(`[useAsset] /topic/assets/${memberId} 구독 시작`);
       const subscription = stompClientRef.current.subscribe(`/topic/assets/${memberId}`, (message) => {
         try {
-          const data: TAssets = JSON.parse(message.body);
+          const data: TWSAssets = JSON.parse(message.body);
           console.log('[useAsset] 자산 데이터 수신:', data);
           setAssetData(data);
         } catch (error) {

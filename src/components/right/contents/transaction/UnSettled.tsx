@@ -4,7 +4,7 @@ import { useGetUnSettledData } from '../../../../api/transaction/useGetUnSettled
 import type { TUnSettledData } from '../../../../types/transaction';
 
 const UnSettled = () => {
-  const { data } = useGetUnSettledData();
+  const { data, refetch } = useGetUnSettledData();
   const { mutate: cancelAll } = usePatchCancelAll();
   console.log('미체결 내역 : ', data);
 
@@ -13,7 +13,10 @@ const UnSettled = () => {
       <div className="flex justify-between items-center px-4">
         <p className="text-xs text-[#333333]">총 {data?.length}건</p>{' '}
         <button
-          onClick={() => cancelAll()}
+          onClick={() => {
+            cancelAll();
+            refetch();
+          }}
           className={`text-xs text-[#DD3C44] bg-[#ffdad9] px-2 py-1 rounded-sm ${!data || data.length === 0 ? 'opacity-50 hover:cursor-not-allowed' : 'hover:cursor-pointer'}`}
         >
           전체 취소
@@ -45,7 +48,9 @@ const UnSettled = () => {
         </thead>
         <tbody>
           {data && data.length > 0 ? (
-            data.map((item: TUnSettledData, index: number) => <UnSettledItem item={item} index={index} />)
+            data.map((item: TUnSettledData, index: number) => (
+              <UnSettledItem item={item} index={index} refetch={refetch} />
+            ))
           ) : (
             <tr>
               <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">

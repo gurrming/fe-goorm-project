@@ -1,7 +1,7 @@
 import { usePatchCancel } from '../../../../api/orders/usePatchCancel';
 import type { TUnSettledData } from '../../../../types/transaction';
 
-const UnSettledItem = ({ item, index }: { item: TUnSettledData; index: number }) => {
+const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: number; refetch: () => void }) => {
   const { mutate: cancel } = usePatchCancel();
   return (
     <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
@@ -37,7 +37,10 @@ const UnSettledItem = ({ item, index }: { item: TUnSettledData; index: number })
       </td>
       <td className="px-4 py-3 text-xs text-[#333333] text-right">
         <button
-          onClick={() => cancel({ orderId: item.orderId })}
+          onClick={() => {
+            cancel({ orderId: item.orderId });
+            refetch();
+          }}
           className="text-xs text-[#333333] text-nowrap border border-gray-200 rounded-sm px-2 py-1 hover:cursor-pointer"
         >
           주문취소

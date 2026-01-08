@@ -25,3 +25,8 @@ export type TSummary = {
   totalProfit: number;
   totalProfitRate: number;
 };
+
+export type TWSAssets = {
+  evaluateAmount: number;
+  profit: number;
+};

@@ -1,8 +1,8 @@
 import type { TAssets } from '../../../../types/asset';
 
-const AssetItem = ({ item, index }: { item: TAssets; index: number }) => {
+const AssetItem = ({ item }: { item: TAssets }) => {
   return (
-    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+    <tr className="border-b border-gray-200 hover:bg-gray-50">
       <td className="px-2 py-3 text-xs text-[#333333] text-center border-r border-gray-200">{item.categoryName}</td>
       <td className="pr-2 py-3 text-xs text-[#333333] text-right border-r border-gray-200">
         {item.quantity.toLocaleString('ko-KR', {
