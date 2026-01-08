@@ -4,7 +4,6 @@ import type { TAssets } from '../../../../types/asset';
 
 const AssetList = () => {
   const { data } = useGetPortfolio();
-  console.log(data);
 
   return (
     <div className="flex flex-col gap-3 border-t-[0.3px] border-gray-200 pt-3">
