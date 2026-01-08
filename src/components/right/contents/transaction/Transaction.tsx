@@ -9,10 +9,10 @@ const Transaction = () => {
   const { user } = useUserStore();
   const navigate = useNavigate();
   return (
-    <div className="h-1/4 px-4">
+    <div className="min-w-[500px] h-1/4">
       {user !== null ? (
         <div className="flex flex-col gap-5">
-          <div className="flex gap-2">
+          <div className="flex gap-2 px-4">
             <input
               type="radio"
               name="transaction"

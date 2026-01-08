@@ -10,7 +10,7 @@ const UnSettled = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center px-4">
         <p className="text-xs text-[#333333]">총 {data?.length}건</p>{' '}
         <button
           onClick={() => cancelAll()}
