@@ -1,41 +1,30 @@
 import { formatNumber } from '../../lib/price';
 import { cn } from '../../lib/utils';
 import { useTradesStore } from '../../store/websocket/useTradesStore';
-
-// 호가창 아이템 데이터 타입
-
-export type OrderBookItemData = {
-  price: number; // 가격
-  volume: number; // 거래량/잔량
-  changeRate: number; // 변동률 (퍼센트)
-};
+import type { OrderbookItemData } from '../../types/websocket';
 
 type OrderBookItemProps = {
-  item: OrderBookItemData; // 호가창 아이템 데이터
+  item: OrderbookItemData; // 호가창 아이템 데이터
   isAsk?: boolean; // 매도인지 매수인지 구분값, true면 매도를 위해 올린 값
   maxVolume: number; // 최대 거래량 (차트 바 너비 계산용)
 };
 
 export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderBookItemProps) {
   const { tradesData } = useTradesStore();
-  const currentPrice = tradesData?.price ?? 0; // 체결가, 없으면 0.00
   const openPrice = tradesData?.openPrice ?? 0; // 전일종가, 없으면 0
 
-  // 등락률 계산: (체결가 - 전일종가) / 전일종가 * 100
-  const changeRate = openPrice > 0 ? ((currentPrice - openPrice) / openPrice) * 100 : 0;
+  // 등락률 계산: (호가 - 전일종가) / 전일종가 * 100
+  const providedChangeRate = item.changeRate;
+  const changeRate = providedChangeRate ?? (openPrice > 0 ? ((item.price - openPrice) / openPrice) * 100 : 0);
 
-  const priceColor = changeRate === 0 ? 'text-black' : isAsk ? 'text-blue-500' : 'text-red-500';
+  // 매수 창이어도 등락률이 양수면 빨강, 음수면 파랑으로 표시하는 게 맞음
+  const priceColor = changeRate === 0 ? 'text-black' : changeRate > 0 ? 'text-red-500' : 'text-blue-500';
   const changePrefix = changeRate > 0 ? '+' : '';
   const changeText = changeRate === 0 ? '0.00%' : `${changePrefix}${changeRate.toFixed(2)}%`;
 
   // volumeRate를 퍼센트로 변환
   const volumeRate = maxVolume > 0 ? item.volume / maxVolume : 0;
   const barWidth = volumeRate * 100;
-
-  // 어제 값은 검은색 표시 0.00% 검은색으로 표시
-  // AskBook.tsx에서는 어제 값 기준으로 현재가가 낮으면 - 붙여주면서 %표시
-  // BidBook.tsx에서는 어제 값 기준으로 현재가가 높으면 + 붙여주면서 %표시
-  // 서버에서 아마 어제 값을 주고
 
   return (
     <div
@@ -53,7 +42,7 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
         {isAsk && (
           <>
             <div className={`${priceColor}`}>
-              <span className="font-semibold">{formatNumber(currentPrice)}</span>
+              <span className="font-semibold">{formatNumber(item.price)}</span>
               <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
             </div>
           </>
@@ -86,7 +75,7 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
         {!isAsk && (
           <>
             <div className={cn(priceColor)}>
-              <span className="font-semibold">{formatNumber(currentPrice)}</span>
+              <span className="font-semibold">{formatNumber(item.price)}</span>
               <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
             </div>
           </>
