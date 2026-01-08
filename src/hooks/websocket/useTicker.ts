@@ -27,5 +27,5 @@ export const useTicker = () => {
         subscription.unsubscribe();
       };
     }
-  }, [isConnected, stompClientRef, setTickerData]);
+  }, [isConnected, setTickerData]);
 };
