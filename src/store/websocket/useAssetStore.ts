@@ -1,10 +1,10 @@
 import { create } from 'zustand';
-import type { TAssets, TSummary } from '../../types/asset';
+import type { TSummary, TWSAssets } from '../../types/asset';
 
 interface IAssetStore {
-  assetData: TAssets | null;
+  assetData: TWSAssets | null;
   summary: TSummary | null;
-  setAssetData: (data: TAssets) => void;
+  setAssetData: (data: TWSAssets) => void;
   setSummary: (data: TSummary) => void;
 }
 
