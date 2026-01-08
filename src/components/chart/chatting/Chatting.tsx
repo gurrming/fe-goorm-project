@@ -8,15 +8,24 @@ const Chatting = () => {
   const [message, setMessage] = useState('');
   const [isComposing, setIsComposing] = useState(false);
 
-  const { categoryId } = useCategoryIdStore();
+  const categoryId = useCategoryIdStore((state) => state.categoryId);
   const { user } = useUserStore();
 
   const { isConnected, sendChat, chatHistory } = useChatting({ categoryId });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log('[Chatting] handleKeyDown 호출:', {
+      isConnected,
+    });
+
     if (e.key === 'Enter' && message.trim() !== '' && !isComposing && isConnected) {
+      console.log('[Chatting] 조건 통과 - 메시지 전송:', message);
       sendChat(message);
       setMessage('');
+    } else {
+      console.log('[Chatting] 조건 불일치:', {
+        connected: isConnected,
+      });
     }
   };
 
