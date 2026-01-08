@@ -3,7 +3,7 @@ import { useGetPortfolio } from '../../../../api/useGetPortfolio';
 import { useAsset } from '../../../../hooks/websocket/useAsset';
 import useUserStore from '../../../../store/useUserStore';
 import { useAssetStore } from '../../../../store/websocket/useAssetStore';
-import Text from '../../../Text';
+import Text from '../../../common/Text';
 
 const MyAsset = () => {
   const { data: myAssetData } = useGetMyAsset();
