@@ -9,6 +9,8 @@ import { useGetFavorite } from '../../api/favorite/useGetFavorite';
 import { usePostFavorite } from '../../api/favorite/usePostFavorite';
 import { useGetMarketItems } from '../../api/useGetMarketItems';
 import { useGetPortfolio } from '../../api/useGetPortfolio';
+import { useTicker } from '../../hooks/websocket/useTicker';
+import useCategoryIdStore from '../../store/useCategoryId';
 import useUserStore from '../../store/useUserStore';
 import { useModal } from '../common/Modal/hooks/useModal';
 import { Modal } from '../common/Modal/Modal';
@@ -25,6 +27,7 @@ function getNextSortOrder(current: SortPriceArray): SortPriceArray {
 export default function MarketPanel() {
   const { user } = useUserStore();
   const memberId = user?.id;
+  const selectedCategoryId = useCategoryIdStore((state) => state.categoryId);
   const navigate = useNavigate();
   const { openModal, closeModal } = useModal();
   const [activeTab, setActiveTab] = useState<TabKey>('krw');
@@ -80,6 +83,17 @@ export default function MarketPanel() {
   // 정렬
   const sortedCategories = searchFilteredCategories;
   let sortedPortfolioAssets = searchFilteredPortfolioAssets;
+
+  // 실시간 티커 구독 대상
+  // - 원화/관심: 현재 리스트에 보이는 종목들
+  // - 보유: 내 보유 종목들(수익률을 현재가로 계산하려면 필요)
+  const tickerCategoryIds =
+    activeTab === 'holding'
+      ? searchFilteredPortfolioAssets.map((a) => a.categoryId)
+      : sortedCategories.map((c) => c.categoryId);
+
+  // 선택된 종목은 다른 패널에서도 구독할 수 있으므로(중복 구독 방지) 여기서는 제외
+  useTicker(tickerCategoryIds.filter((id) => id !== selectedCategoryId));
 
   if (activeTab === 'holding') {
     // 보유 탭 정렬

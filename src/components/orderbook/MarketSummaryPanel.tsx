@@ -1,16 +1,21 @@
+import { useTicker } from '../../hooks/websocket/useTicker';
 import { formatNumber } from '../../lib/price';
+import useCategoryIdStore from '../../store/useCategoryId';
 import { useTickerStore } from '../../store/websocket/useTickerStore';
 import { useTradesStore } from '../../store/websocket/useTradesStore';
 
 export default function MarketSummaryPanel() {
-  const { tickerData } = useTickerStore();
+  const categoryId = useCategoryIdStore((state) => state.categoryId);
+  useTicker([categoryId]);
+
+  const ticker = useTickerStore((state) => state.tickerByCategoryId[categoryId]);
   const { tradesData } = useTradesStore();
 
   // ticker 데이터가 없을 때는 0으로 표기
-  const high = tickerData?.high ?? 0;
-  const low = tickerData?.low ?? 0;
-  const volume = tickerData?.volume ?? 0;
-  const amount = tickerData?.amount ?? 0;
+  const high = ticker?.high ?? 0;
+  const low = ticker?.low ?? 0;
+  const volume = ticker?.volume ?? 0;
+  const amount = ticker?.amount ?? 0;
 
   // 전일종가는 /topic/trades에서 받아옴
   const previousClose = tradesData?.openPrice ?? 0;
