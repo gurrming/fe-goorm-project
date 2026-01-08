@@ -39,7 +39,13 @@ const InfoCoin = () => {
       {tab === 'price' && dayData && minuteData && (
         <div className="flex flex-col">
           <PriceInfo data={dayData} />
-          {chartData && <Chart data={chartData} />}
+          {chartData && chartData.length > 0 ? (
+            <Chart data={chartData} />
+          ) : (
+            <div className="flex justify-center items-center h-[450px]">
+              <p className="text-center text-gray-500">차트 데이터가 없습니다.</p>
+            </div>
+          )}
         </div>
       )}
       {tab === 'community' && <Chatting />}
