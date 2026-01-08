@@ -1,0 +1,52 @@
+import { useEffect } from 'react';
+import { useAssetStore } from '../../store/websocket/useAssetStore';
+import { useWebsocket } from '../useWebsocket';
+import type { TAssets, TSummary } from '../../types/asset';
+
+export const useAsset = (memberId: number) => {
+  const { isConnected, stompClientRef } = useWebsocket();
+  const { setAssetData } = useAssetStore();
+
+  useEffect(() => {
+    if (isConnected && stompClientRef.current && memberId) {
+      console.log(`[useAsset] /topic/assets/${memberId} 구독 시작`);
+      const subscription = stompClientRef.current.subscribe(`/topic/assets/${memberId}`, (message) => {
+        try {
+          const data: TAssets = JSON.parse(message.body);
+          console.log('[useAsset] 자산 데이터 수신:', data);
+          setAssetData(data);
+        } catch (error) {
+          console.error('[useAsset] 데이터 파싱 에러:', error);
+        }
+      });
+      return () => {
+        console.log(`[useAsset] /topic/assets/${memberId} 구독 해제`);
+        subscription.unsubscribe();
+      };
+    }
+  }, [isConnected, memberId, setAssetData, stompClientRef]);
+};
+
+export const useSummary = (memberId: number) => {
+  const { isConnected, stompClientRef } = useWebsocket();
+  const { setSummary } = useAssetStore();
+
+  useEffect(() => {
+    if (isConnected && stompClientRef.current && memberId) {
+      console.log(`[useAsset] /topic/summary/${memberId} 구독 시작`);
+      const subscription = stompClientRef.current.subscribe(`/topic/summary/${memberId}`, (message) => {
+        try {
+          const data: TSummary = JSON.parse(message.body);
+          console.log('[useSummary] 요약 데이터 수신:', data);
+          setSummary(data);
+        } catch (error) {
+          console.error('[useSummary] 데이터 파싱 에러:', error);
+        }
+      });
+      return () => {
+        console.log(`[useAsset] /topic/summary/${memberId} 구독 해제`);
+        subscription.unsubscribe();
+      };
+    }
+  }, [isConnected, memberId, setSummary, stompClientRef]);
+};
