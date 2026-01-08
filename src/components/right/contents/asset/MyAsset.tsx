@@ -1,12 +1,17 @@
 import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
 import { useGetPortfolio } from '../../../../api/useGetPortfolio';
+import { useAsset } from '../../../../hooks/websocket/useAsset';
+import useUserStore from '../../../../store/useUserStore';
 import { useAssetStore } from '../../../../store/websocket/useAssetStore';
 import Text from '../../../Text';
 
 const MyAsset = () => {
   const { data: myAssetData } = useGetMyAsset();
   const { data: myPortfolioData } = useGetPortfolio();
+  const user = useUserStore((state) => state.user);
+  const memberId = user?.id;
 
+  useAsset(memberId!);
   const { assetData, summary } = useAssetStore();
   console.log('assetData : ', assetData);
   console.log('summary : ', summary);
