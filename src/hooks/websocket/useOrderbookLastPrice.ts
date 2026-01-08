@@ -27,5 +27,5 @@ export const useOrderbookLastPrice = () => {
         subscription.unsubscribe();
       };
     }
-  }, [isConnected, stompClientRef, setLastPrice]);
+  }, [isConnected, setLastPrice]);
 };
