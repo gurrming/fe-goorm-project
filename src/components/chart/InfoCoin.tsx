@@ -5,9 +5,15 @@ import Chatting from './chatting/Chatting';
 import PriceInfo from './PriceInfo';
 import Tab from './Tab';
 import { getUpBit, getUpBitMinute } from '../../api/getUpBit';
+import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
+import useCategoryIdStore from '../../store/useCategoryId';
 
 const InfoCoin = () => {
   const [tab, setTab] = useState('price');
+  const categoryId = useCategoryIdStore((state) => state.categoryId);
+  const { data: categoryInfo } = useGetCategoryInfo(categoryId);
+  const TITLE = `${categoryInfo?.categoryName} (${categoryInfo?.symbol}-KRW)`;
+
   const handleTab = (tab: string) => {
     setTab(tab);
   };
@@ -22,7 +28,7 @@ const InfoCoin = () => {
 
   return (
     <div className="flex flex-col bg-white">
-      <Tab title={dayData?.[0]?.market} tab={tab} handleTab={handleTab} />
+      <Tab title={TITLE} tab={tab} handleTab={handleTab} />
       {tab === 'price' && dayData && minuteData && (
         <div className="flex flex-col">
           <PriceInfo data={dayData} />
