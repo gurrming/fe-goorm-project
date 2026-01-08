@@ -7,12 +7,9 @@ export default function Layout() {
   const { connect, disconnect } = useWebsocket();
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      connect(token).catch((error) => {
-        console.error('WebSocket 연결 실패:', error);
-      });
-    }
+    connect().catch((error) => {
+      console.error('WebSocket 연결 실패:', error);
+    });
 
     return () => {
       disconnect();
