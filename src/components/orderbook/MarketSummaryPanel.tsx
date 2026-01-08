@@ -1,3 +1,4 @@
+import { useGetMarketItems } from '../../api/useGetMarketItems';
 import { useTicker } from '../../hooks/websocket/useTicker';
 import { formatNumber } from '../../lib/price';
 import useCategoryIdStore from '../../store/useCategoryId';
@@ -5,7 +6,10 @@ import { useTickerStore } from '../../store/websocket/useTickerStore';
 import { useTradesStore } from '../../store/websocket/useTradesStore';
 
 export default function MarketSummaryPanel() {
+  const { data: marketItems } = useGetMarketItems();
   const categoryId = useCategoryIdStore((state) => state.categoryId);
+  const selectedCategory = marketItems?.find((item) => item.categoryId === categoryId);
+  const symbol = selectedCategory?.symbol;
   useTicker([categoryId]);
 
   const ticker = useTickerStore((state) => state.tickerByCategoryId[categoryId]);
@@ -45,7 +49,7 @@ export default function MarketSummaryPanel() {
           <div className="text-[10px] text-primary-300">거래량</div>
           <div className="flex flex-col items-end">
             <div className="text-[10px] text-primary-100">{formatNumber(volume)}</div>
-            <div className="text-[10px] text-primary-500">심볼이요</div>
+            <div className="text-[10px] text-primary-500">{symbol}</div>
           </div>
         </div>
 
