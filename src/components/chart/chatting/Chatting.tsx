@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import Chat from './Chat';
-import { useChatting } from '../../../hooks/useChatting';
+import { useChatting } from '../../../hooks/websocket/useChatting';
+import useCategoryIdStore from '../../../store/useCategoryId';
+import useUserStore from '../../../store/useUserStore';
 
 const Chatting = () => {
   const [message, setMessage] = useState('');
   const [isComposing, setIsComposing] = useState(false);
 
-  const { isConnected, sendChat, chatHistory } = useChatting({ categoryId: 1 });
+  const { categoryId } = useCategoryIdStore();
+  const { user } = useUserStore();
+
+  const { isConnected, sendChat, chatHistory } = useChatting({ categoryId });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && message.trim() !== '' && !isComposing && isConnected) {
@@ -16,7 +21,7 @@ const Chatting = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 w-[1000px] p-4">
+    <div className="flex flex-col justify-end gap-2 w-[1000px] h-[450px] overflow-y-auto p-4">
       {chatHistory.map((chat, index) => {
         const prevChat = index > 0 ? chatHistory[index - 1] : null;
         let hideDay = false;
@@ -37,16 +42,18 @@ const Chatting = () => {
           />
         );
       })}
-      <input
-        type="text"
-        className="w-full p-2 border border-gray-300 rounded-md"
-        placeholder="메시지를 입력해주세요."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onCompositionStart={() => setIsComposing(true)}
-        onCompositionEnd={() => setIsComposing(false)}
-      />
+      {user && (
+        <input
+          type="text"
+          className=" w-full p-2 border border-gray-300 rounded-md"
+          placeholder="메시지를 입력해주세요."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
+        />
+      )}
     </div>
   );
 };
