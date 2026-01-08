@@ -1,0 +1,50 @@
+import { usePatchCancel } from '../../../../api/orders/usePatchCancel';
+import type { TUnSettledData } from '../../../../types/transaction';
+
+const UnSettledItem = ({ item, index }: { item: TUnSettledData; index: number }) => {
+  const { mutate: cancel } = usePatchCancel();
+  return (
+    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+      <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{item.orderTime}</td>
+      <td className={`px-4 py-3 text-xs text-center text-nowrap border-r border-gray-200`}>
+        <div className="flex flex-col">
+          <span className="text-center text-bold ">{item.categoryName}</span>
+          <span
+            className={`text-[11px] font-normal text-[#666666] mt-1 ${item.orderType === '매수' ? 'text-[#DD3C44]' : 'text-[#0062DF]'}`}
+          >
+            {item.orderType}
+          </span>
+        </div>
+      </td>
+      <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">
+        {item.orderPrice.toLocaleString('ko-KR')}
+      </td>
+      <td className="px-4 py-3 text-xs text-[#333333] text-right border-r border-gray-200">
+        <div className="flex flex-col gap-1">
+          <span className="text-right">
+            {item.orderCount.toLocaleString('ko-KR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 8,
+            })}
+          </span>
+          <span className="text-right">
+            {item.remainingCount.toLocaleString('ko-KR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 8,
+            })}
+          </span>
+        </div>
+      </td>
+      <td className="px-4 py-3 text-xs text-[#333333] text-right">
+        <button
+          onClick={() => cancel({ orderId: item.orderId })}
+          className="text-xs text-[#333333] text-nowrap border border-gray-200 rounded-sm px-2 py-1 hover:cursor-pointer"
+        >
+          주문취소
+        </button>
+      </td>
+    </tr>
+  );
+};
+
+export default UnSettledItem;
