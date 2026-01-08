@@ -27,5 +27,5 @@ export const useTrades = () => {
         subscription.unsubscribe();
       };
     }
-  }, [isConnected, stompClientRef, setTradesData]);
+  }, [isConnected, setTradesData]);
 };

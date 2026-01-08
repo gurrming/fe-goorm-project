@@ -29,5 +29,5 @@ export const useOrderbookId = (categoryId: number) => {
         subscription.unsubscribe();
       };
     }
-  }, [isConnected, stompClientRef, categoryId, setOrderbookData]);
+  }, [isConnected, categoryId, setOrderbookData]);
 };
