@@ -171,7 +171,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const orderButtonText = isBuy ? '매수' : '매도';
 
   return (
-    <div className="flex flex-col gap-4 px-4 pb-4">
+    <div className="flex flex-col gap-4 px-4 pb-4 min-w-[500px]">
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100 ">
         <span>주문유형</span>
         <span>지정가</span>

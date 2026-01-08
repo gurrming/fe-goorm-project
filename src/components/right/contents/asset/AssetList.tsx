@@ -7,7 +7,7 @@ const AssetList = () => {
 
   return (
     <div className="flex flex-col gap-3 border-t-[0.3px] border-gray-200 pt-3">
-      <p className="text-[15px] text-[#333333]">보유자산 목록</p>
+      <p className="text-[15px] text-[#333333] px-4">보유자산 목록</p>
       <table className="w-full border-collapse bg-white text-nowrap">
         <thead>
           <tr className="border-b border-t border-gray-200 bg-[#F7F7F7]">
