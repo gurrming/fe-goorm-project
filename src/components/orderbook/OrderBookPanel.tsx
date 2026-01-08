@@ -5,9 +5,20 @@ import MarketSummaryPanel from './MarketSummaryPanel';
 import OrderBookGridLayout from './OrderBookGridLayout';
 import OrderbookHeader from './OrderbookHeader';
 import TradeTapeSection from './TradeTapeSection';
+import { useOrderbookId } from '../../hooks/websocket/useOrderbookId';
+import { useOrderbookLastPrice } from '../../hooks/websocket/useOrderbookLastPrice';
+import { useTrades } from '../../hooks/websocket/useTrades';
+import useCategoryIdStore from '../../store/useCategoryId';
 
 export default function OrderBookPanel() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const categoryId = useCategoryIdStore((state) => state.categoryId);
+
+  // WebSocket 구독 훅 (orderbook/trades)
+  // 매수 / 매도 좌 우측 테이블
+  useOrderbookId(categoryId);
+  useOrderbookLastPrice(categoryId);
+  useTrades();
 
   useLayoutEffect(() => {
     // 호가창의 viewport 기준으로 정확히 가운데에 스크롤 위치를 조정하도록 함.

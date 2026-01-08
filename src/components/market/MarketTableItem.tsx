@@ -1,6 +1,7 @@
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import FlashComparison from './FlashComparison';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useTickerStore } from '../../store/websocket/useTickerStore';
 import type { TAssets } from '../../types/asset';
@@ -31,17 +32,37 @@ export default function MarketTableItem({
   isFavorite,
   onToggleFavorite,
 }: MarketTableItemProps) {
+  const setCategoryId = useCategoryIdStore((state) => state.setCategoryId);
+
+  // 원화/관심 탭 행 티커
+  const ticker = useTickerStore((state) => (category ? state.tickerByCategoryId[category.categoryId] : undefined));
+  // 보유 탭 행 티커
+  const holdingTicker = useTickerStore((state) =>
+    portfolioAsset ? state.tickerByCategoryId[portfolioAsset.categoryId] : undefined,
+  );
+
   // 보유 탭일 때 다른 UI 표시
   if (activeTab === 'holding' && portfolioAsset) {
-    // 수익률 계산 (profitRate가 없으면 계산)
+    // 실시간 현재가가 있으면 그 값으로 평가금/매수평균가/수익률을 계산
+    const currentPrice = holdingTicker?.price;
+    const buyAmount =
+      portfolioAsset.buyAmount > 0 ? portfolioAsset.buyAmount : portfolioAsset.avgBuyPrice * portfolioAsset.quantity;
+    const evaluateAmount =
+      typeof currentPrice === 'number' && currentPrice > 0
+        ? currentPrice * portfolioAsset.quantity
+        : portfolioAsset.evaluateAmount;
+    const profit =
+      typeof currentPrice === 'number' && currentPrice > 0 ? evaluateAmount - buyAmount : portfolioAsset.profit;
     const profitRate =
-      portfolioAsset.profitRate ??
-      (portfolioAsset.buyAmount > 0 ? (portfolioAsset.profit / portfolioAsset.buyAmount) * 100 : 0);
+      typeof currentPrice === 'number' && currentPrice > 0
+        ? buyAmount > 0
+          ? (profit / buyAmount) * 100
+          : 0
+        : (portfolioAsset.profitRate ?? (buyAmount > 0 ? (portfolioAsset.profit / buyAmount) * 100 : 0));
+
     const profitColor = profitRate > 0 ? 'text-primary-700' : profitRate < 0 ? 'text-primary-900' : 'text-primary-100';
     const profitPrefix = profitRate > 0 ? '+' : '';
     const rightAlignClass = 'flex justify-end items-center';
-
-    const { setCategoryId } = useCategoryIdStore();
 
     return (
       // 보유 탭입니다
@@ -61,7 +82,7 @@ export default function MarketTableItem({
             <span className="font-semibold">{formatQuantity(portfolioAsset.quantity)}</span>
             <span className="text-[11px] text-primary-300 font-normal">
               {/* 보유 금액 한국 돈으로 바꿨을 때 */}
-              {portfolioAsset.evaluateAmount.toLocaleString('ko-KR')}
+              {Math.round(evaluateAmount).toLocaleString('ko-KR')}
               <span className="text-[11px] text-primary-500 font-normal ml-1">KRW</span>
             </span>
           </div>
@@ -80,7 +101,7 @@ export default function MarketTableItem({
               {profitPrefix}
               {profitRate.toFixed(2)}%
             </span>
-            <span className="text-[11px]">{portfolioAsset.profit.toLocaleString('ko-KR')}</span>
+            <span className="text-[11px]">{Math.round(profit).toLocaleString('ko-KR')}</span>
           </div>
         </div>
       </div>
@@ -91,16 +112,14 @@ export default function MarketTableItem({
   if (!category) return null;
 
   // /topic/ticker에서 데이터 가져옴
-  const { tickerData } = useTickerStore();
-  const lastPrice = tickerData?.price ?? 0;
-  const changeRate = tickerData?.changeRate ?? 0;
-  const tradeAmount = tickerData?.amount ?? 0;
+  const lastPrice = ticker?.price ?? 0;
+  const changeRate = ticker?.changeRate ?? 0;
+  const tradeAmount = ticker?.amount ?? 0;
+  const isLiveTicker = !!ticker;
 
   // + 이면 primary-700, - 이면 primary-900, 그냥 변동사항 없으면 primary-100
   const changeColor = changeRate > 0 ? 'text-primary-700' : changeRate < 0 ? 'text-primary-900' : 'text-primary-100';
   const changePrefix = changeRate > 0 ? '+' : '';
-
-  const { setCategoryId } = useCategoryIdStore();
 
   return (
     <div
@@ -112,7 +131,10 @@ export default function MarketTableItem({
           {/* 관심 종목 추가/삭제 버튼 */}
           <button
             type="button"
-            onClick={onToggleFavorite}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite();
+            }}
             className="w-5 h-5 flex items-center justify-center text-primary-500 hover:text-primary-300 shrink-0"
           >
             <FontAwesomeIcon icon={isFavorite ? faStarSolid : faStarRegular} />
@@ -127,10 +149,16 @@ export default function MarketTableItem({
       <div className={`text-xs text-right min-w-[90px] font-semibold ${changeColor}`}>
         {lastPrice.toLocaleString('ko-KR')}
       </div>
-      <div className={`text-xs text-right min-w-[80px] font-semibold ${changeColor}`}>
-        {changePrefix}
-        {changeRate.toFixed(2)}%
-      </div>
+      <FlashComparison
+        value={isLiveTicker ? changeRate : null}
+        enabled={isLiveTicker}
+        className={`text-xs text-right min-w-[80px] font-semibold ${changeColor} rounded-[2px]`}
+      >
+        <>
+          {changePrefix}
+          {changeRate.toFixed(2)}%
+        </>
+      </FlashComparison>
       <div className="text-xs text-right text-primary-100 font-semibold min-w-[100px]">
         {formatTradeAmountKRW(tradeAmount)} <span className="text-primary-500 font-normal">백만</span>
       </div>
