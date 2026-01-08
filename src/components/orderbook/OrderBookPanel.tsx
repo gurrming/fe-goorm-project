@@ -6,6 +6,7 @@ import OrderBookGridLayout from './OrderBookGridLayout';
 import OrderbookHeader from './OrderbookHeader';
 import TradeTapeSection from './TradeTapeSection';
 import { useOrderbookId } from '../../hooks/websocket/useOrderbookId';
+import { useOrderbookLastPrice } from '../../hooks/websocket/useOrderbookLastPrice';
 import { useTrades } from '../../hooks/websocket/useTrades';
 import useCategoryIdStore from '../../store/useCategoryId';
 
@@ -16,6 +17,7 @@ export default function OrderBookPanel() {
   // WebSocket 구독 훅 (orderbook/trades)
   // 매수 / 매도 좌 우측 테이블
   useOrderbookId(categoryId);
+  useOrderbookLastPrice(categoryId);
   useTrades();
 
   useLayoutEffect(() => {

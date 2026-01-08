@@ -1,6 +1,7 @@
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import FlashComparison from './FlashComparison';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useTickerStore } from '../../store/websocket/useTickerStore';
 import type { TAssets } from '../../types/asset';
@@ -114,6 +115,7 @@ export default function MarketTableItem({
   const lastPrice = ticker?.price ?? 0;
   const changeRate = ticker?.changeRate ?? 0;
   const tradeAmount = ticker?.amount ?? 0;
+  const isLiveTicker = !!ticker;
 
   // + 이면 primary-700, - 이면 primary-900, 그냥 변동사항 없으면 primary-100
   const changeColor = changeRate > 0 ? 'text-primary-700' : changeRate < 0 ? 'text-primary-900' : 'text-primary-100';
@@ -147,10 +149,16 @@ export default function MarketTableItem({
       <div className={`text-xs text-right min-w-[90px] font-semibold ${changeColor}`}>
         {lastPrice.toLocaleString('ko-KR')}
       </div>
-      <div className={`text-xs text-right min-w-[80px] font-semibold ${changeColor}`}>
-        {changePrefix}
-        {changeRate.toFixed(2)}%
-      </div>
+      <FlashComparison
+        value={isLiveTicker ? changeRate : null}
+        enabled={isLiveTicker}
+        className={`text-xs text-right min-w-[80px] font-semibold ${changeColor} rounded-[2px]`}
+      >
+        <>
+          {changePrefix}
+          {changeRate.toFixed(2)}%
+        </>
+      </FlashComparison>
       <div className="text-xs text-right text-primary-100 font-semibold min-w-[100px]">
         {formatTradeAmountKRW(tradeAmount)} <span className="text-primary-500 font-normal">백만</span>
       </div>
