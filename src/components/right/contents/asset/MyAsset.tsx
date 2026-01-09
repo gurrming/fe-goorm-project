@@ -29,7 +29,7 @@ const MyAsset = () => {
         <Text
           size="sm"
           text="총 보유자산"
-          price={summary?.totalBuyAmount.toLocaleString('ko-KR')}
+          price={summary?.totalBuyAmount.toLocaleString('ko-KR') ?? myAssetData?.totalAsset.toLocaleString('ko-KR')}
           priceColor="black"
           type="KRW"
         />
@@ -45,7 +45,10 @@ const MyAsset = () => {
         <Text
           size="sm"
           text="총평가손익"
-          price={summary?.totalProfit.toLocaleString('ko-KR')}
+          price={
+            summary?.totalProfit.toLocaleString('ko-KR') ??
+            myPortfolioData?.summary.totalEvaluateAmount.toLocaleString('ko-KR')
+          }
           priceColor="blue"
           type="KRW"
         />
@@ -54,14 +57,20 @@ const MyAsset = () => {
         <Text
           size="sm"
           text="총 평가"
-          price={summary?.totalEvaluateAmount.toLocaleString('ko-KR')}
+          price={
+            summary?.totalEvaluateAmount.toLocaleString('ko-KR') ??
+            myPortfolioData?.summary.totalEvaluateAmount.toLocaleString('ko-KR')
+          }
           priceColor="black"
           type="KRW"
         />
         <Text
           size="sm"
           text="총평가수익률"
-          price={summary?.totalProfitRate.toLocaleString('ko-KR')}
+          price={
+            summary?.totalProfitRate.toLocaleString('ko-KR') ??
+            myPortfolioData?.summary.totalProfitRate.toLocaleString('ko-KR')
+          }
           priceColor="blue"
           type="%"
         />
