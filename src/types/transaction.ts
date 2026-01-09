@@ -7,6 +7,7 @@ export type TSettledData = {
   buyOrderId: number;
   sellOrderId: number;
   takerType: string;
+  symbol: string;
 };
 
 export type TUnSettledData = {

@@ -1,11 +1,21 @@
 import { usePatchCancel } from '../../../../api/orders/usePatchCancel';
 import type { TUnSettledData } from '../../../../types/transaction';
 
-const UnSettledItem = ({ item, index }: { item: TUnSettledData; index: number }) => {
+const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: number; refetch: () => void }) => {
   const { mutate: cancel } = usePatchCancel();
+  const date = new Date(item.orderTime);
+  date.setHours(date.getHours() + 9);
+  const TIME = date.toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
   return (
     <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-      <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{item.orderTime}</td>
+      <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{TIME}</td>
       <td className={`px-4 py-3 text-xs text-center text-nowrap border-r border-gray-200`}>
         <div className="flex flex-col">
           <span className="text-center text-bold ">{item.categoryName}</span>
@@ -37,7 +47,10 @@ const UnSettledItem = ({ item, index }: { item: TUnSettledData; index: number })
       </td>
       <td className="px-4 py-3 text-xs text-[#333333] text-right">
         <button
-          onClick={() => cancel({ orderId: item.orderId })}
+          onClick={() => {
+            cancel({ orderId: item.orderId });
+            refetch();
+          }}
           className="text-xs text-[#333333] text-nowrap border border-gray-200 rounded-sm px-2 py-1 hover:cursor-pointer"
         >
           주문취소
