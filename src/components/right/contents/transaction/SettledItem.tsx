@@ -1,13 +1,26 @@
 import type { TSettledData } from '../../../../types/transaction';
 
 const SettledItem = ({ item, index }: { item: TSettledData; index: number }) => {
+  const date = new Date(item.tradeTime);
+  date.setHours(date.getHours() + 9);
+  const TIME = date.toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
   return (
     <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-      <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{item.tradeTime}</td>
+      <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{TIME}</td>
       <td
-        className={`px-4 py-3 text-xs text-center ${item.takerType === '매수' ? 'text-[#DD3C44]' : 'text-[#0062DF]'} border-r border-gray-200`}
+        className={`px-4 py-3 text-xs text-center ${item.takerType === 'SELL' ? 'text-[#0062DF]' : 'text-[#DD3C44]'} border-r border-gray-200`}
       >
-        {item.takerType}
+        <div className="flex flex-col">
+          <span>{item.symbol}</span>
+          <span>{item.takerType === 'SELL' ? '매도' : '매수'}</span>
+        </div>
       </td>
       <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">
         <div className="flex flex-col gap-1">
