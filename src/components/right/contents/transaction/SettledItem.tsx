@@ -14,12 +14,12 @@ const SettledItem = ({ item, index }: { item: TSettledData; index: number }) => 
   return (
     <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
       <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{TIME}</td>
-      <td
-        className={`px-4 py-3 text-xs text-center ${item.takerType === 'SELL' ? 'text-[#0062DF]' : 'text-[#DD3C44]'} border-r border-gray-200`}
-      >
-        <div className="flex flex-col">
+      <td className={`px-4 py-3 text-xs text-center  border-r border-gray-200`}>
+        <div className="flex flex-col gap-1">
           <span>{item.symbol}</span>
-          <span>{item.takerType === 'SELL' ? '매도' : '매수'}</span>
+          <span className={`${item.takerType === 'SELL' ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
+            {item.takerType === 'SELL' ? '매도' : '매수'}
+          </span>
         </div>
       </td>
       <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">

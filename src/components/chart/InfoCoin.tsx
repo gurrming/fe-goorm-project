@@ -20,8 +20,9 @@ const InfoCoin = () => {
   // 웹소켓 구독 시작 (차트 데이터 수신)
   useChart(categoryId);
   useTicker([categoryId]);
-  const { chartData } = useChartStore();
+  const { chartData, chartDataList } = useChartStore();
   console.log('chartData : ', chartData);
+  console.log('chartDataList : ', chartDataList);
 
   const handleTab = (tab: string) => {
     setTab(tab);
@@ -41,8 +42,8 @@ const InfoCoin = () => {
       {tab === 'price' && dayData && minuteData && (
         <div className="flex flex-col">
           <PriceInfo categoryId={categoryId} quote="KRW" symbol={categoryInfo?.symbol} />
-          {chartData && chartData.length > 0 ? (
-            <Chart data={chartData} />
+          {chartDataList && chartDataList.length > 0 ? (
+            <Chart data={chartDataList} />
           ) : (
             <div className="flex justify-center items-center h-[450px]">
               <p className="text-center text-gray-500">차트 데이터가 없습니다.</p>
