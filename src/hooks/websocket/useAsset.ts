@@ -5,7 +5,7 @@ import type { TWSAssets, TMyPortfolio } from '../../types/asset';
 
 export const useAsset = (memberId: number) => {
   const { isConnected, stompClientRef } = useWebsocket();
-  const { setAssetData } = useAssetStore();
+  const { setWsTotalAsset } = useAssetStore();
 
   useEffect(() => {
     if (isConnected && stompClientRef.current && memberId) {
@@ -14,7 +14,7 @@ export const useAsset = (memberId: number) => {
         try {
           const data: TWSAssets = JSON.parse(message.body);
           console.log('[useAsset] 자산 데이터 수신:', data);
-          setAssetData(data);
+          setWsTotalAsset(data.totalAsset);
         } catch (error) {
           console.error('[useAsset] 데이터 파싱 에러:', error);
         }
@@ -24,7 +24,7 @@ export const useAsset = (memberId: number) => {
         subscription.unsubscribe();
       };
     }
-  }, [isConnected, memberId, setAssetData, stompClientRef]);
+  }, [isConnected, memberId, setWsTotalAsset, stompClientRef]);
 };
 
 export const useSummary = (memberId: number) => {
