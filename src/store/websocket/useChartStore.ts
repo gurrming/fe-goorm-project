@@ -2,27 +2,21 @@ import { create } from 'zustand';
 import type { ChartData } from '../../types/websocket';
 
 interface ChartStore {
-  chartData: ChartData | null;
   chartDataList: ChartData[];
   addChartData: (data: ChartData) => void;
-  setChartData: (data: ChartData) => void;
-  clearChartData: () => void;
+  setChartData: (data: ChartData[]) => void;
   clearChartDataList: () => void;
 }
 
 export const useChartStore = create<ChartStore>((set) => ({
-  chartData: null,
   chartDataList: [],
   addChartData: (data) =>
     set((state) => ({
-      chartData: data,
-      chartDataList: [data, ...(state.chartDataList || [])].slice(0, 30),
+      chartDataList: [...state.chartDataList, data],
     })),
   setChartData: (data) =>
     set((state) => ({
-      chartData: data,
-      chartDataList: [data, ...(state.chartDataList || [])].slice(0, 30),
+      chartDataList: [...state.chartDataList, ...data],
     })),
-  clearChartData: () => set({ chartData: null }),
   clearChartDataList: () => set({ chartDataList: [] }),
 }));
