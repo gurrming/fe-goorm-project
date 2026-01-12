@@ -13,6 +13,7 @@ const InfoCoin = () => {
   const [tab, setTab] = useState('price');
   const categoryId = useCategoryIdStore((state) => state.categoryId);
   const { data: categoryInfo } = useGetCategoryInfo(categoryId);
+  console.log('categoryInfo : ', categoryInfo);
   const TITLE = `${categoryInfo?.categoryName} (${categoryInfo?.symbol}-KRW)`;
 
   // 웹소켓 구독 시작 (차트 데이터 수신)
