@@ -24,7 +24,7 @@ export default function TradeTapeSection() {
       {/* 테이블 헤더 */}
       <div className="grid grid-cols-2 gap-2 pb-2 mb-2">
         <div className="text-[10px] text-primary-300 text-center">체결가</div>
-        <div className="text-[10px] text-primary-300 text-center border-l border-gray-300">체결액</div>
+        <div className="text-[10px] text-primary-300 text-center border-l border-gray-300">체결량</div>
       </div>
 
       {/* 체결 내역 리스트 */}
