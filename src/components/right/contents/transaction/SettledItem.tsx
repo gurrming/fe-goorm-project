@@ -17,8 +17,8 @@ const SettledItem = ({ item, index }: { item: TSettledData; index: number }) => 
       <td className={`px-4 py-3 text-xs text-center  border-r border-gray-200`}>
         <div className="flex flex-col gap-1">
           <span>{item.symbol}</span>
-          <span className={`${item.takerType === 'SELL' ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
-            {item.takerType === 'SELL' ? '매도' : '매수'}
+          <span className={`${item.myOrderType === 'SELL' ? 'text-[#0062DF]' : 'text-[#DD3C44]'}`}>
+            {item.myOrderType === 'SELL' ? '매도' : '매수'}
           </span>
         </div>
       </td>
