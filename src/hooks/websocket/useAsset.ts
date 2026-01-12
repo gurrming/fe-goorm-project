@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import { useWebsocket } from '../useWebsocket';
-import type { TWSAssets, TSummary } from '../../types/asset';
+import type { TWSAssets, TMyPortfolio } from '../../types/asset';
 
 export const useAsset = (memberId: number) => {
   const { isConnected, stompClientRef } = useWebsocket();
@@ -33,10 +33,10 @@ export const useSummary = (memberId: number) => {
 
   useEffect(() => {
     if (isConnected && stompClientRef.current && memberId) {
-      console.log(`[useAsset] /topic/summary/${memberId} 구독 시작`);
-      const subscription = stompClientRef.current.subscribe(`/topic/summary/${memberId}`, (message) => {
+      console.log(`[useAsset] /topic/invest/${memberId} 구독 시작`);
+      const subscription = stompClientRef.current.subscribe(`/topic/invest/${memberId}`, (message) => {
         try {
-          const data: TSummary = JSON.parse(message.body);
+          const data: TMyPortfolio = JSON.parse(message.body);
           console.log('[useSummary] 요약 데이터 수신:', data);
           setSummary(data);
         } catch (error) {
