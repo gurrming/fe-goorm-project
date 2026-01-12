@@ -15,7 +15,9 @@ export default function AskBook() {
       {sellSide.length === 0 ? (
         <div className="text-center text-gray-400 text-[10px] py-4">매도 호가 데이터가 없습니다</div>
       ) : (
-        sellSide.map((item) => <OrderBookItem key={item.price} item={item} isAsk={true} maxVolume={maxVolume} />)
+        sellSide.map((item, index) => (
+          <OrderBookItem key={`${item.price ?? index}`} item={item} isAsk={true} maxVolume={maxVolume} />
+        ))
       )}
     </div>
   );
