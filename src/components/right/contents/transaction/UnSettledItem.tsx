@@ -1,7 +1,7 @@
 import { usePatchCancel } from '../../../../api/orders/usePatchCancel';
 import type { TUnSettledData } from '../../../../types/transaction';
 
-const UnSettledItem = ({ item, index }: { item: TUnSettledData; index: number }) => {
+const UnSettledItem = ({ item }: { item: TUnSettledData }) => {
   const { mutate: cancel } = usePatchCancel();
   const date = new Date(item.orderTime);
   date.setHours(date.getHours() + 9);
@@ -14,7 +14,7 @@ const UnSettledItem = ({ item, index }: { item: TUnSettledData; index: number })
     minute: '2-digit',
   });
   return (
-    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+    <tr key={item.orderId} className="border-b border-gray-200 hover:bg-gray-50">
       <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{TIME}</td>
       <td className={`px-4 py-3 text-xs text-center text-nowrap border-r border-gray-200`}>
         <div className="flex flex-col">
