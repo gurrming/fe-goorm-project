@@ -5,6 +5,7 @@ import type { ChartData } from '../../types/websocket';
 import type { CandlestickData, LineData, Time } from 'lightweight-charts';
 
 const Chart = ({ data }: { data: ChartData[] }) => {
+  console.log('Chart 컴포넌트 내의 data : ', data);
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!chartContainerRef.current || !data) return;

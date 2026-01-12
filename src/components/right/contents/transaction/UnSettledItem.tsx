@@ -1,7 +1,7 @@
 import { usePatchCancel } from '../../../../api/orders/usePatchCancel';
 import type { TUnSettledData } from '../../../../types/transaction';
 
-const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: number; refetch: () => void }) => {
+const UnSettledItem = ({ item, index }: { item: TUnSettledData; index: number }) => {
   const { mutate: cancel } = usePatchCancel();
   const date = new Date(item.orderTime);
   date.setHours(date.getHours() + 9);
@@ -18,11 +18,11 @@ const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: 
       <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{TIME}</td>
       <td className={`px-4 py-3 text-xs text-center text-nowrap border-r border-gray-200`}>
         <div className="flex flex-col">
-          <span className="text-center text-bold ">{item.categoryName}</span>
+          <span className="text-center text-bold ">{item.symbol}</span>
           <span
-            className={`text-[11px] font-normal text-[#666666] mt-1 ${item.orderType === '매수' ? 'text-[#DD3C44]' : 'text-[#0062DF]'}`}
+            className={`text-[11px] font-normal text-[#666666] mt-1 ${item.orderType === 'BUY' ? 'text-[#DD3C44]' : 'text-[#0062DF]'}`}
           >
-            {item.orderType}
+            {item.orderType === 'BUY' ? '매수' : '매도'}
           </span>
         </div>
       </td>
@@ -49,7 +49,6 @@ const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: 
         <button
           onClick={() => {
             cancel({ orderId: item.orderId });
-            refetch();
           }}
           className="text-xs text-[#333333] text-nowrap border border-gray-200 rounded-sm px-2 py-1 hover:cursor-pointer"
         >

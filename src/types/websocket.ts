@@ -41,6 +41,13 @@ export type OrderbookPayload = {
 };
 
 //topic/chart/{categoryId}
+export type RawChartData = {
+  t: number;
+  o: string;
+  h: string;
+  l: string;
+  c: string;
+};
 export type ChartData = {
   t: number;
   o: number;
