@@ -10,8 +10,8 @@ export function getPriceTickSize(price: number): number {
   return 1;
 }
 
-export const formatNumber = (point: number): string => {
-  return point.toLocaleString('ko-KR');
+export const formatNumber = (point: number | undefined | null): string => {
+  return point?.toLocaleString('ko-KR') ?? '0';
 };
 
 // 문자열을 숫자로 변환하면서 쉼표 제거해주기
