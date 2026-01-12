@@ -5,7 +5,7 @@ import type { Category } from '../types/category';
 const getCategoryInfo = (categoryId: number): Promise<Category> => {
   return request<Category>({
     method: 'GET',
-    url: `/api/category/${categoryId}`,
+    url: `/api/category?categoryId=${categoryId}`,
   });
 };
 
