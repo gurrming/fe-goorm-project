@@ -1,16 +1,24 @@
 import { create } from 'zustand';
-import type { TMyPortfolio, TWSAssets } from '../../types/asset';
+import type { TMyPortfolio } from '../../types/asset';
 
 interface IAssetStore {
-  assetData: TWSAssets | null;
+  assetCash: number | null;
+  totalAsset: number | null;
+  wsTotalAsset: number | null;
   summary: TMyPortfolio | null;
-  setAssetData: (data: TWSAssets) => void;
+  setAssetCash: (data: number | null) => void;
+  setTotalAsset: (data: number | null) => void;
+  setWsTotalAsset: (data: number | null) => void;
   setSummary: (data: TMyPortfolio) => void;
 }
 
 export const useAssetStore = create<IAssetStore>((set) => ({
-  assetData: null,
+  assetCash: null,
+  totalAsset: null,
+  wsTotalAsset: null,
   summary: null,
-  setAssetData: (data) => set({ assetData: data }),
+  setAssetCash: (data) => set({ assetCash: data }),
+  setTotalAsset: (data) => set({ totalAsset: data }),
+  setWsTotalAsset: (data) => set({ wsTotalAsset: data }),
   setSummary: (data) => set({ summary: data }),
 }));
