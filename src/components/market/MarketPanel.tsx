@@ -7,8 +7,8 @@ import MarketTabs from './MarketTabs';
 import { useDeleteFavorite } from '../../api/favorite/useDeleteFavorite';
 import { useGetFavorite } from '../../api/favorite/useGetFavorite';
 import { usePostFavorite } from '../../api/favorite/usePostFavorite';
+import { useGetInvest } from '../../api/useGetInvest';
 import { useGetMarketItems } from '../../api/useGetMarketItems';
-import { useGetPortfolio } from '../../api/useGetPortfolio';
 import { useTicker } from '../../hooks/websocket/useTicker';
 import useCategoryIdStore from '../../store/useCategoryId';
 import useUserStore from '../../store/useUserStore';
@@ -39,7 +39,7 @@ export default function MarketPanel() {
   const { data: categories } = useGetMarketItems();
 
   // 포트폴리오 - 보유 데이터 조회
-  const { data: portfolio } = useGetPortfolio();
+  const { data: portfolio } = useGetInvest(memberId!);
 
   // 관심 종목 목록 조회
   const { data: Interest } = useGetFavorite(memberId ?? null);

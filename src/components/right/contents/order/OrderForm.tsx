@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import OrderFormButtons from './OrderFormButtons';
 import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
+import { useGetInvest } from '../../../../api/useGetInvest';
 import { useGetMarketItems } from '../../../../api/useGetMarketItems';
-import { useGetPortfolio } from '../../../../api/useGetPortfolio';
 import { changeNumber, dotQuantity, formatNumber, getPriceTickSize } from '../../../../lib/price';
 import useCategoryIdStore from '../../../../store/useCategoryId';
+import useUserStore from '../../../../store/useUserStore';
 import { useModal } from '../../../common/Modal/hooks/useModal';
 import { Modal } from '../../../common/Modal/Modal';
 
@@ -19,10 +20,11 @@ type OrderFormProps = {
 const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const isBuy = orderType === 'buy';
   const { openModal, closeModal } = useModal();
-
+  const user = useUserStore((state) => state.user);
+  const memberId = user?.id;
   // 서버에서 데이터 가져오기
   const { data: myAsset } = useGetMyAsset();
-  const { data: portfolio } = useGetPortfolio();
+  const { data: portfolio } = useGetInvest(memberId!);
   const { data: marketItems } = useGetMarketItems();
   const { categoryId } = useCategoryIdStore();
 
