@@ -1,7 +1,7 @@
 import { usePatchCancel } from '../../../../api/orders/usePatchCancel';
 import type { TUnSettledData } from '../../../../types/transaction';
 
-const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: number; refetch: () => void }) => {
+const UnSettledItem = ({ item, index }: { item: TUnSettledData; index: number }) => {
   const { mutate: cancel } = usePatchCancel();
   const date = new Date(item.orderTime);
   date.setHours(date.getHours() + 9);
@@ -49,7 +49,6 @@ const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: 
         <button
           onClick={() => {
             cancel({ orderId: item.orderId });
-            refetch();
           }}
           className="text-xs text-[#333333] text-nowrap border border-gray-200 rounded-sm px-2 py-1 hover:cursor-pointer"
         >
