@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
+import { useGetChart } from '../../api/useGetChart';
 import { useChartStore } from '../../store/websocket/useChartStore';
 import { useWebsocket } from '../useWebsocket';
 import type { ChartData, RawChartData } from '../../types/websocket';
 
 export const useChart = (categoryId: number) => {
   const { isConnected, stompClientRef } = useWebsocket();
-  const { addChartData, clearChartData } = useChartStore();
+  const { addChartData, setChartData } = useChartStore();
+  const { data: chartDataList, refetch } = useGetChart(categoryId, 1, 100);
 
-  // categoryId가 변경되면 기존 데이터 초기화
   useEffect(() => {
-    clearChartData();
-  }, [categoryId, clearChartData]);
+    if (chartDataList) {
+      setChartData(chartDataList);
+    }
+    refetch();
+  }, [categoryId, refetch, chartDataList, setChartData]);
 
   useEffect(() => {
     if (isConnected && stompClientRef.current && categoryId) {
