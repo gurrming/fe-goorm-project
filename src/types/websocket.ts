@@ -36,7 +36,6 @@ export type OrderbookPayload = {
   categoryId: number;
   buySide: OrderbookItemData[]; // 매수 호가
   sellSide: OrderbookItemData[]; // 매도 호가
-  serverTime: number; // 서버 시간
 };
 
 //topic/chart/{categoryId}
