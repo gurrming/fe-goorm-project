@@ -113,7 +113,7 @@ export default function MarketTableItem({
 
   // /topic/ticker에서 데이터 가져옴
   const lastPrice = ticker?.price ?? 0;
-  const changeRate = ticker?.changeRate ?? 0;
+  const changeRate = Number(ticker?.changeRate ?? 0);
   const tradeAmount = ticker?.amount ?? 0;
   const isLiveTicker = !!ticker;
 

@@ -7,7 +7,7 @@ export default function TradeTapeSection() {
   // 체결강도 포맷팅
   const formatTradeStrength = (value: number): string => {
     const sign = value >= 0 ? '+' : '';
-    return `${sign}${value.toFixed(2)}%`;
+    return `${sign}${Number(value).toFixed(2)}%`;
   };
 
   // 최신 체결강도 (가장 최근 체결의 intensity 사용)
