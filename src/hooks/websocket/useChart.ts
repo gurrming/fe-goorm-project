@@ -7,7 +7,7 @@ import type { ChartData, RawChartData } from '../../types/websocket';
 export const useChart = (categoryId: number) => {
   const { isConnected, stompClientRef } = useWebsocket();
   const { addChartData, setChartData } = useChartStore();
-  const { data: chartDataList, refetch } = useGetChart(categoryId, 1, 100);
+  const { data: chartDataList, refetch } = useGetChart(categoryId, 0, 100);
 
   useEffect(() => {
     if (chartDataList) {
@@ -19,16 +19,22 @@ export const useChart = (categoryId: number) => {
           const l = typeof item.l === 'number' ? item.l : parseFloat(String(item.l));
           const c = typeof item.c === 'number' ? item.c : parseFloat(String(item.c));
           const t = typeof item.t === 'number' ? item.t : parseInt(String(item.t), 10);
-          
+
           // 유효하지 않은 데이터는 필터링
-          if (!Number.isFinite(o) || !Number.isFinite(h) || !Number.isFinite(l) || !Number.isFinite(c) || !Number.isFinite(t)) {
+          if (
+            !Number.isFinite(o) ||
+            !Number.isFinite(h) ||
+            !Number.isFinite(l) ||
+            !Number.isFinite(c) ||
+            !Number.isFinite(t)
+          ) {
             return null;
           }
-          
+
           return { t, o, h, l, c } as ChartData;
         })
         .filter((item): item is ChartData => item !== null);
-      
+
       setChartData(normalizedData);
     }
     refetch();
@@ -44,20 +50,26 @@ export const useChart = (categoryId: number) => {
           console.log('[useChart] 메시지 수신 (raw):', message.body);
           // 백엔드에서 string으로 보낼 수 있으므로 number로 변환
           const rawData: RawChartData = JSON.parse(message.body);
-          
+
           // 숫자 변환 및 유효성 검사
           const o = typeof rawData.o === 'number' ? rawData.o : parseFloat(String(rawData.o));
           const h = typeof rawData.h === 'number' ? rawData.h : parseFloat(String(rawData.h));
           const l = typeof rawData.l === 'number' ? rawData.l : parseFloat(String(rawData.l));
           const c = typeof rawData.c === 'number' ? rawData.c : parseFloat(String(rawData.c));
           const t = typeof rawData.t === 'number' ? rawData.t : parseInt(String(rawData.t), 10);
-          
+
           // NaN이나 Infinity 체크
-          if (!Number.isFinite(o) || !Number.isFinite(h) || !Number.isFinite(l) || !Number.isFinite(c) || !Number.isFinite(t)) {
+          if (
+            !Number.isFinite(o) ||
+            !Number.isFinite(h) ||
+            !Number.isFinite(l) ||
+            !Number.isFinite(c) ||
+            !Number.isFinite(t)
+          ) {
             console.warn('[useChart] 유효하지 않은 차트 데이터:', rawData);
             return;
           }
-          
+
           const data: ChartData = {
             t,
             o,
