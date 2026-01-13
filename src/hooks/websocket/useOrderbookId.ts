@@ -14,7 +14,7 @@ import type { OrderbookPayload, OrderbookItemData } from '../../types/websocket'
 
 export const useOrderbookId = (categoryId: number) => {
   const { isConnected, stompClientRef } = useWebsocket();
-  const { setOrderbookData } = useOrderbookStore();
+  const setOrderbookData = useOrderbookStore((state) => state.setOrderbookData);
   const orderbookSocketData = useOrderbookStore((state) => state.orderbookData[categoryId]);
   const { data: buySideApi } = useGetOrderbook(categoryId, 'BUY', { page: 0, size: 30 });
   const { data: sellSideApi } = useGetOrderbook(categoryId, 'SELL', { page: 0, size: 30 });
@@ -22,8 +22,8 @@ export const useOrderbookId = (categoryId: number) => {
   // REST API로 초기 스냅샷 용도
   useEffect(() => {
     if (!categoryId) return;
-    // 이미 WebSocket으로 데이터가 들어왔다면 API로 덮어쓰지 않음
-    if (orderbookSocketData && (orderbookSocketData.buySide?.length || orderbookSocketData.sellSide?.length)) return;
+    // 이미 스토어에 값이 있다면 더 이상 덮어쓰지 않음
+    if (orderbookSocketData) return;
 
     if (buySideApi && sellSideApi) {
       setOrderbookData(categoryId, {
