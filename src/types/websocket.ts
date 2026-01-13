@@ -28,9 +28,8 @@ export type OrderbookLastPrice = {
 
 // /topic/orderbook/{categoryId}
 export type OrderbookItemData = {
-  price: number;
-  volume: number;
-  changeRate?: number; // 프론트에서 계산한 변동률
+  orderPrice: number;
+  totalRemainingCount: number;
 };
 
 export type OrderbookPayload = {
