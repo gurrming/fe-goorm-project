@@ -10,19 +10,40 @@ const Chart = ({ data }: { data: ChartData[] }) => {
   useEffect(() => {
     if (!chartContainerRef.current || !data) return;
 
-    const sortedData = [...data].sort((a: ChartData, b: ChartData) => {
-      const aTime = new Date(a.t).getTime();
-      const bTime = new Date(b.t).getTime();
-      return aTime - bTime;
-    });
+    const sortedData = [...data]
+      .filter((item: ChartData) => {
+        // 유효한 시간 값인지 확인
+        const time = typeof item.t === 'number' ? item.t : new Date(item.t).getTime();
+        return Number.isFinite(time);
+      })
+      .sort((a: ChartData, b: ChartData) => {
+        const aTime = typeof a.t === 'number' ? a.t : new Date(a.t).getTime();
+        const bTime = typeof b.t === 'number' ? b.t : new Date(b.t).getTime();
+        return aTime - bTime;
+      });
 
-    const candlestickData: CandlestickData[] = sortedData.map((item: ChartData) => ({
-      time: (new Date(item.t).getTime() / 1000) as Time,
-      open: item.o,
-      high: item.h,
-      low: item.l,
-      close: item.c,
-    }));
+    const candlestickData: CandlestickData[] = sortedData
+      .filter((item: ChartData) => {
+        // 유효한 숫자인지 확인
+        const time = typeof item.t === 'number' ? item.t : new Date(item.t).getTime();
+        return (
+          Number.isFinite(time) &&
+          Number.isFinite(item.o) &&
+          Number.isFinite(item.h) &&
+          Number.isFinite(item.l) &&
+          Number.isFinite(item.c)
+        );
+      })
+      .map((item: ChartData) => {
+        const time = typeof item.t === 'number' ? item.t : new Date(item.t).getTime();
+        return {
+          time: (time / 1000) as Time,
+          open: item.o,
+          high: item.h,
+          low: item.l,
+          close: item.c,
+        };
+      });
 
     const chartOptions = {
       layout: { textColor: 'black', background: { type: ColorType.Solid, color: 'white' }, fontSize: 10 },
