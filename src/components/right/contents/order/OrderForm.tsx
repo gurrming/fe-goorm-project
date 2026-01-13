@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import OrderFormButtons from './OrderFormButtons';
 import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
+import { useGetCategories } from '../../../../api/useGetCategories';
 import { useGetInvest } from '../../../../api/useGetInvest';
-import { useGetMarketItems } from '../../../../api/useGetMarketItems';
 import { changeNumber, dotQuantity, formatNumber, getPriceTickSize } from '../../../../lib/price';
 import useCategoryIdStore from '../../../../store/useCategoryId';
 import useUserStore from '../../../../store/useUserStore';
@@ -25,10 +25,10 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   // 서버에서 데이터 가져오기
   const { data: myAsset } = useGetMyAsset();
   const { data: portfolio } = useGetInvest(memberId!);
-  const { data: marketItems } = useGetMarketItems();
+  const { data: categories } = useGetCategories();
   const { categoryId } = useCategoryIdStore();
 
-  const selectedCategory = marketItems?.find((item) => item.categoryId === categoryId);
+  const selectedCategory = categories?.find((item) => item.categoryId === categoryId);
   const holdingAsset = portfolio?.assets?.find((asset) => asset.categoryId === categoryId);
 
   const selectedSymbol = selectedCategory?.symbol;
