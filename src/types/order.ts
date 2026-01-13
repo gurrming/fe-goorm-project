@@ -20,3 +20,15 @@ export type TOrderResponse = {
   totalAmount: number;
   orderTime: string;
 };
+
+// 호가창 단일 항목 타입 (API는 이 타입의 배열을 반환)
+export type TOrderbookResponse = {
+  orderPrice: number;
+  totalRemainingCount: number;
+};
+
+export type TOrderbookPageable = {
+  page: number;
+  size: number;
+  sort?: string[];
+};
