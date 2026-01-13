@@ -16,30 +16,31 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
   const lastPrice = useOrderbookStore((state) => state.lastPrice);
   const openPrice = tradesData?.openPrice ?? 0; // 전일종가, 없으면 0
 
-  // 등락률 계산: (호가 - 전일종가) / 전일종가 * 100
-  const providedChangeRate = item.changeRate;
-  const changeRate = providedChangeRate ?? (openPrice > 0 ? ((item.price - openPrice) / openPrice) * 100 : 0);
+  const itemPrice = Number(item.orderPrice);
+  const itemVolume = Number(item.totalRemainingCount);
 
-  // 매수 창이어도 등락률이 양수면 빨강, 음수면 파랑으로 표시하는 게 맞음
+  // 등락률 계산: (호가 - 전일종가) / 전일종가 * 100
+  // openPrice가 0이거나 유효하지 않으면 등락률을 0으로 설정
+  const changeRate = openPrice > 0 ? ((itemPrice - openPrice) / openPrice) * 100 : 0;
+
+  const price = formatNumber(itemPrice);
   const priceColor = changeRate === 0 ? 'text-black' : changeRate > 0 ? 'text-red-500' : 'text-blue-500';
   const changePrefix = changeRate > 0 ? '+' : '';
   const changeText = changeRate === 0 ? '0.00%' : `${changePrefix}${changeRate.toFixed(2)}%`;
 
   // volumeRate를 퍼센트로 변환
-  const volumeRate = maxVolume > 0 ? item.volume / maxVolume : 0;
+  const volumeRate = maxVolume > 0 ? itemVolume / maxVolume : 0;
   const barWidth = volumeRate * 100;
 
-  const isLastPriceRow = typeof lastPrice?.price === 'number' && item.price === lastPrice.price;
+  const isLastPriceRow = typeof lastPrice?.price === 'number' && itemPrice === lastPrice.price;
 
   const row = (
     <div
       className={cn(
         'group grid py-2 px-2 text-xs border-t border-b border-white transition-colors cursor-pointer w-full items-center justify-center',
-        isAsk ? 'grid-cols-[5fr_4fr_1fr]' : 'grid-cols-[1fr_4fr_5fr]',
-        isAsk ? 'bg-[#fff2f2]' : 'bg-[#ebf2ff]',
         isAsk
-          ? 'hover:bg-[#ffd1d1] hover:border hover:border-[#ffbaba]'
-          : 'hover:bg-[#d3e3f6] hover:border hover:border-[#bdd2f9]',
+          ? 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1] hover:border hover:border-[#ffbaba]'
+          : 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6] hover:border hover:border-[#bdd2f9]',
         isLastPriceRow && 'border border-black',
       )}
     >
@@ -50,13 +51,13 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
             {isLastPriceRow ? (
               <FlashConclusion value={lastPrice?.price} className="rounded-[2px]">
                 <div className={`${priceColor}`}>
-                  <span className="font-semibold">{formatNumber(item.price)}</span>
+                  <span className="font-semibold">{price}</span>
                   <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
                 </div>
               </FlashConclusion>
             ) : (
               <div className={`${priceColor}`}>
-                <span className="font-semibold">{formatNumber(item.price)}</span>
+                <span className="font-semibold">{price}</span>
                 <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
               </div>
             )}
@@ -82,7 +83,7 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
           </>
         )}
         {/* 잔량 숫자 (중앙 정렬) */}
-        <span className="relative z-5">{formatNumber(item.volume)}</span>
+        <span className="relative z-5">{formatNumber(itemVolume)}</span>
       </div>
 
       {/* Right 영역 */}
@@ -92,13 +93,13 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
             {isLastPriceRow ? (
               <FlashConclusion value={lastPrice?.price} className="rounded-[2px]">
                 <div className={cn(priceColor)}>
-                  <span className="font-semibold">{formatNumber(item.price)}</span>
+                  <span className="font-semibold">{price}</span>
                   <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
                 </div>
               </FlashConclusion>
             ) : (
               <div className={cn(priceColor)}>
-                <span className="font-semibold">{formatNumber(item.price)}</span>
+                <span className="font-semibold">{price}</span>
                 <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
               </div>
             )}
