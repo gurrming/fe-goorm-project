@@ -41,62 +41,50 @@ export const useChart = (categoryId: number) => {
   }, [categoryId, refetch, chartDataList, setChartData]);
 
   useEffect(() => {
-    if (isConnected && stompClientRef.current && categoryId) {
-      const subscriptionPath = `/topic/charts/${categoryId}`;
-      console.log(`[useChart] 구독 시작: ${subscriptionPath}`);
-
-      const subscription = stompClientRef.current.subscribe(subscriptionPath, (message) => {
-        try {
-          console.log('[useChart] 메시지 수신 (raw):', message.body);
-          // 백엔드에서 string으로 보낼 수 있으므로 number로 변환
-          const rawData: RawChartData = JSON.parse(message.body);
-
-          // 숫자 변환 및 유효성 검사
-          const o = typeof rawData.o === 'number' ? rawData.o : parseFloat(String(rawData.o));
-          const h = typeof rawData.h === 'number' ? rawData.h : parseFloat(String(rawData.h));
-          const l = typeof rawData.l === 'number' ? rawData.l : parseFloat(String(rawData.l));
-          const c = typeof rawData.c === 'number' ? rawData.c : parseFloat(String(rawData.c));
-          const t = typeof rawData.t === 'number' ? rawData.t : parseInt(String(rawData.t), 10);
-
-          // NaN이나 Infinity 체크
-          if (
-            !Number.isFinite(o) ||
-            !Number.isFinite(h) ||
-            !Number.isFinite(l) ||
-            !Number.isFinite(c) ||
-            !Number.isFinite(t)
-          ) {
-            console.warn('[useChart] 유효하지 않은 차트 데이터:', rawData);
-            return;
-          }
-
-          const data: ChartData = {
-            t,
-            o,
-            h,
-            l,
-            c,
-          };
-          console.log('[useChart] 차트 데이터 수신 (parsed):', data);
-          // 함수형 업데이트로 클로저 문제 해결
-          addChartData(data);
-        } catch (error) {
-          console.error('[useChart] 데이터 파싱 에러:', error, message.body);
-        }
-      });
-
-      console.log('[useChart] 구독 객체 생성됨:', subscription.id);
-
-      return () => {
-        console.log(`[useChart] 구독 해제: ${subscriptionPath}`);
-        subscription.unsubscribe();
-      };
-    } else {
-      console.warn('[useChart] 구독 조건 불만족:', {
-        isConnected,
-        hasStompClient: !!stompClientRef.current,
-        categoryId,
-      });
+    if (!isConnected || !stompClientRef.current || !categoryId) {
+      return;
     }
+
+    const subscriptionPath = `/topic/charts/${categoryId}`;
+    const subscription = stompClientRef.current.subscribe(subscriptionPath, (message) => {
+      try {
+        // 백엔드에서 string으로 보낼 수 있으므로 number로 변환
+        const rawData: RawChartData = JSON.parse(message.body);
+
+        // 숫자 변환 및 유효성 검사
+        const o = typeof rawData.o === 'number' ? rawData.o : parseFloat(String(rawData.o));
+        const h = typeof rawData.h === 'number' ? rawData.h : parseFloat(String(rawData.h));
+        const l = typeof rawData.l === 'number' ? rawData.l : parseFloat(String(rawData.l));
+        const c = typeof rawData.c === 'number' ? rawData.c : parseFloat(String(rawData.c));
+        const t = typeof rawData.t === 'number' ? rawData.t : parseInt(String(rawData.t), 10);
+
+        // NaN이나 Infinity 체크
+        if (
+          !Number.isFinite(o) ||
+          !Number.isFinite(h) ||
+          !Number.isFinite(l) ||
+          !Number.isFinite(c) ||
+          !Number.isFinite(t)
+        ) {
+          return;
+        }
+
+        const data: ChartData = {
+          t,
+          o,
+          h,
+          l,
+          c,
+        };
+        // 함수형 업데이트로 클로저 문제 해결
+        addChartData(data);
+      } catch (error) {
+        console.error('[useChart] 데이터 파싱 에러:', error, message.body);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [isConnected, categoryId, addChartData, stompClientRef]);
 };
