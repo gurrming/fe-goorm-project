@@ -5,7 +5,7 @@ export type TMyAsset = {
 
 export type TMyPortfolio = {
   totalBuyAmount: number;
-  totalEvaluateAmount: number;
+  totalEvaluation: number;
   totalProfit: number;
   totalProfitRate: number;
   assetList: TAssets[];

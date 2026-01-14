@@ -36,7 +36,7 @@ const MyAsset = () => {
         <Text
           size="sm"
           text="총 평가"
-          price={(summary?.totalEvaluateAmount ?? 0).toLocaleString('ko-KR')}
+          price={(summary?.totalEvaluation ?? 0).toLocaleString('ko-KR')}
           priceColor="black"
           type="KRW"
         />

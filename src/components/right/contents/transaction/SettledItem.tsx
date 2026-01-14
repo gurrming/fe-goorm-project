@@ -2,7 +2,7 @@ import type { TSettledData } from '../../../../types/transaction';
 
 const SettledItem = ({ item, index }: { item: TSettledData; index: number }) => {
   const date = new Date(item.tradeTime);
-  date.setHours(date.getHours() + 9);
+  date.setHours(date.getHours());
   const TIME = date.toLocaleString('ko-KR', {
     timeZone: 'Asia/Seoul',
     year: 'numeric',

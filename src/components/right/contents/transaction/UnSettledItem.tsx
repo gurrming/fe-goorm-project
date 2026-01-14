@@ -4,7 +4,7 @@ import type { TUnSettledData } from '../../../../types/transaction';
 const UnSettledItem = ({ item }: { item: TUnSettledData }) => {
   const { mutate: cancel } = usePatchCancel();
   const date = new Date(item.orderTime);
-  date.setHours(date.getHours() + 9);
+  date.setHours(date.getHours());
   const TIME = date.toLocaleString('ko-KR', {
     timeZone: 'Asia/Seoul',
     year: 'numeric',
