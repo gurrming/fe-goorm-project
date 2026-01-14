@@ -202,7 +202,7 @@ export default function MarketPanel() {
             onSortClick={handleSortClick}
           />
         </div>
-        <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0" style={{ height: 0 }}>
+        <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0">
           {activeTab === 'holding' ? (
             sortedPortfolioAssets.length === 0 ? (
               <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">
