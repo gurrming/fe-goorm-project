@@ -25,10 +25,6 @@ export default function MarketSummaryPanel() {
   const previousClose = tradesData?.openPrice ?? 0;
 
   // 변동률 포맷팅
-  const formatChangeRate = (rate: number): string => {
-    const sign = rate >= 0 ? '+' : '';
-    return `${sign}${Number(rate.toFixed(2))}%`;
-  };
 
   // 고가/저가 변동률 계산
   const highChangeRate =
@@ -70,7 +66,7 @@ export default function MarketSummaryPanel() {
           <div className="text-[10px] text-primary-300">당일고가</div>
           <div className="flex flex-col items-end">
             <div className="text-[10px] text-red-500">{formatNumber(high ?? categoryInfo)}</div>
-            <div className="text-[10px] text-red-500">{formatChangeRate(highChangeRate)}</div>
+            <div className="text-[10px] text-red-500">{`+ ${highChangeRate.toFixed(2)}`}%</div>
           </div>
         </div>
 
@@ -79,7 +75,7 @@ export default function MarketSummaryPanel() {
           <div className="text-[10px] text-primary-300">당일저가</div>
           <div className="flex flex-col items-end">
             <div className="text-[10px] text-blue-500">{formatNumber(low)}</div>
-            <div className="text-[10px] text-blue-500">{formatChangeRate(lowChangeRate)}</div>
+            <div className="text-[10px] text-blue-500">{`- ${lowChangeRate.toFixed(2)}`}%</div>
           </div>
         </div>
       </div>
