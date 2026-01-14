@@ -8,6 +8,7 @@ import useCategoryIdStore from '../../../../store/useCategoryId';
 import useUserStore from '../../../../store/useUserStore';
 import { useModal } from '../../../common/Modal/hooks/useModal';
 import { Modal } from '../../../common/Modal/Modal';
+import type { TAssets } from '../../../../types/asset';
 
 type OrderType = 'buy' | 'sell';
 
@@ -29,11 +30,11 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const { categoryId } = useCategoryIdStore();
 
   const selectedCategory = categories?.find((item) => item.categoryId === categoryId);
-  const holdingAsset = portfolio?.assets?.find((asset) => asset.categoryId === categoryId);
+  const holdingAsset = portfolio?.assetList?.find((asset: TAssets) => asset.categoryId === categoryId);
 
   const selectedSymbol = selectedCategory?.symbol;
   const buyAvailableCash = myAsset?.assetCash ?? 0;
-  const sellAvailableQuantity = holdingAsset?.quantity ?? 0;
+  const sellAvailableQuantity = holdingAsset?.investCount ?? 0;
 
   // 현재 가격 (추후 선택된 코인의 현재 가격으로 변경 필요)
   const initialPrice = 0;
