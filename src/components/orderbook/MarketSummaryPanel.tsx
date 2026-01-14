@@ -24,8 +24,6 @@ export default function MarketSummaryPanel() {
   // 전일종가는 /topic/trades에서 받아옴
   const previousClose = tradesData?.openPrice ?? 0;
 
-  // 변동률 포맷팅
-
   // 고가/저가 변동률 계산
   const highChangeRate =
     previousClose !== 0 ? ((high - previousClose) / previousClose) * 100 : (categoryInfo?.changeRate ?? 0);
