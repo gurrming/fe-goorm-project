@@ -60,7 +60,7 @@ export default function MarketPanel() {
     filteredCategories = categoryList.filter((category) => isFavoriteCategory(category.categoryId));
   } else if (activeTab === 'holding') {
     // 보유 탭일 때 포트폴리오 데이터 사용
-    portfolioAssets = portfolio?.assets || [];
+    portfolioAssets = portfolio?.assetList || [];
   }
 
   // 검색 필터
@@ -101,12 +101,12 @@ export default function MarketPanel() {
 
       switch (sortTable) {
         case 'evaluateAmount':
-          aValue = a.evaluateAmount;
-          bValue = b.evaluateAmount;
+          aValue = a.evaluationAmount;
+          bValue = b.evaluationAmount;
           break;
         case 'avgBuyPrice':
-          aValue = a.avgBuyPrice;
-          bValue = b.avgBuyPrice;
+          aValue = a.avgPrice;
+          bValue = b.avgPrice;
           break;
         case 'profitRate':
           aValue = a.profitRate ?? 0;

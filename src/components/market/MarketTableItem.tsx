@@ -47,9 +47,10 @@ export default function MarketTableItem({
   if (activeTab === 'holding' && portfolioAsset) {
     const currentPrice = holdingTicker?.price ?? initialCategory?.tradePrice ?? 0;
     const buyAmount =
-      portfolioAsset.buyAmount > 0 ? portfolioAsset.buyAmount : portfolioAsset.avgBuyPrice * portfolioAsset.quantity;
-    const evaluateAmount = currentPrice > 0 ? currentPrice * portfolioAsset.quantity : portfolioAsset.evaluateAmount;
-    const profit = currentPrice > 0 ? evaluateAmount - buyAmount : portfolioAsset.profit;
+      portfolioAsset.buyAmount > 0 ? portfolioAsset.buyAmount : portfolioAsset.avgPrice * portfolioAsset.investCount;
+    const evaluateAmountValue = portfolioAsset.evaluationAmount;
+    const evaluateAmount = currentPrice > 0 ? currentPrice * portfolioAsset.investCount : evaluateAmountValue;
+    const profit = currentPrice > 0 ? evaluateAmount - buyAmount : (portfolioAsset.evaluationProfit ?? 0);
     const profitRate = buyAmount > 0 ? (profit / buyAmount) * 100 : (portfolioAsset.profitRate ?? 0);
 
     const profitColor = profitRate > 0 ? 'text-primary-700' : profitRate < 0 ? 'text-primary-900' : 'text-primary-100';
@@ -71,7 +72,7 @@ export default function MarketTableItem({
         <div className={`text-xs text-right text-primary-100 min-w-[90px] ${rightAlignClass}`}>
           <div className="flex flex-col">
             {/* 보유 수량 */}
-            <span className="font-semibold">{formatQuantity(portfolioAsset.quantity)}</span>
+            <span className="font-semibold">{formatQuantity(portfolioAsset.investCount)}</span>
             <span className="text-[11px] text-primary-300 font-normal">
               {/* 보유 금액 한국 돈으로 바꿨을 때 */}
               {Math.round(evaluateAmount).toLocaleString('ko-KR')}
@@ -82,7 +83,7 @@ export default function MarketTableItem({
         <div className={`text-xs text-right text-primary-100 font-semibold min-w-[80px] ${rightAlignClass}`}>
           <div className="flex flex-col">
             {/* 매수 평균 가격 */}
-            <span>{portfolioAsset.avgBuyPrice.toLocaleString('ko-KR')}</span>
+            <span>{portfolioAsset.avgPrice.toLocaleString('ko-KR')}</span>
             <span className="text-[11px] text-primary-500 font-normal">KRW</span>
           </div>
         </div>

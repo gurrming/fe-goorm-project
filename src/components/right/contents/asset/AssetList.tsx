@@ -36,8 +36,8 @@ const AssetList = () => {
           </tr>
         </thead>
         <tbody className="max-h-[300px] overflow-hidden">
-          {summary?.assets && summary?.assets.length > 0 ? (
-            summary?.assets.map((item: TAssets) => <AssetItem key={item.categoryId} item={item} />)
+          {summary?.assetList && summary?.assetList.length > 0 ? (
+            summary?.assetList.map((item: TAssets) => <AssetItem key={item.symbol} item={item} />)
           ) : (
             <tr>
               <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
