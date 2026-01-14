@@ -8,18 +8,18 @@ export type TMyPortfolio = {
   totalEvaluateAmount: number;
   totalProfit: number;
   totalProfitRate: number;
-  assets: TAssets[];
+  assetList: TAssets[];
 };
 
 export type TAssets = {
-  categoryId: number;
+  avgPrice: number;
   categoryName: string;
   symbol: string;
-  quantity: number;
-  avgBuyPrice: number;
+  investCount: number;
+  currentPrice: number;
   buyAmount: number;
-  evaluateAmount: number;
-  profit: number;
+  evaluationAmount: number;
+  evaluationProfit: number;
   profitRate: number;
 };
 export type TSummary = {
