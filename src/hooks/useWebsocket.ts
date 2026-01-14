@@ -43,7 +43,6 @@ export const WebsocketProvider = ({ children }: { children: ReactNode }) => {
           resolve();
         },
         onStompError: (frame) => {
-          console.error('Broker reported error: ' + frame.headers['message']);
           reject(frame);
         },
         onWebSocketClose: () => {
@@ -64,7 +63,6 @@ export const WebsocketProvider = ({ children }: { children: ReactNode }) => {
   const disconnect = useCallback(() => {
     if (stompClientRef.current && stompClientRef.current.active) {
       stompClientRef.current.deactivate().then(() => {
-        console.log('WebSocket Deactivated');
         setIsConnected(false);
         stompClientRef.current = null;
       });

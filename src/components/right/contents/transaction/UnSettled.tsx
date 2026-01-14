@@ -6,7 +6,6 @@ import type { TUnSettledData } from '../../../../types/transaction';
 const UnSettled = () => {
   const { data } = useGetUnSettledData();
   const { mutate: cancelAll } = usePatchCancelAll();
-  console.log('미체결 내역 : ', data);
 
   return (
     <div className="flex flex-col gap-3">

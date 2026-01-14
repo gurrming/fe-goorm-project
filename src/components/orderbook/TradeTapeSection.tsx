@@ -1,8 +1,12 @@
+import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
 import { formatNumber } from '../../lib/price';
+import useCategoryIdStore from '../../store/useCategoryId';
 import { useTradesStore } from '../../store/websocket/useTradesStore';
 
 export default function TradeTapeSection() {
   const { tradesList, tradesData } = useTradesStore();
+  const categoryId = useCategoryIdStore((state) => state.categoryId);
+  const { data: categoryInfo } = useGetCategoryInfo(categoryId);
 
   // 체결강도 포맷팅
   const formatTradeStrength = (value: number): string => {
@@ -32,11 +36,13 @@ export default function TradeTapeSection() {
         {tradesList.length === 0 ? (
           <div className="text-center text-gray-400 text-[10px] py-4">체결 내역이 없습니다</div>
         ) : (
-          tradesList.map((item) => (
-            <div key={item.time} className="grid grid-cols-2 gap-2 text-[10px] py-1">
-              <div className="text-gray-900 text-right">{formatNumber(item.price)}</div>
+          tradesList.map((item, index) => (
+            <div key={`${item.time}-${index}`} className="grid grid-cols-2 gap-2 text-[10px] py-1">
+              <div className="text-gray-900 text-right">
+                {formatNumber(item.price ?? categoryInfo?.tradePrice ?? 0)}
+              </div>
               <div className={`text-right ${item.buyTaker ? 'text-blue-500' : 'text-red-500'}`}>
-                {formatNumber(item.count)}
+                {formatNumber(item.count ?? categoryInfo?.accVolume ?? 0)}
               </div>
             </div>
           ))

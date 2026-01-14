@@ -28,16 +28,14 @@ export type OrderbookLastPrice = {
 
 // /topic/orderbook/{categoryId}
 export type OrderbookItemData = {
-  price: number;
-  volume: number;
-  changeRate?: number; // 프론트에서 계산한 변동률
+  orderPrice: number;
+  totalRemainingCount: number;
 };
 
 export type OrderbookPayload = {
   categoryId: number;
   buySide: OrderbookItemData[]; // 매수 호가
   sellSide: OrderbookItemData[]; // 매도 호가
-  serverTime: number; // 서버 시간
 };
 
 //topic/chart/{categoryId}

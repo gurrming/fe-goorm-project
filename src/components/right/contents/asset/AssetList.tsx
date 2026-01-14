@@ -10,8 +10,6 @@ const AssetList = () => {
   const { summary } = useAssetStore();
   useAsset(memberId!);
   useSummary(memberId!);
-  // const { assetData } = useAssetStore();
-  // console.log('assetData : ', assetData);
 
   return (
     <div className="flex flex-col gap-3 border-t-[0.3px] border-gray-200 pt-3">
