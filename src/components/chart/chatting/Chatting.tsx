@@ -22,18 +22,9 @@ const Chatting = () => {
   }, [chatHistory]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log('[Chatting] handleKeyDown 호출:', {
-      isConnected,
-    });
-
     if (e.key === 'Enter' && message.trim() !== '' && !isComposing && isConnected) {
-      console.log('[Chatting] 조건 통과 - 메시지 전송:', message);
       sendChat(message);
       setMessage('');
-    } else {
-      console.log('[Chatting] 조건 불일치:', {
-        connected: isConnected,
-      });
     }
   };
 

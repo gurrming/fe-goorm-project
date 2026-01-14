@@ -4,7 +4,6 @@ import type { TSettledData } from '../../../../types/transaction';
 
 const Settled = () => {
   const { data } = useGetSettledData(0, 10);
-  console.log('채결 내역 : ', data);
 
   return (
     <div className="max-h-[650px] overflow-y-auto w-full border-collapse bg-white">
