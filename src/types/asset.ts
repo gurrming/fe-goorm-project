@@ -12,6 +12,7 @@ export type TMyPortfolio = {
 };
 
 export type TAssets = {
+  categoryId: number;
   avgPrice: number;
   categoryName: string;
   symbol: string;
