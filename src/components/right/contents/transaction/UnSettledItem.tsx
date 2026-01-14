@@ -20,7 +20,7 @@ const UnSettledItem = ({ item }: { item: TUnSettledData }) => {
         <div className="flex flex-col">
           <span className="text-center text-bold ">{item.symbol}</span>
           <span
-            className={`text-[11px] font-normal text-[#666666] mt-1 ${item.orderType === 'BUY' ? 'text-[#DD3C44]' : 'text-[#0062DF]'}`}
+            className={`text-[11px] font-normal mt-1 ${item.orderType === 'BUY' ? 'text-[#DD3C44]' : 'text-[#0062DF]'}`}
           >
             {item.orderType === 'BUY' ? '매수' : '매도'}
           </span>
