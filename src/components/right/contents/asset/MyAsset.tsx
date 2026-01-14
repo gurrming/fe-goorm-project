@@ -28,7 +28,7 @@ const MyAsset = () => {
           size="sm"
           text="총평가손익"
           price={(summary?.totalProfit ?? 0).toLocaleString('ko-KR')}
-          priceColor="blue"
+          priceColor={summary?.totalProfit && summary?.totalProfit > 0 ? 'red' : 'blue'}
           type="KRW"
         />
       </div>
@@ -44,7 +44,7 @@ const MyAsset = () => {
           size="sm"
           text="총평가수익률"
           price={(summary?.totalProfitRate ?? 0).toLocaleString('ko-KR')}
-          priceColor="blue"
+          priceColor={summary?.totalProfitRate && summary?.totalProfitRate > 0 ? 'red' : 'blue'}
           type="%"
         />
       </div>
