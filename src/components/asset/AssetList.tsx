@@ -35,7 +35,7 @@ const AssetList = () => {
             <th className=" py-2 text-center text-[11px] font-medium text-[#666666]">평가손익</th>
           </tr>
         </thead>
-        <tbody className="max-h-[300px] overflow-hidden">
+        <tbody className="h-[600px] overflow-hidden">
           {summary?.assetList && summary?.assetList.length > 0 ? (
             summary?.assetList.map((item: TAssets) => <AssetItem key={item.symbol} item={item} />)
           ) : (
