@@ -20,9 +20,11 @@ export default function Layout() {
   return (
     <div>
       <Header />
-      <div className="flex w-full items-center px-40 pt-20">
+      <div className="flex w-full items-start px-40 pt-20 gap-2">
         <Outlet />
-        <MarketPanel />
+        <div className="sticky top-20 self-start">
+          <MarketPanel />
+        </div>
       </div>
     </div>
   );
