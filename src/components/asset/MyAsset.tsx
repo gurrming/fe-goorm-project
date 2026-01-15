@@ -1,5 +1,5 @@
-import { useAssetStore } from '../../../../store/websocket/useAssetStore';
-import Text from '../../../common/Text';
+import { useAssetStore } from '../../store/websocket/useAssetStore';
+import Text from '../common/Text';
 
 const MyAsset = () => {
   const { assetCash, wsTotalAsset, totalAsset, summary } = useAssetStore();

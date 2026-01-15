@@ -1,4 +1,4 @@
-import type { TAssets } from '../../../../types/asset';
+import type { TAssets } from '../../types/asset';
 
 const AssetItem = ({ item }: { item: TAssets }) => {
   const numberOption = {

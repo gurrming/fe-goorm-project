@@ -1,8 +1,8 @@
 import AssetItem from './AssetItem';
-import { useAsset, useSummary } from '../../../../hooks/websocket/useAsset';
-import useUserStore from '../../../../store/useUserStore';
-import { useAssetStore } from '../../../../store/websocket/useAssetStore';
-import type { TAssets } from '../../../../types/asset';
+import { useAsset, useSummary } from '../../hooks/websocket/useAsset';
+import useUserStore from '../../store/useUserStore';
+import { useAssetStore } from '../../store/websocket/useAssetStore';
+import type { TAssets } from '../../types/asset';
 
 const AssetList = () => {
   const user = useUserStore((state) => state.user);
