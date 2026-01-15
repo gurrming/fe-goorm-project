@@ -5,8 +5,9 @@ const MyAsset = () => {
   const { assetCash, wsTotalAsset, totalAsset, summary } = useAssetStore();
 
   return (
-    <div className="flex flex-col items-center gap-3 px-4 pb-4">
-      <div className="flex justify-center w-full gap-8 border-b-[0.3px] border-gray-200 pb-3">
+    <div className="flex flex-col  gap-3 px-4 py-4">
+      <p className="text-[15px] text-[#333333] font-bold">보유자산</p>
+      <div className="flex justify-center w-full gap-20 border-b-[0.3px] border-gray-200 pb-3">
         <Text size="sm" text="보유잔액" price={assetCash?.toLocaleString('ko-KR')} priceColor="black" type="KRW" />
         <Text
           size="sm"
@@ -16,7 +17,7 @@ const MyAsset = () => {
           type="KRW"
         />
       </div>
-      <div className="flex justify-center w-full gap-8">
+      <div className="flex justify-center w-full gap-20">
         <Text
           size="sm"
           text="총 매수"
@@ -32,7 +33,7 @@ const MyAsset = () => {
           type="KRW"
         />
       </div>
-      <div className="flex justify-center w-full gap-8">
+      <div className="flex justify-center w-full gap-20">
         <Text
           size="sm"
           text="총 평가"
