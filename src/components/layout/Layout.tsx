@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import { useWebsocket } from '../../hooks/useWebsocket';
+import MarketPanel from '../market/MarketPanel';
 
 export default function Layout() {
   const { connect, disconnect } = useWebsocket();
@@ -19,8 +20,9 @@ export default function Layout() {
   return (
     <div>
       <Header />
-      <div className="flex w-full flex-col items-center px-40 pt-20">
+      <div className="flex w-full items-center px-40 pt-20">
         <Outlet />
+        <MarketPanel />
       </div>
     </div>
   );

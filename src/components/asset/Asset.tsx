@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AssetList from './AssetList';
 import MyAsset from './MyAsset';
-import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
-import { useGetInvest } from '../../../../api/useGetInvest';
-import useUserStore from '../../../../store/useUserStore';
-import { useAssetStore } from '../../../../store/websocket/useAssetStore';
+import { useGetMyAsset } from '../../api/asset/useGetAsset';
+import { useGetInvest } from '../../api/useGetInvest';
+import useUserStore from '../../store/useUserStore';
+import { useAssetStore } from '../../store/websocket/useAssetStore';
 
 const Asset = () => {
   const { user } = useUserStore();

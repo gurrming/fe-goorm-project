@@ -9,22 +9,33 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0C3887] w-full">
       <div className="flex items-center justify-between px-10 py-3 mx-auto">
-        <Link to="/" className="flex items-center">
-          <span className="text-white text-2xl font-bold">
-            <span className="relative inline-block">HeartBit</span>
-          </span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center">
+            <span className="text-white text-2xl font-bold">
+              <span className="relative inline-block">HeartBit</span>
+            </span>
+          </Link>
+          <Link to="/" className="text-white text-sm font-semibold text-nowrap">
+            거래소
+          </Link>
+          <Link to="/asset" className="text-white text-sm font-semibold text-nowrap">
+            보유자산
+          </Link>
+        </div>
 
         <div className="flex items-center gap-3">
           {user ? (
-            <Button
-              colorType="white"
-              onClick={() => {
-                postLogout.mutate();
-              }}
-            >
-              로그아웃
-            </Button>
+            <>
+              <p className="text-white text-sm font-semibold text-nowrap">{user.nickname}님, 환영합니다.</p>
+              <Button
+                colorType="white"
+                onClick={() => {
+                  postLogout.mutate();
+                }}
+              >
+                로그아웃
+              </Button>
+            </>
           ) : (
             <>
               <Link to="/login">
