@@ -1,4 +1,4 @@
-import type { MutableRefObject, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import * as Stomp from '@stomp/stompjs';
 import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
@@ -6,7 +6,7 @@ import SockJS from 'sockjs-client';
 /**
  * websocket hook
  *
- * connect: 웹소켓 연결 (토큰 필요)
+ * connect: 웹소켓 연결
  * disconnect: 웹소켓 연결 해제
  *
  * @returns
@@ -15,8 +15,8 @@ import SockJS from 'sockjs-client';
 
 type WebsocketContextValue = {
   isConnected: boolean;
-  stompClientRef: MutableRefObject<Stomp.Client | null>;
-  connect: (token?: string) => Promise<void>;
+  stompClientRef: ReturnType<typeof useRef<Stomp.Client | null>>;
+  connect: () => Promise<void>;
   disconnect: () => void;
 };
 
@@ -28,19 +28,14 @@ export const WebsocketProvider = ({ children }: { children: ReactNode }) => {
   const retryCountRef = useRef(0);
   const maxRetryCount = 5;
 
-  const connect = useCallback((token?: string): Promise<void> => {
+  const connect = useCallback((): Promise<void> => {
     return new Promise((resolve, reject) => {
       if (stompClientRef.current && stompClientRef.current.active) {
         resolve();
         return;
       }
-      const headers: Record<string, string> = {};
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
       const client = new Stomp.Client({
         webSocketFactory: () => new SockJS(`${import.meta.env.VITE_WEBSOCKET_URL}`),
-        connectHeaders: headers,
         onConnect: () => {
           setIsConnected(true);
           stompClientRef.current = client;
@@ -48,7 +43,6 @@ export const WebsocketProvider = ({ children }: { children: ReactNode }) => {
           resolve();
         },
         onStompError: (frame) => {
-          console.error('Broker reported error: ' + frame.headers['message']);
           reject(frame);
         },
         onWebSocketClose: () => {
@@ -69,7 +63,6 @@ export const WebsocketProvider = ({ children }: { children: ReactNode }) => {
   const disconnect = useCallback(() => {
     if (stompClientRef.current && stompClientRef.current.active) {
       stompClientRef.current.deactivate().then(() => {
-        console.log('WebSocket Deactivated');
         setIsConnected(false);
         stompClientRef.current = null;
       });

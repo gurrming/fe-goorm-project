@@ -4,7 +4,6 @@ import type { TSettledData } from '../../../../types/transaction';
 
 const Settled = () => {
   const { data } = useGetSettledData(0, 10);
-  console.log('채결 내역 : ', data);
 
   return (
     <div className="max-h-[650px] overflow-y-auto w-full border-collapse bg-white">
@@ -30,7 +29,9 @@ const Settled = () => {
         </thead>
         <tbody>
           {data && data.length > 0 ? (
-            data.map((item: TSettledData, index: number) => <SettledItem item={item} index={index} />)
+            data.map((item: TSettledData, index: number) => (
+              <SettledItem key={item.tradeId} item={item} index={index} />
+            ))
           ) : (
             <tr>
               <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">

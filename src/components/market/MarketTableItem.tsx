@@ -14,6 +14,7 @@ type MarketTableItemProps = {
   portfolioAsset?: TAssets;
   isFavorite: boolean;
   onToggleFavorite: () => void;
+  initialCategory?: Category;
 };
 
 function formatTradeAmountKRW(tradeAmount: number) {
@@ -31,6 +32,7 @@ export default function MarketTableItem({
   portfolioAsset,
   isFavorite,
   onToggleFavorite,
+  initialCategory,
 }: MarketTableItemProps) {
   const setCategoryId = useCategoryIdStore((state) => state.setCategoryId);
 
@@ -43,22 +45,13 @@ export default function MarketTableItem({
 
   // 보유 탭일 때 다른 UI 표시
   if (activeTab === 'holding' && portfolioAsset) {
-    // 실시간 현재가가 있으면 그 값으로 평가금/매수평균가/수익률을 계산
-    const currentPrice = holdingTicker?.price;
+    const currentPrice = holdingTicker?.price ?? initialCategory?.tradePrice ?? 0;
     const buyAmount =
-      portfolioAsset.buyAmount > 0 ? portfolioAsset.buyAmount : portfolioAsset.avgBuyPrice * portfolioAsset.quantity;
-    const evaluateAmount =
-      typeof currentPrice === 'number' && currentPrice > 0
-        ? currentPrice * portfolioAsset.quantity
-        : portfolioAsset.evaluateAmount;
-    const profit =
-      typeof currentPrice === 'number' && currentPrice > 0 ? evaluateAmount - buyAmount : portfolioAsset.profit;
-    const profitRate =
-      typeof currentPrice === 'number' && currentPrice > 0
-        ? buyAmount > 0
-          ? (profit / buyAmount) * 100
-          : 0
-        : (portfolioAsset.profitRate ?? (buyAmount > 0 ? (portfolioAsset.profit / buyAmount) * 100 : 0));
+      portfolioAsset.buyAmount > 0 ? portfolioAsset.buyAmount : portfolioAsset.avgPrice * portfolioAsset.investCount;
+    const evaluateAmountValue = portfolioAsset.evaluationAmount;
+    const evaluateAmount = currentPrice > 0 ? currentPrice * portfolioAsset.investCount : evaluateAmountValue;
+    const profit = currentPrice > 0 ? evaluateAmount - buyAmount : (portfolioAsset.evaluationProfit ?? 0);
+    const profitRate = buyAmount > 0 ? (profit / buyAmount) * 100 : (portfolioAsset.profitRate ?? 0);
 
     const profitColor = profitRate > 0 ? 'text-primary-700' : profitRate < 0 ? 'text-primary-900' : 'text-primary-100';
     const profitPrefix = profitRate > 0 ? '+' : '';
@@ -79,7 +72,7 @@ export default function MarketTableItem({
         <div className={`text-xs text-right text-primary-100 min-w-[90px] ${rightAlignClass}`}>
           <div className="flex flex-col">
             {/* 보유 수량 */}
-            <span className="font-semibold">{formatQuantity(portfolioAsset.quantity)}</span>
+            <span className="font-semibold">{formatQuantity(portfolioAsset.investCount)}</span>
             <span className="text-[11px] text-primary-300 font-normal">
               {/* 보유 금액 한국 돈으로 바꿨을 때 */}
               {Math.round(evaluateAmount).toLocaleString('ko-KR')}
@@ -90,7 +83,7 @@ export default function MarketTableItem({
         <div className={`text-xs text-right text-primary-100 font-semibold min-w-[80px] ${rightAlignClass}`}>
           <div className="flex flex-col">
             {/* 매수 평균 가격 */}
-            <span>{portfolioAsset.avgBuyPrice.toLocaleString('ko-KR')}</span>
+            <span>{portfolioAsset.avgPrice.toLocaleString('ko-KR')}</span>
             <span className="text-[11px] text-primary-500 font-normal">KRW</span>
           </div>
         </div>
@@ -111,10 +104,10 @@ export default function MarketTableItem({
   // 기본 탭 (원화, 관심)
   if (!category) return null;
 
-  // /topic/ticker에서 데이터 가져옴
-  const lastPrice = ticker?.price ?? 0;
-  const changeRate = ticker?.changeRate ?? 0;
-  const tradeAmount = ticker?.amount ?? 0;
+  // 실시간 데이터가 없으면 category의 REST API에서 받아온 값 사용
+  const lastPrice = ticker?.price ?? category.tradePrice ?? 0;
+  const changeRate = ticker?.changeRate ?? category.changeRate ?? 0;
+  const tradeAmount = ticker?.amount ?? category.accAmount ?? 0;
   const isLiveTicker = !!ticker;
 
   // + 이면 primary-700, - 이면 primary-900, 그냥 변동사항 없으면 primary-100
@@ -156,11 +149,12 @@ export default function MarketTableItem({
       >
         <>
           {changePrefix}
-          {changeRate.toFixed(2)}%
+          {Number(changeRate.toFixed(2))}%
         </>
       </FlashComparison>
       <div className="text-xs text-right text-primary-100 font-semibold min-w-[100px]">
-        {formatTradeAmountKRW(tradeAmount)} <span className="text-primary-500 font-normal">백만</span>
+        {formatTradeAmountKRW(tradeAmount)}
+        <span className="text-primary-500 font-normal">백만</span>
       </div>
     </div>
   );

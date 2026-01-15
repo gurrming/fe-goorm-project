@@ -24,7 +24,7 @@ export default function MarketTableHeader({
   onSortClick,
 }: MarketTableHeaderProps) {
   const getSortTable = (item: SortTable): SortPriceArray => {
-    if (activeSortTable !== item) return 'none';
+    if (activeSortTable !== item) return 'base';
     return activeSortPriceArray;
   };
 
@@ -32,9 +32,9 @@ export default function MarketTableHeader({
   if (activeTab === 'holding') {
     return (
       <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-t border-gray-200 bg-[#F7F7F7] px-4">
-        <div className="py-3 text-left text-[11px] font-medium text-primary-300 min-w-0">코인명</div>
+        <div className="py-[6px] text-left text-[11px] font-medium text-primary-300 min-w-0">코인명</div>
         <div
-          className="py-3 text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[90px]"
+          className="py-[6px] text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[90px]"
           onClick={() => onSortClick('evaluateAmount')}
         >
           <div className="flex items-center justify-end gap-1">
@@ -45,7 +45,7 @@ export default function MarketTableHeader({
           </div>
         </div>
         <div
-          className="py-3 text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[80px]"
+          className="py-[6px] text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[80px]"
           onClick={() => onSortClick('avgBuyPrice')}
         >
           <div className="flex items-center justify-end gap-1">
@@ -56,7 +56,7 @@ export default function MarketTableHeader({
           </div>
         </div>
         <div
-          className="py-3 text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[100px]"
+          className="py-[6px] text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[100px]"
           onClick={() => onSortClick('profitRate')}
         >
           <div className="flex items-center justify-end gap-1">
@@ -73,9 +73,9 @@ export default function MarketTableHeader({
   // 기본 탭 (원화, 관심)
   return (
     <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-t border-gray-200 bg-[#F7F7F7] px-4">
-      <div className="py-3 text-left text-[11px] font-medium text-primary-300 min-w-0">종목명</div>
+      <div className="py-[6px] text-left text-[11px] font-medium text-primary-300 min-w-0 pl-7">종목명</div>
       <div
-        className="py-3 text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[90px]"
+        className="py-[6px] text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[90px]"
         onClick={() => onSortClick('lastPrice')}
       >
         <div className="flex items-center justify-end gap-1">
@@ -86,7 +86,7 @@ export default function MarketTableHeader({
         </div>
       </div>
       <div
-        className="py-3 text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[80px]"
+        className="py-[6px] text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[80px]"
         onClick={() => onSortClick('changeRate')}
       >
         <div className="flex items-center justify-end gap-1">
@@ -97,7 +97,7 @@ export default function MarketTableHeader({
         </div>
       </div>
       <div
-        className="py-3 text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[100px]"
+        className="py-[6px] text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[100px]"
         onClick={() => onSortClick('tradeAmount')}
       >
         <div className="flex items-center justify-end gap-1">

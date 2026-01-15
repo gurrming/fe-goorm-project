@@ -1,10 +1,10 @@
 import { usePatchCancel } from '../../../../api/orders/usePatchCancel';
 import type { TUnSettledData } from '../../../../types/transaction';
 
-const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: number; refetch: () => void }) => {
+const UnSettledItem = ({ item }: { item: TUnSettledData }) => {
   const { mutate: cancel } = usePatchCancel();
   const date = new Date(item.orderTime);
-  date.setHours(date.getHours() + 9);
+  date.setHours(date.getHours());
   const TIME = date.toLocaleString('ko-KR', {
     timeZone: 'Asia/Seoul',
     year: 'numeric',
@@ -14,15 +14,15 @@ const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: 
     minute: '2-digit',
   });
   return (
-    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+    <tr key={item.orderId} className="border-b border-gray-200 hover:bg-gray-50">
       <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{TIME}</td>
       <td className={`px-4 py-3 text-xs text-center text-nowrap border-r border-gray-200`}>
         <div className="flex flex-col">
-          <span className="text-center text-bold ">{item.categoryName}</span>
+          <span className="text-center text-bold ">{item.symbol}</span>
           <span
-            className={`text-[11px] font-normal text-[#666666] mt-1 ${item.orderType === '매수' ? 'text-[#DD3C44]' : 'text-[#0062DF]'}`}
+            className={`text-[11px] font-normal mt-1 ${item.orderType === 'BUY' ? 'text-[#DD3C44]' : 'text-[#0062DF]'}`}
           >
-            {item.orderType}
+            {item.orderType === 'BUY' ? '매수' : '매도'}
           </span>
         </div>
       </td>
@@ -49,7 +49,6 @@ const UnSettledItem = ({ item, index, refetch }: { item: TUnSettledData; index: 
         <button
           onClick={() => {
             cancel({ orderId: item.orderId });
-            refetch();
           }}
           className="text-xs text-[#333333] text-nowrap border border-gray-200 rounded-sm px-2 py-1 hover:cursor-pointer"
         >

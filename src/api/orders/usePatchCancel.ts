@@ -14,7 +14,7 @@ export const usePatchCancel = () => {
   return useMutation({
     mutationFn: ({ orderId }: { orderId: number }) => patchCancel(orderId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ['unsettled'] });
     },
     onError: (error) => {
       console.error('주문 취소 실패 : ', error);

@@ -6,7 +6,7 @@ import Right from '../components/right/Right';
 
 export default function MainPage() {
   return (
-    <div className="flex justify-center gap-2">
+    <div className="flex justify-center gap-2 pb-30">
       <div className="flex flex-col gap-2">
         <InfoCoin />
         <div className="flex justify-center gap-2">

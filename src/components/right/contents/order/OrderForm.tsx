@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import OrderFormButtons from './OrderFormButtons';
 import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
-import { useGetMarketItems } from '../../../../api/useGetMarketItems';
-import { useGetPortfolio } from '../../../../api/useGetPortfolio';
+import { useGetCategories } from '../../../../api/useGetCategories';
+import { useGetInvest } from '../../../../api/useGetInvest';
 import { changeNumber, dotQuantity, formatNumber, getPriceTickSize } from '../../../../lib/price';
 import useCategoryIdStore from '../../../../store/useCategoryId';
+import useSelectedPriceStore from '../../../../store/useSelectedPriceStore';
+import useUserStore from '../../../../store/useUserStore';
 import { useModal } from '../../../common/Modal/hooks/useModal';
 import { Modal } from '../../../common/Modal/Modal';
+import type { TAssets } from '../../../../types/asset';
 
 type OrderType = 'buy' | 'sell';
 
@@ -19,19 +22,23 @@ type OrderFormProps = {
 const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const isBuy = orderType === 'buy';
   const { openModal, closeModal } = useModal();
-
+  const user = useUserStore((state) => state.user);
+  const memberId = user?.id;
   // 서버에서 데이터 가져오기
   const { data: myAsset } = useGetMyAsset();
-  const { data: portfolio } = useGetPortfolio();
-  const { data: marketItems } = useGetMarketItems();
+  const { data: portfolio } = useGetInvest(memberId!);
+  const { data: categories } = useGetCategories();
   const { categoryId } = useCategoryIdStore();
 
-  const selectedCategory = marketItems?.find((item) => item.categoryId === categoryId);
-  const holdingAsset = portfolio?.assets?.find((asset) => asset.categoryId === categoryId);
+  const selectedCategory = categories?.find((item) => item.categoryId === categoryId);
+  const holdingAsset = portfolio?.assetList?.find((asset: TAssets) => asset.categoryId === categoryId);
 
   const selectedSymbol = selectedCategory?.symbol;
   const buyAvailableCash = myAsset?.assetCash ?? 0;
-  const sellAvailableQuantity = holdingAsset?.quantity ?? 0;
+  const sellAvailableQuantity = holdingAsset?.investCount ?? 0;
+
+  // 선택된 가격과 수량 store 구독
+  const { selectedPrice, selectedQuantity, clearSelectedPrice } = useSelectedPriceStore();
 
   // 현재 가격 (추후 선택된 코인의 현재 가격으로 변경 필요)
   const initialPrice = 0;
@@ -46,6 +53,18 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
       setPrice(formatNumber(initialPrice));
     }
   }, [initialPrice]);
+
+  useEffect(() => {
+    if (selectedPrice !== null) {
+      setPrice(formatNumber(selectedPrice));
+      // 수량클릭 시 수량도 같이 세팅
+      if (selectedQuantity !== null && selectedQuantity > 0) {
+        setQuantity(dotQuantity(selectedQuantity));
+      }
+      setUserTotalAmount(''); // 가격 변경 시 기존에 적었던 값 초기화
+      clearSelectedPrice(); // 가격 적용 후 store 초기화
+    }
+  }, [selectedPrice, selectedQuantity]);
 
   const changedPriceNum = changeNumber(price);
   const quantityNum = changeNumber(quantity);
@@ -176,7 +195,6 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
         <span>주문유형</span>
         <span>지정가</span>
       </div>
-
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100 ">
         <span>주문가능</span>
         <span className="text-sm font-semibold">
@@ -184,7 +202,6 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
           <span className="text-primary-300 text-[10px] ml-1 font-medium">{isBuy ? 'KRW' : selectedSymbol}</span>
         </span>
       </div>
-
       {/* 매수 가격 */}
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100">
         <span className="flex items-center">
@@ -212,7 +229,6 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
           </div>
         </div>
       </div>
-
       {/* 주문 수량 */}
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100">
         <span className="flex items-center">
@@ -225,7 +241,6 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
           className="w-90 px-2 py-2 text-[13px] text-right border border-gray-300 rounded-[2px]"
         />
       </div>
-
       {/* 주문 총액 */}
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100">
         <span className="flex items-center">
@@ -238,7 +253,6 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
           className="w-90 px-2 py-2 text-[13px] text-right border border-gray-300 rounded-[2px]"
         />
       </div>
-
       {/* 하단 버튼 */}
       <OrderFormButtons
         onReset={handleReset}

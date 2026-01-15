@@ -1,62 +1,90 @@
 import { useEffect } from 'react';
+import { useGetChart } from '../../api/useGetChart';
 import { useChartStore } from '../../store/websocket/useChartStore';
 import { useWebsocket } from '../useWebsocket';
-import type { ChartData } from '../../types/websocket';
+import type { ChartData, RawChartData } from '../../types/websocket';
 
 export const useChart = (categoryId: number) => {
   const { isConnected, stompClientRef } = useWebsocket();
-  const { setChartData, clearChartData } = useChartStore();
-
-  // categoryId가 변경되면 기존 데이터 초기화
-  useEffect(() => {
-    clearChartData();
-  }, [categoryId, clearChartData]);
+  const { addChartData, setChartData } = useChartStore();
+  const { data: chartDataList, refetch } = useGetChart(categoryId, 0, 100);
 
   useEffect(() => {
-    if (isConnected && stompClientRef.current && categoryId) {
-      const subscriptionPath = `/topic/charts/${categoryId}`;
-      console.log(`[useChart] 구독 시작: ${subscriptionPath}`);
+    if (chartDataList) {
+      // API에서 받은 데이터도 문자열로 올 수 있으므로 숫자로 변환 및 유효성 검사
+      const normalizedData = chartDataList
+        .map((item) => {
+          const o = typeof item.o === 'number' ? item.o : parseFloat(String(item.o));
+          const h = typeof item.h === 'number' ? item.h : parseFloat(String(item.h));
+          const l = typeof item.l === 'number' ? item.l : parseFloat(String(item.l));
+          const c = typeof item.c === 'number' ? item.c : parseFloat(String(item.c));
+          const t = typeof item.t === 'number' ? item.t : parseInt(String(item.t), 10);
 
-      const subscription = stompClientRef.current.subscribe(subscriptionPath, (message) => {
-        try {
-          console.log('[useChart] 메시지 수신 (raw):', message.body);
-          // 백엔드에서 string으로 보내므로 number로 변환
-          const rawData = JSON.parse(message.body);
-          const data: ChartData = {
-            t: typeof rawData.t === 'string' ? parseInt(rawData.t, 10) : rawData.t,
-            o: typeof rawData.o === 'string' ? parseFloat(rawData.o) : rawData.o,
-            h: typeof rawData.h === 'string' ? parseFloat(rawData.h) : rawData.h,
-            l: typeof rawData.l === 'string' ? parseFloat(rawData.l) : rawData.l,
-            c: typeof rawData.c === 'string' ? parseFloat(rawData.c) : rawData.c,
-          };
-          console.log('[useChart] 차트 데이터 수신 (parsed):', data);
-          // 함수형 업데이트로 클로저 문제 해결
-          setChartData((prev) => {
-            const updated = [...(prev || []), data];
-            console.log('[useChart] chartData 업데이트:', {
-              이전_길이: prev?.length || 0,
-              새로운_길이: updated.length,
-              전체_데이터: updated,
-            });
-            return updated;
-          });
-        } catch (error) {
-          console.error('[useChart] 데이터 파싱 에러:', error, message.body);
-        }
-      });
+          // 유효하지 않은 데이터는 필터링
+          if (
+            !Number.isFinite(o) ||
+            !Number.isFinite(h) ||
+            !Number.isFinite(l) ||
+            !Number.isFinite(c) ||
+            !Number.isFinite(t)
+          ) {
+            return null;
+          }
 
-      console.log('[useChart] 구독 객체 생성됨:', subscription.id);
+          return { t, o, h, l, c } as ChartData;
+        })
+        .filter((item): item is ChartData => item !== null);
 
-      return () => {
-        console.log(`[useChart] 구독 해제: ${subscriptionPath}`);
-        subscription.unsubscribe();
-      };
-    } else {
-      console.warn('[useChart] 구독 조건 불만족:', {
-        isConnected,
-        hasStompClient: !!stompClientRef.current,
-        categoryId,
-      });
+      setChartData(normalizedData);
     }
-  }, [isConnected, categoryId, setChartData, stompClientRef]);
+    refetch();
+  }, [categoryId, refetch, chartDataList, setChartData]);
+
+  useEffect(() => {
+    if (!isConnected || !stompClientRef.current || !categoryId) {
+      return;
+    }
+
+    const subscriptionPath = `/topic/charts/${categoryId}`;
+    const subscription = stompClientRef.current.subscribe(subscriptionPath, (message) => {
+      try {
+        // 백엔드에서 string으로 보낼 수 있으므로 number로 변환
+        const rawData: RawChartData = JSON.parse(message.body);
+
+        // 숫자 변환 및 유효성 검사
+        const o = typeof rawData.o === 'number' ? rawData.o : parseFloat(String(rawData.o));
+        const h = typeof rawData.h === 'number' ? rawData.h : parseFloat(String(rawData.h));
+        const l = typeof rawData.l === 'number' ? rawData.l : parseFloat(String(rawData.l));
+        const c = typeof rawData.c === 'number' ? rawData.c : parseFloat(String(rawData.c));
+        const t = typeof rawData.t === 'number' ? rawData.t : parseInt(String(rawData.t), 10);
+
+        // NaN이나 Infinity 체크
+        if (
+          !Number.isFinite(o) ||
+          !Number.isFinite(h) ||
+          !Number.isFinite(l) ||
+          !Number.isFinite(c) ||
+          !Number.isFinite(t)
+        ) {
+          return;
+        }
+
+        const data: ChartData = {
+          t,
+          o,
+          h,
+          l,
+          c,
+        };
+        // 함수형 업데이트로 클로저 문제 해결
+        addChartData(data);
+      } catch (error) {
+        console.error('[useChart] 데이터 파싱 에러:', error, message.body);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [isConnected, categoryId, addChartData, stompClientRef]);
 };

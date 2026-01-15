@@ -7,8 +7,8 @@ import MarketTabs from './MarketTabs';
 import { useDeleteFavorite } from '../../api/favorite/useDeleteFavorite';
 import { useGetFavorite } from '../../api/favorite/useGetFavorite';
 import { usePostFavorite } from '../../api/favorite/usePostFavorite';
-import { useGetMarketItems } from '../../api/useGetMarketItems';
-import { useGetPortfolio } from '../../api/useGetPortfolio';
+import { useGetCategories } from '../../api/useGetCategories';
+import { useGetInvest } from '../../api/useGetInvest';
 import { useTicker } from '../../hooks/websocket/useTicker';
 import useCategoryIdStore from '../../store/useCategoryId';
 import useUserStore from '../../store/useUserStore';
@@ -19,9 +19,9 @@ import type { Category } from '../../types/category';
 import type { TabKey, SortTable, SortPriceArray } from '../../types/market';
 
 function getNextSortOrder(current: SortPriceArray): SortPriceArray {
-  if (current === 'none') return 'descending';
+  if (current === 'base') return 'descending';
   if (current === 'descending') return 'ascending';
-  return 'none';
+  return 'base';
 }
 
 export default function MarketPanel() {
@@ -33,13 +33,13 @@ export default function MarketPanel() {
   const [activeTab, setActiveTab] = useState<TabKey>('krw');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortTable, setSortTable] = useState<SortTable>('lastPrice');
-  const [sortPriceArray, setSortPriceArray] = useState<SortPriceArray>('none');
+  const [sortPriceArray, setSortPriceArray] = useState<SortPriceArray>('base');
 
-  // 마켓 데이터 조회
-  const { data: categories } = useGetMarketItems();
+  // 마켓 전체 데이터 조회
+  const { data: categories } = useGetCategories();
 
   // 포트폴리오 - 보유 데이터 조회
-  const { data: portfolio } = useGetPortfolio();
+  const { data: portfolio } = useGetInvest(memberId!);
 
   // 관심 종목 목록 조회
   const { data: Interest } = useGetFavorite(memberId ?? null);
@@ -49,10 +49,8 @@ export default function MarketPanel() {
   const isFavoriteCategory = (categoryId: number) =>
     Interest?.some((interest) => interest.categoryId === categoryId) || false;
 
-  // Category 배열 그대로 사용 (lastPrice, changeRate, tradeAmount는 다른 API에서 받아와서 병합 예정)
-  const categoryList: Category[] = Array.isArray(categories) ? categories : [];
-
   // 탭별 필터링
+  const categoryList: Category[] = categories ?? [];
   let filteredCategories: Category[] = [];
   let portfolioAssets: TAssets[] = [];
 
@@ -62,7 +60,7 @@ export default function MarketPanel() {
     filteredCategories = categoryList.filter((category) => isFavoriteCategory(category.categoryId));
   } else if (activeTab === 'holding') {
     // 보유 탭일 때 포트폴리오 데이터 사용
-    portfolioAssets = portfolio?.assets || [];
+    portfolioAssets = portfolio?.assetList || [];
   }
 
   // 검색 필터
@@ -80,51 +78,63 @@ export default function MarketPanel() {
       )
     : portfolioAssets;
 
-  // 정렬
-  const sortedCategories = searchFilteredCategories;
+  let sortedCategories = searchFilteredCategories;
   let sortedPortfolioAssets = searchFilteredPortfolioAssets;
 
-  // 실시간 티커 구독 대상
-  // - 원화/관심: 현재 리스트에 보이는 종목들
-  // - 보유: 내 보유 종목들(수익률을 현재가로 계산하려면 필요)
+  // 오름차순은 1, 내림차순은 -1, base는 0 되도록 오름/내림차순 로직 구현
+  const direction = sortPriceArray === 'ascending' ? 1 : sortPriceArray === 'descending' ? -1 : 0;
+
+  const getCategorySortValue = (category: Category): number => {
+    switch (sortTable) {
+      case 'lastPrice':
+        return category.tradePrice ?? 0;
+      case 'changeRate':
+        return category.changeRate ?? 0;
+      case 'tradeAmount':
+        return category.accAmount ?? 0;
+      default:
+        return 0;
+    }
+  };
+
+  const getHoldingSortValue = (asset: TAssets): number => {
+    switch (sortTable) {
+      case 'evaluateAmount':
+        return asset.evaluationAmount ?? 0;
+      case 'avgBuyPrice':
+        return asset.avgPrice ?? 0;
+      case 'profitRate':
+        return asset.profitRate ?? 0;
+      default:
+        return 0;
+    }
+  };
+
   const tickerCategoryIds =
     activeTab === 'holding'
       ? searchFilteredPortfolioAssets.map((a) => a.categoryId)
       : sortedCategories.map((c) => c.categoryId);
 
-  // 선택된 종목은 다른 패널에서도 구독할 수 있으므로(중복 구독 방지) 여기서는 제외
   useTicker(tickerCategoryIds.filter((id) => id !== selectedCategoryId));
 
-  if (activeTab === 'holding') {
-    // 보유 탭 정렬
-    sortedPortfolioAssets = [...searchFilteredPortfolioAssets].sort((a, b) => {
-      let aValue: number;
-      let bValue: number;
-
-      switch (sortTable) {
-        case 'evaluateAmount':
-          aValue = a.evaluateAmount;
-          bValue = b.evaluateAmount;
-          break;
-        case 'avgBuyPrice':
-          aValue = a.avgBuyPrice;
-          bValue = b.avgBuyPrice;
-          break;
-        case 'profitRate':
-          aValue = a.profitRate ?? 0;
-          bValue = b.profitRate ?? 0;
-          break;
-        default:
-          return 0;
-      }
-
-      if (sortPriceArray === 'ascending') {
-        return aValue - bValue;
-      } else if (sortPriceArray === 'descending') {
-        return bValue - aValue;
-      }
-      return 0;
-    });
+  // sort() 함수는 비교 함수의 반환값으로 순서를 결정:
+  // - 음수: a가 b보다 앞에 옴
+  // - 0: 순서 유지
+  // - 양수: a가 b보다 뒤에 옴
+  if (direction !== 0) {
+    if (activeTab === 'holding') {
+      sortedPortfolioAssets = [...searchFilteredPortfolioAssets].sort((a, b) => {
+        const aValue = getHoldingSortValue(a);
+        const bValue = getHoldingSortValue(b);
+        return (aValue - bValue) * direction;
+      });
+    } else {
+      sortedCategories = [...searchFilteredCategories].sort((a, b) => {
+        const aValue = getCategorySortValue(a);
+        const bValue = getCategorySortValue(b);
+        return (aValue - bValue) * direction;
+      });
+    }
   }
 
   const handleSortClick = (item: SortTable) => {
@@ -180,7 +190,7 @@ export default function MarketPanel() {
   };
 
   return (
-    <div className="w-[400px] bg-white flex flex-col h-[calc(100vh-120px)]">
+    <div className="w-[400px] bg-white flex flex-col h-full-calc(100vh-120px)">
       <MarketSearchBar searchKeyword={searchKeyword} onSearchKeywordChange={setSearchKeyword} />
       <MarketTabs activeTab={activeTab} onTabChange={setActiveTab} />
       <div className="w-full bg-white flex flex-col flex-1 min-h-0 overflow-hidden">
@@ -192,7 +202,7 @@ export default function MarketPanel() {
             onSortClick={handleSortClick}
           />
         </div>
-        <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0" style={{ height: 0 }}>
+        <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0">
           {activeTab === 'holding' ? (
             sortedPortfolioAssets.length === 0 ? (
               <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">
@@ -201,15 +211,19 @@ export default function MarketPanel() {
                 </div>
               </div>
             ) : (
-              sortedPortfolioAssets.map((asset) => (
-                <MarketTableItem
-                  key={asset.categoryId}
-                  activeTab={activeTab}
-                  portfolioAsset={asset}
-                  isFavorite={isFavoriteCategory(asset.categoryId)}
-                  onToggleFavorite={() => handleToggleFavorite(asset.categoryId)}
-                />
-              ))
+              sortedPortfolioAssets.map((asset) => {
+                const initialCategory = categoryList.find((item) => item.categoryId === asset.categoryId);
+                return (
+                  <MarketTableItem
+                    key={asset.categoryId}
+                    activeTab={activeTab}
+                    portfolioAsset={asset}
+                    initialCategory={initialCategory}
+                    isFavorite={isFavoriteCategory(asset.categoryId)}
+                    onToggleFavorite={() => handleToggleFavorite(asset.categoryId)}
+                  />
+                );
+              })
             )
           ) : sortedCategories.length === 0 ? (
             <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">

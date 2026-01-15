@@ -17,7 +17,6 @@ export const useTrades = () => {
   useEffect(() => {
     if (isConnected && stompClientRef.current && categoryId) {
       const topic = `/topic/trades/${categoryId}`;
-      console.log('[useTrades] 구독 시작:', topic);
 
       const subscription = stompClientRef.current.subscribe(topic, (message) => {
         try {
@@ -30,7 +29,6 @@ export const useTrades = () => {
       });
 
       return () => {
-        console.log('[useTrades] 구독 해제:', topic);
         subscription.unsubscribe();
       };
     }

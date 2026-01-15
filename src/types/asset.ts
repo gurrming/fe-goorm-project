@@ -4,19 +4,23 @@ export type TMyAsset = {
 };
 
 export type TMyPortfolio = {
-  summary: TSummary;
-  assets: TAssets[];
+  totalBuyAmount: number;
+  totalEvaluation: number;
+  totalProfit: number;
+  totalProfitRate: number;
+  assetList: TAssets[];
 };
 
 export type TAssets = {
   categoryId: number;
+  avgPrice: number;
   categoryName: string;
   symbol: string;
-  quantity: number;
-  avgBuyPrice: number;
+  investCount: number;
+  currentPrice: number;
   buyAmount: number;
-  evaluateAmount: number;
-  profit: number;
+  evaluationAmount: number;
+  evaluationProfit: number;
   profitRate: number;
 };
 export type TSummary = {
@@ -27,6 +31,5 @@ export type TSummary = {
 };
 
 export type TWSAssets = {
-  evaluateAmount: number;
-  profit: number;
+  totalAsset: number;
 };
