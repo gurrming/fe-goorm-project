@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Asset from './contents/asset/Asset';
 import OrderForm from './contents/order/OrderForm';
 import Transaction from './contents/transaction/Transaction';
 import Tab from './Tab';
@@ -101,7 +100,6 @@ const Right = () => {
       <Tab handleTab={handleTab} tab={tab} />
       {tab === 'buy' && <OrderForm orderType="buy" onOrder={handleOrder} reset={reset} />}
       {tab === 'sell' && <OrderForm orderType="sell" onOrder={handleOrder} reset={reset} />}
-      {tab === 'asset' && <Asset />}
       {tab === 'transaction' && <Transaction />}
     </div>
   );
