@@ -17,14 +17,17 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           {user ? (
-            <Button
-              colorType="white"
-              onClick={() => {
-                postLogout.mutate();
-              }}
-            >
-              로그아웃
-            </Button>
+            <>
+              <p className="text-white text-sm font-semibold text-nowrap">{user.nickname}님, 환영합니다.</p>
+              <Button
+                colorType="white"
+                onClick={() => {
+                  postLogout.mutate();
+                }}
+              >
+                로그아웃
+              </Button>
+            </>
           ) : (
             <>
               <Link to="/login">
