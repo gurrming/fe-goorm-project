@@ -18,3 +18,7 @@ export type TSignupForm = {
   password: string;
   nickname: string;
 };
+
+export type TExistsResponse = {
+  isExists: boolean;
+};
