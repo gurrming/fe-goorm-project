@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import useUserStore from '../../store/useUserStore';
 import { request } from '../common/axiosInstance';
-import type { TLoginForm, TLoginResponse } from '../../types/member';
+import type { TLoginForm, TLoginResponse, TLoginErrorResponse } from '../../types/member';
 
 const postLogin = (data: TLoginForm) => {
   return request<TLoginResponse>({
@@ -21,9 +21,12 @@ export const usePostLogin = () => {
     mutationFn: postLogin,
     onSuccess: (data: TLoginResponse) => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      localStorage.setItem('accessToken', data.data.accessToken);
-      setUser({ id: data.data.memberId, nickname: data.data.memberNickname });
+      localStorage.setItem('accessToken', data.result.accessToken);
+      setUser({ id: data.result.memberId, nickname: data.result.memberNickname });
       navigate('/');
+    },
+    onError: (error: TLoginErrorResponse) => {
+      alert(error.response.data.message);
     },
   });
 };
