@@ -2,47 +2,26 @@ import { createChart, CandlestickSeries, ColorType, LineSeries } from 'lightweig
 import React, { useRef, useEffect } from 'react';
 import { calculateMovingAverageSeriesData } from './CalculateMovingAverageSeries';
 import type { ChartData } from '../../types/websocket';
-import type { CandlestickData, LineData, Time } from 'lightweight-charts';
+import type { CandlestickData, ISeriesApi, LineData, LogicalRange, Time } from 'lightweight-charts';
 
-const Chart = ({ data }: { data: ChartData[] }) => {
+const Chart = ({
+  data,
+  fetchNextPage,
+  hasMore,
+}: {
+  data: ChartData[];
+  fetchNextPage: () => void;
+  hasMore: boolean;
+}) => {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
+  const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
+  const ma5SeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
+  const ma10SeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
+
+  const isFetching = useRef(false);
+
   useEffect(() => {
     if (!chartContainerRef.current || !data) return;
-
-    const sortedData = [...data]
-      .filter((item: ChartData) => {
-        // 유효한 시간 값인지 확인
-        const time = typeof item.t === 'number' ? item.t : new Date(item.t).getTime();
-        return Number.isFinite(time);
-      })
-      .sort((a: ChartData, b: ChartData) => {
-        const aTime = typeof a.t === 'number' ? a.t : new Date(a.t).getTime();
-        const bTime = typeof b.t === 'number' ? b.t : new Date(b.t).getTime();
-        return aTime - bTime;
-      });
-
-    const candlestickData: CandlestickData[] = sortedData
-      .filter((item: ChartData) => {
-        // 유효한 숫자인지 확인
-        const time = typeof item.t === 'number' ? item.t : new Date(item.t).getTime();
-        return (
-          Number.isFinite(time) &&
-          Number.isFinite(item.o) &&
-          Number.isFinite(item.h) &&
-          Number.isFinite(item.l) &&
-          Number.isFinite(item.c)
-        );
-      })
-      .map((item: ChartData) => {
-        const time = typeof item.t === 'number' ? item.t : new Date(item.t).getTime();
-        return {
-          time: (time / 1000) as Time,
-          open: item.o,
-          high: item.h,
-          low: item.l,
-          close: item.c,
-        };
-      });
 
     const chartOptions = {
       layout: { textColor: 'black', background: { type: ColorType.Solid, color: 'white' }, fontSize: 10 },
@@ -94,21 +73,57 @@ const Chart = ({ data }: { data: ChartData[] }) => {
       wickDownColor: '#0062DF',
     });
 
-    const ma5Data = calculateMovingAverageSeriesData(candlestickData, 5);
-    const ma10Data = calculateMovingAverageSeriesData(candlestickData, 10);
-
     const ma5Series = chart.addSeries(LineSeries, { color: '#EC7871', lineWidth: 1 });
     const ma10Series = chart.addSeries(LineSeries, { color: '#48B888', lineWidth: 1 });
 
-    ma5Series.setData(ma5Data as LineData<Time>[]);
-    ma10Series.setData(ma10Data as LineData<Time>[]);
-    candlestickSeries.setData(candlestickData);
+    seriesRef.current = candlestickSeries;
+    ma5SeriesRef.current = ma5Series;
+    ma10SeriesRef.current = ma10Series;
 
+    const handleVisibleLogicalRangeChange = (newVisibleLogicalRange: LogicalRange | null) => {
+      if (newVisibleLogicalRange === null) return;
+
+      if (newVisibleLogicalRange.from < 10 && hasMore && !isFetching.current) {
+        isFetching.current = true;
+        fetchNextPage();
+      }
+    };
+    chart.timeScale().subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange);
     chart.timeScale().fitContent();
 
     return () => {
       chart.remove();
     };
+  }, []);
+
+  useEffect(() => {
+    if (!seriesRef.current || !data || data.length === 0) return;
+    const sortedData = [...data]
+      .filter((item) => {
+        const t = typeof item.t === 'number' ? item.t : parseInt(item.t, 10);
+        return Number.isFinite(t) && Number.isFinite(item.c);
+      })
+      .sort((a, b) => a.t - b.t); // 시간 오름차순 정렬 필수
+
+    const candlestickData: CandlestickData[] = sortedData.map((item) => ({
+      time: (item.t / 1000) as Time,
+      open: item.o,
+      high: item.h,
+      low: item.l,
+      close: item.c,
+    }));
+
+    // 차트 데이터 업데이트
+    seriesRef.current.setData(candlestickData);
+
+    // 이동평균선 업데이트
+    if (ma5SeriesRef.current && ma10SeriesRef.current) {
+      ma5SeriesRef.current.setData(calculateMovingAverageSeriesData(candlestickData, 5) as LineData<Time>[]);
+      ma10SeriesRef.current.setData(calculateMovingAverageSeriesData(candlestickData, 10) as LineData<Time>[]);
+    }
+
+    // 데이터 로딩이 끝났으므로 페칭 잠금 해제
+    isFetching.current = false;
   }, [data]);
 
   return (
