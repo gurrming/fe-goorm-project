@@ -26,6 +26,7 @@ const Chatting = () => {
     if (e.key === 'Enter' && message.trim() !== '' && !isComposing && isConnected) {
       sendChat(message);
       setMessage('');
+      setTextLength(0);
     }
   };
 
