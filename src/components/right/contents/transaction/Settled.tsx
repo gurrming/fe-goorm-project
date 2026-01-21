@@ -1,9 +1,25 @@
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import SettledItem from './SettledItem';
-import { useGetSettledData } from '../../../../api/transaction/useGetSettledData';
+import { useGetInfiniteSettled } from '../../../../hooks/infinite/useGetInfiniteSettled';
+import useUserStore from '../../../../store/useUserStore';
 import type { TSettledData } from '../../../../types/transaction';
 
 const Settled = () => {
-  const { data } = useGetSettledData(0, 10);
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+  const { user } = useUserStore();
+  if (!user) return null;
+  const memberId = user.id;
+
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteSettled(memberId, 10);
+
+  useEffect(() => {
+    if (inView && !isFetching && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   return (
     <div className="max-h-[650px] overflow-y-auto w-full border-collapse bg-white">
@@ -28,8 +44,10 @@ const Settled = () => {
           </tr>
         </thead>
         <tbody>
-          {data && data.length > 0 ? (
-            data.map((item: TSettledData) => <SettledItem key={item.tradeId} item={item} />)
+          {infiniteData && infiniteData.pages.length > 0 ? (
+            infiniteData.pages.map((page) =>
+              page.map((item: TSettledData) => <SettledItem key={item.tradeId} item={item} />),
+            )
           ) : (
             <tr>
               <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
@@ -37,6 +55,7 @@ const Settled = () => {
               </td>
             </tr>
           )}
+          <div ref={ref} />
         </tbody>
       </table>
     </div>
