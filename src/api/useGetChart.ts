@@ -1,9 +1,9 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import { request } from './common/axiosInstance';
-import type { ChartData, RawChartData } from '../types/websocket';
+import type { ChartData } from '../types/websocket';
 
 export const getChart = (categoryId: number, lastId: number, size: number): Promise<ChartData[]> => {
-  return request<RawChartData[]>({
+  return request<ChartData[]>({
     method: 'GET',
     url: `/api/trades/chart?categoryId=${categoryId}&lastId=${lastId}&size=${size}`,
   }).then((res) =>
@@ -24,7 +24,7 @@ export const getChart = (categoryId: number, lastId: number, size: number): Prom
         ) {
           return undefined;
         }
-        return { t, o, h, l, c } as ChartData;
+        return { t, o, h, l, c, tradeId: item.tradeId ? item.tradeId : undefined } as ChartData;
       })
       .filter((item): item is ChartData => Boolean(item)),
   );
@@ -32,7 +32,7 @@ export const getChart = (categoryId: number, lastId: number, size: number): Prom
 
 export const useGetChart = (categoryId: number, lastId: number, size: number): UseQueryResult<ChartData[], Error> => {
   return useQuery<ChartData[], Error>({
-    queryKey: ['chart', categoryId],
+    queryKey: ['chart', categoryId, lastId, size],
     queryFn: () => getChart(categoryId, lastId, size),
   });
 };
