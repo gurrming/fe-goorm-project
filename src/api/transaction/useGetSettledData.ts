@@ -3,7 +3,7 @@ import useUserStore from '../../store/useUserStore';
 import { request } from '../common/axiosInstance';
 import type { TSettledData } from '../../types/transaction';
 
-const getSettledData = (memberId: number, page?: number, size?: number): Promise<TSettledData[]> => {
+export const getSettledData = (memberId: number, page?: number, size?: number): Promise<TSettledData[]> => {
   return request<TSettledData[]>({
     method: 'GET',
     url: `/api/trades/my?memberId=${memberId}&page=${page}&size=${size}`,
