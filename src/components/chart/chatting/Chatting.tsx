@@ -39,19 +39,19 @@ const Chatting = () => {
           </div>
         )}
         {chatHistory.length > 0 &&
-          chatHistory.map((chat, index) => {
-            const prevChat = index > 0 ? chatHistory[index - 1] : null;
+          chatHistory.map((chat) => {
+            const prevChat = chat.chatId > 0 ? chatHistory.find((c) => c.chatId === chat.chatId - 1) : null;
             let hideDay = false;
             const sendDay = chat.chatTime.split('T')[0];
 
             if (prevChat) {
               // 날짜가 다르면 hideDay = false (날짜 표시), 같으면 hideDay = true (날짜 숨김)
-              hideDay = sendDay === prevChat.chatTime.split('T')[0];
+              hideDay = sendDay === prevChat.chatTime?.split('T')?.[0];
             }
 
             return (
               <Chat
-                key={index}
+                key={chat.chatId}
                 nickname={chat.memberNickname}
                 message={chat.chatContent}
                 time={chat.chatTime}

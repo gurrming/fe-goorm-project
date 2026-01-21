@@ -1,6 +1,6 @@
 import type { TSettledData } from '../../../../types/transaction';
 
-const SettledItem = ({ item, index }: { item: TSettledData; index: number }) => {
+const SettledItem = ({ item }: { item: TSettledData }) => {
   const date = new Date(item.tradeTime);
   date.setHours(date.getHours());
   const TIME = date.toLocaleString('ko-KR', {
@@ -12,7 +12,7 @@ const SettledItem = ({ item, index }: { item: TSettledData; index: number }) => 
     minute: '2-digit',
   });
   return (
-    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+    <tr key={item.tradeId} className="border-b border-gray-200 hover:bg-gray-50">
       <td className="px-4 py-3 text-xs text-[#333333] border-r border-gray-200">{TIME}</td>
       <td className={`px-4 py-3 text-xs text-center  border-r border-gray-200`}>
         <div className="flex flex-col gap-1">

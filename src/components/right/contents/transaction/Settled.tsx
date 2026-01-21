@@ -29,9 +29,7 @@ const Settled = () => {
         </thead>
         <tbody>
           {data && data.length > 0 ? (
-            data.map((item: TSettledData, index: number) => (
-              <SettledItem key={item.tradeId} item={item} index={index} />
-            ))
+            data.map((item: TSettledData) => <SettledItem key={item.tradeId} item={item} />)
           ) : (
             <tr>
               <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
