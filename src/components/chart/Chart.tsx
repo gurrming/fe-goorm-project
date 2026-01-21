@@ -98,12 +98,15 @@ const Chart = ({
 
   useEffect(() => {
     if (!seriesRef.current || !data || data.length === 0) return;
-    const sortedData = [...data]
-      .filter((item) => {
-        const t = typeof item.t === 'number' ? item.t : parseInt(item.t, 10);
-        return Number.isFinite(t) && Number.isFinite(item.c);
-      })
-      .sort((a, b) => a.t - b.t); // 시간 오름차순 정렬 필수
+
+    const uniqueDataMap = new Map();
+    data.forEach((item) => {
+      const t = typeof item.t === 'number' ? item.t : parseInt(item.t, 10);
+      if (Number.isFinite(t) && Number.isFinite(item.c)) {
+        uniqueDataMap.set(t, { ...item, t });
+      }
+    });
+    const sortedData = Array.from(uniqueDataMap.values()).sort((a, b) => a.t - b.t);
 
     const candlestickData: CandlestickData[] = sortedData.map((item) => ({
       time: (item.t / 1000) as Time,
