@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Chart from './Chart';
 import Chatting from './chatting/Chatting';
 import PriceInfo from './PriceInfo';
 import Tab from './Tab';
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
+import { useGetInfiniteChart } from '../../hooks/useGetInfiniteChart';
 import { useChart } from '../../hooks/websocket/useChart';
 import { useTicker } from '../../hooks/websocket/useTicker';
 import useCategoryIdStore from '../../store/useCategoryId';
@@ -23,7 +24,13 @@ const InfoCoin = () => {
     setTab(tab);
   };
 
-  const chartDataList = useChartStore((state) => state.chartDataList);
+  const realtimeData = useChartStore((state) => state.chartDataList);
+  const { data: infiniteData, fetchNextPage, hasNextPage } = useGetInfiniteChart(categoryId, 300);
+
+  const mergedData = useMemo(() => {
+    const historical = infiniteData ? infiniteData.pages.flat() : [];
+    return [...historical, ...realtimeData];
+  }, [infiniteData, realtimeData]);
 
   return (
     <div className="flex flex-col bg-white">
@@ -31,8 +38,8 @@ const InfoCoin = () => {
       {tab === 'price' && (
         <div className="flex flex-col">
           <PriceInfo categoryId={categoryId} quote="KRW" symbol={categoryInfo?.symbol} />
-          {chartDataList && chartDataList.length > 0 ? (
-            <Chart data={chartDataList} />
+          {mergedData && mergedData.length > 0 ? (
+            <Chart data={mergedData} fetchNextPage={fetchNextPage} hasMore={hasNextPage} />
           ) : (
             <div className="flex justify-center items-center h-[450px]">
               <p className="text-center text-gray-500">차트 데이터가 없습니다.</p>

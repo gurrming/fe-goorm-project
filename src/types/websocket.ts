@@ -52,4 +52,5 @@ export type ChartData = {
   h: number;
   l: number;
   c: number;
+  tradeId?: number;
 };
