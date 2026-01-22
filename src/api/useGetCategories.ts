@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { request } from './common/axiosInstance';
 import type { Category } from '../types/category';
 
-export const getCategories = (): Promise<Category[]> => {
+export const getCategories = () => {
   return request<Category[]>({
     method: 'GET',
     url: '/api/categories',
