@@ -1,5 +1,6 @@
 import { create as actualCreate } from 'zustand';
 import { act } from '@testing-library/react';
+import { beforeEach } from 'vitest';
 
 // 앱에 선언된 모든 스토어에 대해 재설정 함수를 저장
 const storeResetFns = new Set();
