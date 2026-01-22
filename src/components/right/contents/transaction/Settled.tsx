@@ -55,7 +55,7 @@ const Settled = () => {
               </td>
             </tr>
           )}
-          <div ref={ref} />
+          <tr ref={ref} />
         </tbody>
       </table>
     </div>
