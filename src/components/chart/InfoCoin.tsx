@@ -4,7 +4,7 @@ import Chatting from './chatting/Chatting';
 import PriceInfo from './PriceInfo';
 import Tab from './Tab';
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
-import { useGetInfiniteChart } from '../../hooks/useGetInfiniteChart';
+import { useGetInfiniteChart } from '../../hooks/infinite/useGetInfiniteChart';
 import { useChart } from '../../hooks/websocket/useChart';
 import { useTicker } from '../../hooks/websocket/useTicker';
 import useCategoryIdStore from '../../store/useCategoryId';

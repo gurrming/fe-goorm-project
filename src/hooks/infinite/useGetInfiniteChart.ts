@@ -1,6 +1,6 @@
 import { useInfiniteQuery, type UseInfiniteQueryResult, type InfiniteData } from '@tanstack/react-query';
-import { getChart } from '../api/useGetChart';
-import type { ChartData } from '../types/websocket';
+import { getChart } from '../../api/useGetChart';
+import type { ChartData } from '../../types/websocket';
 
 export const useGetInfiniteChart = (
   categoryId: number,
