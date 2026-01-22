@@ -8,7 +8,7 @@ interface GetOrderbookParams {
   pageable: TOrderbookPageable;
 }
 
-const getOrderbook = ({ categoryId, orderType, pageable }: GetOrderbookParams)=> {
+const getOrderbook = ({ categoryId, orderType, pageable }: GetOrderbookParams): Promise<TOrderbookResponse[]> => {
   return request<TOrderbookResponse[]>({
     method: 'GET',
     url: `/api/orders/orderbook`,
