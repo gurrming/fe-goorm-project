@@ -22,7 +22,7 @@ export default function MarketSummaryPanel() {
   const amount = ticker?.amount ?? categoryInfo?.accAmount ?? 0;
 
   // 전일종가는 /topic/trades에서 받아옴
-  const previousClose = tradesData?.openPrice ?? 0;
+  const previousClose = tradesData?.openPrice ?? categoryInfo?.openPrice ?? 0;
 
   // 고가/저가 변동률 계산
   const highChangeRate =

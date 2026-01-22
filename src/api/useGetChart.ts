@@ -2,7 +2,7 @@ import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import { request } from './common/axiosInstance';
 import type { ChartData } from '../types/websocket';
 
-export const getChart = (categoryId: number, lastId: number, size: number): Promise<ChartData[]> => {
+export const getChart = (categoryId: number, lastId: number, size: number)=> {
   return request<ChartData[]>({
     method: 'GET',
     url: `/api/trades/chart?categoryId=${categoryId}&lastId=${lastId}&size=${size}`,

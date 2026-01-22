@@ -3,7 +3,7 @@ import useUserStore from '../../store/useUserStore';
 import { request } from '../common/axiosInstance';
 import type { TUnSettledData } from '../../types/transaction';
 
-const getUnSettledData = (memberId: number): Promise<TUnSettledData[]> => {
+const getUnSettledData = (memberId: number)=> {
   return request<TUnSettledData[]>({
     method: 'GET',
     url: `/api/orders/open?memberId=${memberId}`,
