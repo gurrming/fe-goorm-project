@@ -7,7 +7,7 @@ export type Interest = {
   categoryId: number;
 };
 
-export const getInterests = (memberId: number): Promise<Interest[]> => {
+export const getInterests = (memberId: number) => {
   return request<Interest[]>({
     method: 'GET',
     url: '/api/interests',
