@@ -6,7 +6,7 @@ export const getChatList = (
   categoryId: number,
   lastChatroomId?: number | undefined,
   size?: number,
-): Promise<TChat[]> => {
+)=> {
   const queryParam = lastChatroomId ? `?lastChatroomId=${lastChatroomId}&` : '?';
   return request<TChat[]>({
     method: 'GET',

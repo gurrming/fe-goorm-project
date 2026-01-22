@@ -7,7 +7,7 @@ export type CreateInterestRequest = {
   categoryId: number;
 };
 
-export const postInterest = (data: CreateInterestRequest): Promise<Interest> => {
+export const postInterest = (data: CreateInterestRequest)=> {
   return request<Interest>({
     method: 'POST',
     url: '/api/interests',
