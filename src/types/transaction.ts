@@ -11,6 +11,9 @@ export type TSettledData = {
   symbol: string;
 };
 
+
+export type TTrade = TSettledData;
+
 export type TUnSettledData = {
   orderId: number;
   categoryId: number;
