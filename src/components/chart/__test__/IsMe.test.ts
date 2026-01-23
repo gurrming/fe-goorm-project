@@ -15,8 +15,4 @@ describe('IsMe', ()=>{
         const {result} = renderHook(()=>IsMe({userId:2}));
         expect(result.current).toBe(false);
     });
-
-    afterEach(()=>{
-
-    })
 })
