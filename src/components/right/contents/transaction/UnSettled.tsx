@@ -1,21 +1,44 @@
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import UnSettledItem from './UnSettledItem';
-import { usePatchCancelAll } from '../../../../api/orders/usePatchCancelAll';
-import { useGetUnSettledData } from '../../../../api/transaction/useGetUnSettledData';
+import {usePatchCancelAll} from '../../../../api/orders/usePatchCancelAll';
+import { useGetInfiniteUnSettled } from '../../../../hooks/infinite/useGetInfiniteUnSettled';
+import useUserStore from '../../../../store/useUserStore';
 import type { TUnSettledData } from '../../../../types/transaction';
 
 const UnSettled = () => {
-  const { data } = useGetUnSettledData();
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+  const { user } = useUserStore();
+  if (!user) return null;
+  const memberId = user.id;
+  
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteUnSettled(memberId, 10);
+  const totalOpenOrderCount = infiniteData?.pages[0]?.totalOpenOrderCount;
+  console.log(infiniteData);
   const { mutate: cancelAll } = usePatchCancelAll();
+
+
+  // const unsettledList = useMemo(() => {
+  //   return infiniteData?.pages.map((page)=>page?.content?.map((item: TUnSettledData) => item)).flat() || [];
+  // }, [infiniteData]);
+
+  useEffect(()=>{
+    if(inView && !isFetching && hasNextPage){
+      fetchNextPage();
+    }
+  }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-between items-center px-4">
-        <p className="text-xs text-[#333333]">총 {data?.length}건</p>{' '}
+        <p className="text-xs text-[#333333]">총 {totalOpenOrderCount}건</p>{' '}
         <button
           onClick={() => {
             cancelAll();
           }}
-          className={`text-xs text-[#DD3C44] bg-[#ffdad9] px-2 py-1 rounded-sm ${!data || data.length === 0 ? 'opacity-50 hover:cursor-not-allowed' : 'hover:cursor-pointer'}`}
+          className={`text-xs text-[#DD3C44] bg-[#ffdad9] px-2 py-1 rounded-sm ${!infiniteData?.pages || infiniteData?.pages.length === 0 || infiniteData?.pages.every(page => !page?.orders?.content || page.orders.content.length === 0) ? 'opacity-50 hover:cursor-not-allowed' : 'hover:cursor-pointer'}`}
         >
           전체 취소
         </button>
@@ -46,8 +69,9 @@ const UnSettled = () => {
             </tr>
           </thead>
           <tbody>
-            {data && data.length > 0 ? (
-              data.map((item: TUnSettledData) => <UnSettledItem key={item.orderId} item={item} />)
+            {infiniteData?.pages && infiniteData.pages.some(page => page?.orders?.content && page.orders.content.length > 0) ? (
+              infiniteData?.pages.map((page)=>
+                page?.orders?.content?.map((item: TUnSettledData) => <UnSettledItem key={item.orderId} item={item} />))
             ) : (
               <tr>
                 <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
@@ -55,6 +79,7 @@ const UnSettled = () => {
                 </td>
               </tr>
             )}
+            <tr ref={ref} />
           </tbody>
         </table>
       </div>
