@@ -3,7 +3,7 @@ import OrderFormButtons from './OrderFormButtons';
 import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
 import { useGetCategories } from '../../../../api/useGetCategories';
 import { useGetInvest } from '../../../../api/useGetInvest';
-import { changeNumber, dotQuantity, formatNumber, getPriceTickSize } from '../../../../lib/price';
+import { changeNumber, dotQuantity, formatInteger, formatNumber, getPriceTickSize } from '../../../../lib/price';
 import useCategoryIdStore from '../../../../store/useCategoryId';
 import useSelectedPriceStore from '../../../../store/useSelectedPriceStore';
 import useUserStore from '../../../../store/useUserStore';
@@ -70,9 +70,9 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const quantityNum = changeNumber(quantity);
 
   // 서버에 전송하기 위한 숫자로 변환된 총액 값
-  const totalAmountValue = userTotalAmount ? changeNumber(userTotalAmount) : changedPriceNum * quantityNum;
+  const totalAmountValue = userTotalAmount ? Math.round(changeNumber(userTotalAmount)) : Math.round(changedPriceNum * quantityNum);
   // 사용자가 입력한 총액 값을 표시하기 위해 문자열 상태인 총액 값
-  const totalAmountDisplay = totalAmountValue ? formatNumber(totalAmountValue) : '';
+  const totalAmountDisplay = totalAmountValue ? formatInteger(totalAmountValue) : '';
 
   const priceUpDown = (clickType: 'up' | 'down') => {
     // 숫자값으로 변환한 값을 가지고 + / - 테이블에 맞게 계산하기 위해 getPriceTickSize 함수 사용
@@ -106,7 +106,9 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const handleTotalAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9]/g, '');
     setUserTotalAmount(value);
-    setQuantity(value && changedPriceNum > 0 ? dotQuantity(changeNumber(value) / changedPriceNum) : '');
+    // 주문 총액을 정수로 반올림하여 수량 계산
+    const roundedAmount = value ? Math.round(changeNumber(value)) : 0;
+    setQuantity(roundedAmount > 0 && changedPriceNum > 0 ? dotQuantity(roundedAmount / changedPriceNum) : '');
   };
 
   const handleReset = () => {
@@ -198,7 +200,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100 ">
         <span>주문가능</span>
         <span className="text-sm font-semibold">
-          {isBuy ? formatNumber(buyAvailableCash) : formatNumber(sellAvailableQuantity)}
+          {isBuy ? formatInteger(buyAvailableCash) : formatNumber(sellAvailableQuantity)}
           <span className="text-primary-300 text-[10px] ml-1 font-medium">{isBuy ? 'KRW' : selectedSymbol}</span>
         </span>
       </div>

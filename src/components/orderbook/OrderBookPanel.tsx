@@ -1,9 +1,9 @@
 import { useRef, useLayoutEffect } from 'react';
-import AskBook from './AskBook';
-import BidBook from './BidBook';
+import BuyBook from './BuyBook';
 import MarketSummaryPanel from './MarketSummaryPanel';
 import OrderBookGridLayout from './OrderBookGridLayout';
 import OrderbookHeader from './OrderbookHeader';
+import SellBook from './SellBook';
 import TradeTapeSection from './TradeTapeSection';
 import { useOrderbookId } from '../../hooks/websocket/useOrderbookId';
 import { useOrderbookLastPrice } from '../../hooks/websocket/useOrderbookLastPrice';
@@ -57,10 +57,10 @@ export default function OrderBookPanel() {
       <OrderbookHeader />
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0">
         <OrderBookGridLayout>
-          <BidBook />
+          <SellBook />
           <MarketSummaryPanel />
           <TradeTapeSection />
-          <AskBook />
+          <BuyBook />
         </OrderBookGridLayout>
       </div>
     </div>
