@@ -16,13 +16,9 @@ const UnSettled = () => {
   
   const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteUnSettled(memberId, 10);
   const totalOpenOrderCount = infiniteData?.pages[0]?.totalOpenOrderCount;
-  console.log(infiniteData);
+ 
   const { mutate: cancelAll } = usePatchCancelAll();
 
-
-  // const unsettledList = useMemo(() => {
-  //   return infiniteData?.pages.map((page)=>page?.content?.map((item: TUnSettledData) => item)).flat() || [];
-  // }, [infiniteData]);
 
   useEffect(()=>{
     if(inView && !isFetching && hasNextPage){
