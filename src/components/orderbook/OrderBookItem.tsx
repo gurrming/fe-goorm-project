@@ -8,11 +8,11 @@ import type { OrderbookItemData } from '../../types/websocket';
 
 type OrderBookItemProps = {
   item: OrderbookItemData; // 호가창 아이템 데이터
-  isAsk?: boolean; // 매도인지 매수인지 구분값, true면 매도를 위해 올린 값
+  isSell?: boolean; // 매도인지 매수인지 구분값, true면 매도를 위해 올린 값
   maxVolume: number; // 최대 거래량 (차트 바 너비 계산용)
 };
 
-export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderBookItemProps) {
+export default function OrderBookItem({ item, isSell = false, maxVolume }: OrderBookItemProps) {
   const { tradesData } = useTradesStore();
   const lastPrice = useOrderbookStore((state) => state.lastPrice);
   const { setSelectedPrice, setSelectedPriceAndQuantity } = useSelectedPriceStore();
@@ -48,7 +48,7 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
     <div
       className={cn(
         'group grid px-2 text-xs border-t  border-white transition-colors w-full items-center justify-center',
-        isAsk
+        isSell
           ? 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1] hover:border hover:border-[#ffbaba]'
           : 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6] hover:border hover:border-[#bdd2f9]',
         isLastPriceRow && 'border border-black',
@@ -56,7 +56,7 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
     >
       {/* 좌측 영역 */}
       <div className="flex flex-col items-center justify-center cursor-pointer" onClick={handlePriceClick}>
-        {isAsk && (
+        {isSell && (
           <>
             {isLastPriceRow ? (
               <FlashConclusion value={lastPrice?.price} className="rounded-[2px]">
@@ -79,7 +79,7 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
         className="relative flex items-center justify-center min-h-6 text-[11px] cursor-pointer w-full h-full border-white border-x py-4"
         onClick={handleQuantityClick}
       >
-        {isAsk ? (
+        {isSell ? (
           <>
             <div
               className="absolute left-0 top-0 bottom-0 pointer-events-none bg-[#ffd4d5] group-hover:bg-[#ffb3b5] transition-colors"
@@ -100,7 +100,7 @@ export default function OrderBookItem({ item, isAsk = false, maxVolume }: OrderB
 
       {/* Right 영역 */}
       <div className="flex flex-col items-center justify-center pl-3 cursor-pointer" onClick={handlePriceClick}>
-        {!isAsk && (
+        {!isSell && (
           <>
             {isLastPriceRow ? (
               <FlashConclusion value={lastPrice?.price} className="rounded-[2px]">

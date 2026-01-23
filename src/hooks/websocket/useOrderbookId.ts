@@ -42,6 +42,15 @@ export const useOrderbookId = (categoryId: number) => {
           const wsMessage = JSON.parse(message.body);
 
           if (Array.isArray(wsMessage.buySide) && Array.isArray(wsMessage.sellSide)) {
+            // 디버깅: WebSocket 데이터 확인
+            console.log('[useOrderbookId] WebSocket 데이터 수신:', {
+              categoryId: wsMessage.categoryId || categoryId,
+              buySideCount: wsMessage.buySide.length,
+              sellSideCount: wsMessage.sellSide.length,
+              buySideSample: wsMessage.buySide.slice(0, 3),
+              sellSideSample: wsMessage.sellSide.slice(0, 3),
+            });
+            
             setOrderbookData(categoryId, {
               categoryId: wsMessage.categoryId || categoryId,
               buySide: wsMessage.buySide,
