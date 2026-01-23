@@ -8,15 +8,6 @@ export default function SellBook() {
   const payload = useOrderbookStore((state) => state.orderbookData[categoryId]);
   const sellSide = payload?.sellSide || [];
 
-  // 디버깅: 매도 호가창 데이터 확인
-  if (sellSide.length > 0) {
-    console.log('[SellBook] 매도 호가창 데이터:', {
-      categoryId,
-      sellSideCount: sellSide.length,
-      sellItemsCount: sellSide.filter((item) => Number(item.totalRemainingCount) > 0).length,
-      sample: sellSide.slice(0, 3),
-    });
-  }
 
   const sellItems = sellSide.filter((item) => Number(item.totalRemainingCount) > 0);
   const maxVolume =

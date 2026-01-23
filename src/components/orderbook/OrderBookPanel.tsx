@@ -57,10 +57,10 @@ export default function OrderBookPanel() {
       <OrderbookHeader />
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0">
         <OrderBookGridLayout>
-          <BuyBook />
+          <SellBook />
           <MarketSummaryPanel />
           <TradeTapeSection />
-          <SellBook />
+          <BuyBook />
         </OrderBookGridLayout>
       </div>
     </div>

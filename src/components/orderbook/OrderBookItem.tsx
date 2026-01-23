@@ -12,7 +12,7 @@ type OrderBookItemProps = {
   maxVolume: number; // 최대 거래량 (차트 바 너비 계산용)
 };
 
-export default function OrderBookItem({ item, isSell = false, maxVolume }: OrderBookItemProps) {
+export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderBookItemProps) {
   const { tradesData } = useTradesStore();
   const lastPrice = useOrderbookStore((state) => state.lastPrice);
   const { setSelectedPrice, setSelectedPriceAndQuantity } = useSelectedPriceStore();
@@ -36,7 +36,7 @@ export default function OrderBookItem({ item, isSell = false, maxVolume }: Order
   const price = formatNumber(itemPrice);
   const priceColor = changeRate === 0 ? 'text-black' : changeRate > 0 ? 'text-red-500' : 'text-blue-500';
   const changePrefix = changeRate > 0 ? '+' : '';
-  const changeText = changeRate === 0 ? '0.00%' : `${changePrefix}${changeRate.toFixed(2)}%`;
+  const percentageNumber = changeRate === 0 ? '0.00%' : `${changePrefix}${changeRate.toFixed(2)}%`;
 
   // volumeRate를 퍼센트로 변환
   const volumeRate = maxVolume > 0 ? itemVolume / maxVolume : 0;
@@ -49,32 +49,33 @@ export default function OrderBookItem({ item, isSell = false, maxVolume }: Order
       className={cn(
         'group grid px-2 text-xs border-t  border-white transition-colors w-full items-center justify-center',
         isSell
-          ? 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1] hover:border hover:border-[#ffbaba]'
-          : 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6] hover:border hover:border-[#bdd2f9]',
+          ? 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6] hover:border hover:border-[#bdd2f9]'
+          : 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1] hover:border hover:border-[#ffbaba]',
         isLastPriceRow && 'border border-black',
       )}
     >
       {/* 좌측 영역 */}
       <div className="flex flex-col items-center justify-center cursor-pointer" onClick={handlePriceClick}>
-        {isSell && (
+        {!isSell && (
           <>
             {isLastPriceRow ? (
               <FlashConclusion value={lastPrice?.price} className="rounded-[2px]">
                 <div className={`${priceColor}`}>
                   <span className="font-semibold">{price}</span>
-                  <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
+                  <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
                 </div>
               </FlashConclusion>
             ) : (
               <div className={`${priceColor}`}>
                 <span className="font-semibold">{price}</span>
-                <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
+                <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
               </div>
             )}
           </>
         )}
       </div>
 
+{/* Bar Chart */}
       <div
         className="relative flex items-center justify-center min-h-6 text-[11px] cursor-pointer w-full h-full border-white border-x py-4"
         onClick={handleQuantityClick}
@@ -82,14 +83,14 @@ export default function OrderBookItem({ item, isSell = false, maxVolume }: Order
         {isSell ? (
           <>
             <div
-              className="absolute left-0 top-0 bottom-0 pointer-events-none bg-[#ffd4d5] group-hover:bg-[#ffb3b5] transition-colors"
+              className="absolute right-0 top-0 bottom-0 pointer-events-none bg-[#cee4ff] group-hover:bg-[#a8d4ff] transition-colors"
               style={{ width: `${barWidth}%` }}
             />
           </>
         ) : (
           <>
             <div
-              className="absolute right-0 top-0 bottom-0 pointer-events-none bg-[#cee4ff] group-hover:bg-[#a8d4ff] transition-colors"
+              className="absolute left-0 top-0 bottom-0 pointer-events-none bg-[#ffd4d5] group-hover:bg-[#ffb3b5] transition-colors"
               style={{ width: `${barWidth}%` }}
             />
           </>
@@ -100,19 +101,19 @@ export default function OrderBookItem({ item, isSell = false, maxVolume }: Order
 
       {/* Right 영역 */}
       <div className="flex flex-col items-center justify-center pl-3 cursor-pointer" onClick={handlePriceClick}>
-        {!isSell && (
+        {isSell && (
           <>
             {isLastPriceRow ? (
               <FlashConclusion value={lastPrice?.price} className="rounded-[2px]">
                 <div className={cn(priceColor)}>
                   <span className="font-semibold">{price}</span>
-                  <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
+                  <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
                 </div>
               </FlashConclusion>
             ) : (
               <div className={cn(priceColor)}>
                 <span className="font-semibold">{price}</span>
-                <span className={cn('text-[10px] ml-3', priceColor)}>{changeText}</span>
+                <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
               </div>
             )}
           </>
