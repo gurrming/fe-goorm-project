@@ -12,7 +12,7 @@ const LoginForm = () => {
     formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(loginSchema),
-    mode: 'onChange',
+    mode: 'onTouched',
   });
 
   const postLogin = usePostLogin();

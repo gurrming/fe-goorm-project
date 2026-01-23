@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import SettledItem from './SettledItem';
 import { useGetInfiniteSettled } from '../../../../hooks/infinite/useGetInfiniteSettled';
@@ -14,6 +14,10 @@ const Settled = () => {
   const memberId = user.id;
 
   const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteSettled(memberId, 10);
+
+  const settledList = useMemo(() => {
+    return infiniteData?.pages.flat() || [];
+  }, [infiniteData]);
 
   useEffect(() => {
     if (inView && !isFetching && hasNextPage) {
@@ -44,10 +48,8 @@ const Settled = () => {
           </tr>
         </thead>
         <tbody>
-          {infiniteData && infiniteData.pages.length > 0 ? (
-            infiniteData.pages.map((page) =>
-              page.map((item: TSettledData) => <SettledItem key={item.tradeId} item={item} />),
-            )
+          {settledList.length > 0 ? (
+            settledList.map((item: TSettledData) => <SettledItem key={item.tradeId} item={item} />)
           ) : (
             <tr>
               <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
