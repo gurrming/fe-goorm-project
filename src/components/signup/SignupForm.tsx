@@ -16,7 +16,7 @@ const SignupForm = () => {
     trigger,
   } = useForm({
     resolver: yupResolver(signupSchema),
-    mode: 'onChange',
+    mode: 'onTouched',
     defaultValues: {
       emailExist: null,
       email: '',
