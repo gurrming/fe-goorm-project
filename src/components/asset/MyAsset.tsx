@@ -1,3 +1,4 @@
+import { formatInteger } from '../../lib/price';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import Text from '../common/Text';
 
@@ -8,11 +9,11 @@ const MyAsset = () => {
     <div className="flex flex-col  gap-3 px-4 py-4">
       <p className="text-[15px] text-[#333333] font-bold">보유자산</p>
       <div className="flex justify-center w-full gap-20 border-b-[0.3px] border-gray-200 pb-3">
-        <Text size="sm" text="보유잔액" price={assetCash?.toLocaleString('ko-KR')} priceColor="black" type="KRW" />
+        <Text size="sm" text="보유잔액" price={formatInteger(assetCash)} priceColor="black" type="KRW" />
         <Text
           size="sm"
           text="총 보유자산"
-          price={wsTotalAsset?.toLocaleString('ko-KR') ?? totalAsset?.toLocaleString('ko-KR')}
+          price={formatInteger(wsTotalAsset ?? totalAsset)}
           priceColor="black"
           type="KRW"
         />
@@ -21,14 +22,14 @@ const MyAsset = () => {
         <Text
           size="sm"
           text="총 매수"
-          price={(summary?.totalBuyAmount ?? 0).toLocaleString('ko-KR')}
+          price={formatInteger(summary?.totalBuyAmount)}
           priceColor="black"
           type="KRW"
         />
         <Text
           size="sm"
           text="총평가손익"
-          price={(summary?.totalProfit ?? 0).toLocaleString('ko-KR')}
+          price={formatInteger(summary?.totalProfit)}
           priceColor={summary?.totalProfit && summary?.totalProfit > 0 ? 'red' : 'blue'}
           type="KRW"
         />
@@ -37,7 +38,7 @@ const MyAsset = () => {
         <Text
           size="sm"
           text="총 평가"
-          price={(summary?.totalEvaluation ?? 0).toLocaleString('ko-KR')}
+          price={formatInteger(summary?.totalEvaluation)}
           priceColor="black"
           type="KRW"
         />
@@ -50,7 +51,7 @@ const MyAsset = () => {
         />
       </div>
 
-      <Text size="sm" text="주문가능" price={assetCash?.toLocaleString('ko-KR')} priceColor="black" type="KRW" />
+      <Text size="sm" text="주문가능" price={formatInteger(assetCash)} priceColor="black" type="KRW" />
     </div>
   );
 };
