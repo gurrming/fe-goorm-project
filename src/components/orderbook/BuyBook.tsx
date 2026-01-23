@@ -8,16 +8,6 @@ export default function BuyBook() {
   const payload = useOrderbookStore((state) => state.orderbookData[categoryId]);
   const buySide = payload?.buySide || [];
 
-  // 디버깅: 매수 호가창 데이터 확인
-  if (buySide.length > 0) {
-    console.log('[BuyBook] 매수 호가창 데이터:', {
-      categoryId,
-      buySideCount: buySide.length,
-      buyItemsCount: buySide.filter((item) => Number(item.totalRemainingCount) > 0).length,
-      sample: buySide.slice(0, 3),
-    });
-  }
-
   const buyItems = buySide.filter((item) => Number(item.totalRemainingCount) > 0);
 
   // 최대 물량 계산 (차트 비율 계산용)
