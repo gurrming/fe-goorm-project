@@ -107,23 +107,25 @@ describe('<InfoCoin /> 통합 테스트', () => {
     render(<InfoCoin />);
     expect(screen.getByText('차트 데이터가 없습니다.')).toBeInTheDocument();
   });
-  it('TC-05: 실시간 차트 데이터 업데이트 확인', async () => {
-    mockUseChartStore({ chartDataList: [] });
-    render(<InfoCoin />);
-    expect(screen.queryByTestId('mock-chart')).not.toBeInTheDocument();
-    expect(screen.getByText('차트 데이터가 없습니다.')).toBeInTheDocument();
   
-    act(() => {
-      mockUseChartStore({
-        chartDataList: [{ t: 1000, o: 100, h: 110, l: 90, c: 105 }],
+  describe('웹소켓 관련 테스트', () => {
+    it('TC-05: 실시간 차트 데이터 업데이트 확인', async () => {
+      mockUseChartStore({ chartDataList: [] });
+      render(<InfoCoin />);
+      expect(screen.queryByTestId('mock-chart')).not.toBeInTheDocument();
+      expect(screen.getByText('차트 데이터가 없습니다.')).toBeInTheDocument();
+    
+      act(() => {
+        mockUseChartStore({
+          chartDataList: [{ t: 1000, o: 100, h: 110, l: 90, c: 105 }],
+        });
+      });
+    
+      await waitFor(()=>{
+          expect(screen.queryByTestId('mock-chart')).toBeInTheDocument();
       });
     });
-  
-    await waitFor(()=>{
-        expect(screen.queryByTestId('mock-chart')).toBeInTheDocument();
-    });
-  });
-  describe('웹소켓 연결 상태 테스트', () => {
+    
     it('TC-06: 웹소켓 연결 끊어진 상태에서 차트 조회', async () => {
         (useWebsocket as Mock).mockReturnValue({
             isConnected: false, 
