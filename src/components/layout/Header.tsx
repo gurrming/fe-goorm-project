@@ -26,7 +26,7 @@ export default function Header() {
             거래소
           </Link>
           <Link
-            to="/asset"
+            to={user?"/asset":"/login"}
             className={`text-md font-semibold text-nowrap ml-7 ${
               location.pathname === '/asset' ? 'text-white' : 'text-white/60 hover:text-white'
             }`}
