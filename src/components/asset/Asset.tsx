@@ -27,7 +27,7 @@ const Asset = () => {
     }
   }, [investData, setSummary]);
   return (
-    <div className="w-full flex flex-col gap-5">
+    <div className="w-[1000px] flex flex-col gap-5">
       <MyAsset />
       <AssetList />
     </div>
