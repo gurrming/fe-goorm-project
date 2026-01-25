@@ -32,7 +32,7 @@ const Transaction = () => {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-2 h-full ">
+          <div className="flex flex-col gap-2 h-full px-4 ">
             <p className="flex-1 text-sm text-gray-500 text-center py-40">로그인 후 확인할 수 있습니다.</p>
             <div className="flex gap-2">
               <button
