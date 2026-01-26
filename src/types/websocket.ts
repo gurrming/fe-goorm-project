@@ -16,7 +16,7 @@ export type TradesData = {
   price: number; // 체결가(현재가)
   count: number; // 체결량
   openPrice: number; // 전일종가
-  buyTaker: boolean; // type (true: 매수, false: 매도)
+  type: 'BUY' | 'SELL';
   time: number; // 체결시간
   intensity: number; // 체결강도
 };
