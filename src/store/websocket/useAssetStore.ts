@@ -4,9 +4,9 @@ import type { TMyPortfolio } from '../../types/asset';
 interface IAssetStore {
   myAsset:{
     assetCash: number | null;
-  totalAsset: number | null;
-  assetCanOrder: number | null;
-  }
+    totalAsset: number | null;
+    assetCanOrder: number | null;
+  },
   wsTotalAsset: number | null;
   summary: TMyPortfolio | null;
   setMyAsset: (data: { assetCash: number | null; totalAsset: number | null; assetCanOrder: number | null }) => void;
