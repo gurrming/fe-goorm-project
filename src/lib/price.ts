@@ -25,4 +25,8 @@ export const formatInteger = (point: number | undefined | null): string => {
 export const changeNumber = (strPoint: string): number => parseFloat(strPoint.replace(/,/g, '')) || 0;
 
 // 소숫점 8째자리까지 표시하기 (소숫점 9째자리부터는 반올림되어 표시되지 않음)
-export const dotQuantity = (point: number): string => (point === 0 ? '' : point.toFixed(8));
+// 뒷자리 0 나열 제거
+export const dotQuantity = (point: number): string => {
+  if (point === 0) return '';
+  return point.toFixed(8).replace(/\.?0+$/, '');
+};
