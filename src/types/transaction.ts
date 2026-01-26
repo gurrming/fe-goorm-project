@@ -11,8 +11,18 @@ export type TSettledData = {
   symbol: string;
 };
 
-
-export type TTrade = TSettledData;
+export type TTrade = {
+  tradeId: number;
+  symbol: string;
+  tradeTime: string;
+  tradePrice: number;
+  tradeCount: number;
+  tradeClosePrice: number;
+  buyOrderId: number;
+  sellOrderId: number;
+  takerType: string;
+  myOrderType: string;
+};
 
 export type TUnSettledData = {
   orderId: number;
