@@ -45,8 +45,11 @@ describe('<Asset /> 통합 테스트', () => {
         mockUseUserStore({ user: { id: 1, nickname: '코린이' } });
             
         mockUseAssetStore({ 
-          assetCash: null, 
-          totalAsset: null, 
+          myAsset: {
+            assetCash: null, 
+            totalAsset: null, 
+            assetCanOrder: null,
+          },
           summary: null 
         });
 
@@ -130,6 +133,7 @@ describe('<Asset /> 통합 테스트', () => {
                 data: {
                     assetCash: 500000000,
                     totalAsset: 500000000,
+                    assetCanOrder: 100000000,
                 },
             });
 
@@ -209,8 +213,11 @@ describe('<Asset /> 통합 테스트', () => {
             // 주문 성공 후 Asset 컴포넌트의 useEffect가 실행되도록 상태 업데이트
             act(() => {
                 mockUseAssetStore({
-                    assetCash: 400000000,
-                    totalAsset: 500000000,
+                    myAsset: {
+                        assetCash: 400000000,
+                        totalAsset: 500000000,
+                        assetCanOrder: 100000000,
+                    },
                     summary: {
                         totalBuyAmount: 100000000,
                         totalEvaluation: 100000000,
@@ -275,7 +282,7 @@ describe('<Asset /> 통합 테스트', () => {
                 },
               });
               
-              render(<Asset />);
+              await render(<Asset />);
           
               await waitFor(() => {
                 expect(screen.getByText('비트코인')).toBeInTheDocument();
@@ -324,7 +331,7 @@ describe('<Asset /> 통합 테스트', () => {
             });
         
            
-            render(<Asset />);
+            await render(<Asset />);
         
     
             await waitFor(() => {
@@ -362,7 +369,7 @@ describe('<Asset /> 통합 테스트', () => {
                 },
             });
         
-            render(<Asset />);
+            await render(<Asset />);
         
             await waitFor(() => {
                 expect(screen.queryByText('BTC')).not.toBeInTheDocument();
@@ -415,7 +422,7 @@ describe('<Asset /> 통합 테스트', () => {
                 },
               });
           
-              render(<Asset />);
+              await render(<Asset />);
           
               await waitFor(() => {
                 const btcRow = screen.getByText('비트코인').closest('tr');
@@ -457,9 +464,9 @@ describe('<Asset /> 통합 테스트', () => {
                 data: { assetCash: 0, totalAsset: 50000000 },
             });
         
-            render(<Asset />);
+            await render(<Asset />);
         
-
+    
             await waitFor(() => {
                 expect(screen.getAllByText('50,000,000').length).toBeGreaterThan(0);
                 expect(screen.getByText('비트코인')).toBeInTheDocument();
@@ -532,7 +539,7 @@ describe('<Asset /> 통합 테스트', () => {
                     assetList: [],
                 }
             });
-            render(<Asset />);
+            await render(<Asset />);
             expect(screen.getByText('보유 자산이 없습니다.')).toBeInTheDocument();
 
             act(()=>{
