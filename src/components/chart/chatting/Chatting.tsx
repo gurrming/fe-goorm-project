@@ -5,6 +5,7 @@ import { useGetInfiniteChat } from '../../../hooks/infinite/useGetInfiniteChat';
 import { useChatting } from '../../../hooks/websocket/useChatting';
 import useCategoryIdStore from '../../../store/useCategoryId';
 import useUserStore from '../../../store/useUserStore';
+import { calculateMergedData } from '../calculateMergedData';
 import type { TChat } from '../../../types/chat';
 
 const Chatting = () => {
@@ -25,12 +26,12 @@ const Chatting = () => {
   const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteChat(categoryId, 10);
 
   const mergedChatList = useMemo(() => {
-    const pastChats = infiniteData ? infiniteData.pages.flat() : [];
-    const chatMap = new Map<number, TChat>();
-
-    pastChats.forEach((chat) => chatMap.set(chat.chatId, chat));
-    chatHistory.forEach((chat) => chatMap.set(chat.chatId, chat));
-    return Array.from(chatMap.values()).sort((a, b) => a.chatId - b.chatId);
+    return calculateMergedData<TChat>(
+      infiniteData,
+      chatHistory,
+      (chat) => chat.chatId,        // 고유 키: 채팅 ID
+      (a, b) => a.chatId - b.chatId // 정렬: 채팅 ID 오름차순
+    );
   }, [infiniteData, chatHistory]);
 
   useEffect(() => {

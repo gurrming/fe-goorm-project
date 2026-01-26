@@ -10,7 +10,7 @@ import { useChart } from '../../hooks/websocket/useChart';
 import { useTicker } from '../../hooks/websocket/useTicker';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useChartStore } from '../../store/websocket/useChartStore';
-
+import type { ChartData } from '../../types/websocket';
 
 const InfoCoin = () => {
   const [tab, setTab] = useState('price');
@@ -30,7 +30,7 @@ const InfoCoin = () => {
   const { data: infiniteData, fetchNextPage, hasNextPage } = useGetInfiniteChart(categoryId, 300);
 
   const mergedData = useMemo(() => {
-    return calculateMergedData(infiniteData, realtimeData);
+    return calculateMergedData<ChartData>(infiniteData, realtimeData, data => data.t,(a, b) => a.t - b.t);
   }, [infiniteData, realtimeData]);
 
   return (
