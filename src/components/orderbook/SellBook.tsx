@@ -14,7 +14,7 @@ export default function SellBook() {
     sellItems.length > 0 ? Math.max(0, ...sellItems.map((item) => Number(item.totalRemainingCount))) : 0;
 
   return (
-    <div className="col-span-2 flex flex-col">
+    <div className="col-span-2 flex flex-col justify-end">
       {sellItems.length > 0 ? (
         sellItems.map((item: OrderbookItemData, index) => (
           <OrderBookItem key={`${item.orderPrice}-${index}`} item={item} isSell={true} maxVolume={maxVolume} />
