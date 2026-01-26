@@ -34,7 +34,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const holdingAsset = portfolio?.assetList?.find((asset: TAssets) => asset.categoryId === categoryId);
 
   const selectedSymbol = selectedCategory?.symbol;
-  const buyAvailableCash = myAsset?.assetCash ?? 0;
+  const buyAvailableCash = myAsset?.assetCanOrder ?? 0;
   const sellAvailableQuantity = holdingAsset?.investCount ?? 0;
 
   // 선택된 가격과 수량 store 구독
