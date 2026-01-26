@@ -3,17 +3,17 @@ import { useAssetStore } from '../../store/websocket/useAssetStore';
 import Text from '../common/Text';
 
 const MyAsset = () => {
-  const { assetCash, wsTotalAsset, totalAsset, summary } = useAssetStore();
+  const { myAsset, wsTotalAsset, summary } = useAssetStore();
 
   return (
     <div className="flex flex-col  gap-3 px-4 py-4">
       <p className="text-[15px] text-[#333333] font-bold">보유자산</p>
       <div className="flex justify-center w-full gap-20 border-b-[0.3px] border-gray-200 pb-3">
-        <Text size="sm" text="보유잔액" price={formatInteger(assetCash)} priceColor="black" type="KRW" />
+        <Text size="sm" text="보유잔액" price={formatInteger(myAsset.assetCash)} priceColor="black" type="KRW" />
         <Text
           size="sm"
           text="총 보유자산"
-          price={formatInteger(wsTotalAsset ?? totalAsset)}
+          price={formatInteger(wsTotalAsset ?? myAsset.totalAsset)}
           priceColor="black"
           type="KRW"
         />
@@ -51,7 +51,7 @@ const MyAsset = () => {
         />
       </div>
 
-      <Text size="sm" text="주문가능" price={formatInteger(assetCash)} priceColor="black" type="KRW" />
+      <Text size="sm" text="주문가능" price={formatInteger(myAsset.assetCanOrder)} priceColor="black" type="KRW" />
     </div>
   );
 };

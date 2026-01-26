@@ -6,7 +6,7 @@ import type { TMyAsset } from '../../types/asset';
 const getMyAsset = (memberId: number)=> {
   return request<TMyAsset>({
     method: 'GET',
-    url: `/api/assets?memberId=${memberId}`,
+    url: `/api/assets/${memberId}`,
   });
 };
 

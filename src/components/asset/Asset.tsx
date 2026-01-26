@@ -12,14 +12,13 @@ const Asset = () => {
   const { data: investData } = useGetInvest(memberId!);
   const { data: myAssetData } = useGetMyAsset();
 
-  const { setAssetCash, setTotalAsset, setSummary } = useAssetStore();
+  const { setMyAsset, setSummary } = useAssetStore();
 
   useEffect(() => {
     if (myAssetData) {
-      setAssetCash(myAssetData.assetCash);
-      setTotalAsset(myAssetData.totalAsset);
+      setMyAsset({ assetCash: myAssetData.assetCash, totalAsset: myAssetData.totalAsset, assetCanOrder: myAssetData.assetCanOrder });
     }
-  }, [myAssetData, setAssetCash, setTotalAsset]);
+  }, [myAssetData, setMyAsset]);
 
   useEffect(() => {
     if (investData) {
