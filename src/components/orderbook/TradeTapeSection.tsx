@@ -1,21 +1,31 @@
+import { useEffect } from 'react';
 import { useGetTrades } from '../../api/useGetTrades';
 import { formatNumber } from '../../lib/price';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useTradesStore } from '../../store/websocket/useTradesStore';
 
 export default function TradeTapeSection() {
-  const { tradesList, tradesData } = useTradesStore();
+  const { tradesList, tradesData, restApiInitData } = useTradesStore();
   const categoryId = useCategoryIdStore((state) => state.categoryId);
-  const {data:trades} = useGetTrades(categoryId);
+  const { data: trades } = useGetTrades(categoryId);
+
+  // categoryId 변경 시 저장소 초기화해서 뿌려주기
+  useEffect(() => {
+    if (trades) {
+      restApiInitData(trades);
+    }
+  }, [trades, restApiInitData]);
 
   // 체결강도 포맷팅
   const formatTradeStrength = (value: number): string => {
     const sign = value >= 0 ? '+' : '';
     return `${sign}${Number(value).toFixed(2)}%`;
   };
-
   // 최신 체결강도 (가장 최근 체결의 intensity 사용)
-  const currentIntensity = tradesData?.intensity ?? 0;
+  const currentIntensity = tradesData && 'intensity' in tradesData ? tradesData.intensity : 0;
+
+  // store에서 REST API와 WebSocket 데이터를 합쳐서 표시
+  const tradeDisplayData = tradesList;
 
   return (
     <div className="bg-white p-4">
@@ -32,20 +42,28 @@ export default function TradeTapeSection() {
       </div>
 
       {/* 체결 내역 리스트 */}
-      <div className="space-y-1 max-h-96 overflow-y-auto">
-        {tradesList.length === 0 ? (
+      <div className="space-y-1">
+        {tradeDisplayData.length === 0 ? (
           <div className="text-center text-gray-400 text-[10px] py-4">체결 내역이 없습니다</div>
         ) : (
-          tradesList.map((item, index) => (
-            <div key={`${item.time}-${index}`} className="grid grid-cols-2 gap-2 text-[10px] py-1">
-              <div className="text-gray-900 text-right">
-                {formatNumber(item.price ?? trades?.tradePrice ?? 0)}
+          tradeDisplayData.map((item, index) => {
+            // REST API 또는 WebSocket 데이터 묶어서
+            const price = 'price' in item ? item.price : item.tradePrice;
+            const count = 'count' in item ? item.count : item.tradeCount;
+            const type = 'type' in item ? item.type : (item.takerType === 'BUY' ? 'BUY' : 'SELL');
+            const time = 'time' in item ? item.time : new Date(item.tradeTime).getTime();
+            
+            return (
+              <div key={`${time}-${index}`} className="grid grid-cols-2 gap-2 text-[10px] py-1">
+                <div className="text-gray-900 text-right">
+                  {formatNumber(price ?? 0)}
+                </div>
+                <div className={`text-right ${type === 'BUY' ? 'text-red-500' : 'text-blue-500'}`}>
+                  {formatNumber(count ?? 0)}
+                </div>
               </div>
-              <div className={`text-right ${item.buyTaker ? 'text-blue-500' : 'text-red-500'}`}>
-                {formatNumber(item.count ?? trades?.tradeCount ?? 0)}
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>
