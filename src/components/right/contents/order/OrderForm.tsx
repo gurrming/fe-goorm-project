@@ -70,9 +70,9 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const quantityNum = changeNumber(quantity);
 
   // 서버에 전송하기 위한 숫자로 변환된 총액 값
-  const totalAmountValue = userTotalAmount ? Math.round(changeNumber(userTotalAmount)) : Math.round(changedPriceNum * quantityNum);
+  const totalMoney = userTotalAmount ? Math.round(changeNumber(userTotalAmount)) : Math.round(changedPriceNum * quantityNum);
   // 사용자가 입력한 총액 값을 표시하기 위해 문자열 상태인 총액 값
-  const totalAmountDisplay = totalAmountValue ? formatInteger(totalAmountValue) : '';
+  const totalDisplayMoney = totalMoney ? formatInteger(totalMoney) : '';
 
   const priceUpDown = (clickType: 'up' | 'down') => {
     // 숫자값으로 변환한 값을 가지고 + / - 테이블에 맞게 계산하기 위해 getPriceTickSize 함수 사용
@@ -140,7 +140,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
     }
 
     // 주문 총액이 5000미만일 때
-    if (totalAmountValue < 5000) {
+    if (totalMoney < 5000) {
       openModal(
         <Modal
           title={isBuy ? '매수 주문 안내' : '매도 주문 안내'}
@@ -155,7 +155,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
     }
 
     // 주문 가능 금액이 부족할 때 (매수일 시)
-    if (isBuy && totalAmountValue > buyAvailableCash) {
+    if (isBuy && totalMoney > buyAvailableCash) {
       openModal(
         <Modal
           title="매수 주문 안내"
@@ -249,7 +249,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
           주문총액 <span className="text-primary-500 text-[10px] ml-1">(KRW)</span>
         </span>
         <input
-          value={totalAmountDisplay}
+          value={totalDisplayMoney}
           onChange={handleTotalAmountChange}
           placeholder="0"
           className="w-90 px-2 py-2 text-[13px] text-right border border-gray-300 rounded-[2px]"
