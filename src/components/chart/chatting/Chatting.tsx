@@ -5,6 +5,7 @@ import { useGetInfiniteChat } from '../../../hooks/infinite/useGetInfiniteChat';
 import { useChatting } from '../../../hooks/websocket/useChatting';
 import useCategoryIdStore from '../../../store/useCategoryId';
 import useUserStore from '../../../store/useUserStore';
+import { calculateMergedData } from '../CalculateMergedData';
 import type { TChat } from '../../../types/chat';
 
 const Chatting = () => {
@@ -25,12 +26,12 @@ const Chatting = () => {
   const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteChat(categoryId, 10);
 
   const mergedChatList = useMemo(() => {
-    const pastChats = infiniteData ? infiniteData.pages.flat() : [];
-    const chatMap = new Map<number, TChat>();
-
-    pastChats.forEach((chat) => chatMap.set(chat.chatId, chat));
-    chatHistory.forEach((chat) => chatMap.set(chat.chatId, chat));
-    return Array.from(chatMap.values()).sort((a, b) => a.chatId - b.chatId);
+    return calculateMergedData<TChat>(
+      infiniteData,
+      chatHistory,
+      (chat) => chat.chatId,        // 고유 키: 채팅 ID
+      (a, b) => a.chatId - b.chatId // 정렬: 채팅 ID 오름차순
+    );
   }, [infiniteData, chatHistory]);
 
   useEffect(() => {
@@ -68,7 +69,7 @@ const Chatting = () => {
 
   return (
     <div className="flex flex-col w-[1000px] h-[537px]">
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-2">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-2" data-testid="chat-scroll-container">
         {mergedChatList.length === 0 && (
           <div className="flex justify-center items-center h-full">
             <p className="text-center text-gray-500">채팅 내역이 없습니다.</p>
