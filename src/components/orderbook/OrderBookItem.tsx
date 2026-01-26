@@ -3,8 +3,9 @@ import { formatNumber } from '../../lib/price';
 import { cn } from '../../lib/utils';
 import useSelectedPriceStore from '../../store/useSelectedPriceStore';
 import { useOrderbookStore } from '../../store/websocket/useOrderbookStore';
-import { useTradesStore } from '../../store/websocket/useTradesStore';
 import type { OrderbookItemData } from '../../types/websocket';
+import { useGetCategoryInfo } from '@/api/useGetCategoryInfo';
+import useCategoryIdStore from '@/store/useCategoryId';
 
 type OrderBookItemProps = {
   item: OrderbookItemData; // 호가창 아이템 데이터
@@ -13,10 +14,11 @@ type OrderBookItemProps = {
 };
 
 export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderBookItemProps) {
-  const { tradesData } = useTradesStore();
+  const categoryId = useCategoryIdStore((state) => state.categoryId);
   const lastPrice = useOrderbookStore((state) => state.lastPrice);
   const { setSelectedPrice, setSelectedPriceAndQuantity } = useSelectedPriceStore();
-  const openPrice = tradesData?.openPrice ?? 0; // 전일종가, 없으면 0
+  const { data: categoryInfo } = useGetCategoryInfo(categoryId);
+  const openPrice =  categoryInfo?.openPrice ?? 0;
 
   const itemPrice = Number(item.orderPrice);
   const itemVolume = Number(item.totalRemainingCount);
