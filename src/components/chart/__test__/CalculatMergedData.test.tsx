@@ -1,5 +1,5 @@
 import type { InfiniteData } from '@tanstack/react-query';
-import { calculateMergedData } from '../calculateMergedData';
+import { calculateMergedData } from '../CalculateMergedData';
 import type { ChartData } from '../../../types/websocket';
 
 describe('calculateMergedData 단위 테스트', () => {

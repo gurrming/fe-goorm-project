@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { calculateMergedData } from './calculateMergedData';
+import { calculateMergedData } from './CalculateMergedData';
 import Chart from './Chart';
 import Chatting from './chatting/Chatting';
 import PriceInfo from './PriceInfo';
