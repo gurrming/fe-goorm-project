@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { calculateMergedData } from './calculateMergedData';
 import Chart from './Chart';
 import Chatting from './chatting/Chatting';
 import PriceInfo from './PriceInfo';
@@ -9,6 +10,7 @@ import { useChart } from '../../hooks/websocket/useChart';
 import { useTicker } from '../../hooks/websocket/useTicker';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useChartStore } from '../../store/websocket/useChartStore';
+
 
 const InfoCoin = () => {
   const [tab, setTab] = useState('price');
@@ -28,8 +30,7 @@ const InfoCoin = () => {
   const { data: infiniteData, fetchNextPage, hasNextPage } = useGetInfiniteChart(categoryId, 300);
 
   const mergedData = useMemo(() => {
-    const historical = infiniteData ? infiniteData.pages.flat() : [];
-    return [...historical, ...realtimeData];
+    return calculateMergedData(infiniteData, realtimeData);
   }, [infiniteData, realtimeData]);
 
   return (
