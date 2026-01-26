@@ -1,5 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
+const reIssueAxios = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
+});
+
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
@@ -38,3 +43,40 @@ const request = async <T>(config: RequestConfig): Promise<T> => {
 };
 
 export { request };
+
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+    if (
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      error.response.data.message === 'Access Token이 만료되었습니다.'
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const res = await reIssueAxios.post('/api/member/reissue');
+
+        const newAccessToken: string = res.data.accessToken;
+        localStorage.setItem('accessToken', newAccessToken);
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+        return axiosInstance(originalRequest);
+      } catch (error) {
+        localStorage.clear();
+        window.location.href = '/login';
+        return Promise.reject(error);
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);

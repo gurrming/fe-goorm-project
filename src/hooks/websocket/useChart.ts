@@ -1,44 +1,15 @@
 import { useEffect } from 'react';
-import { useGetChart } from '../../api/useGetChart';
 import { useChartStore } from '../../store/websocket/useChartStore';
 import { useWebsocket } from '../useWebsocket';
 import type { ChartData, RawChartData } from '../../types/websocket';
 
 export const useChart = (categoryId: number) => {
   const { isConnected, stompClientRef } = useWebsocket();
-  const { addChartData, setChartData } = useChartStore();
-  const { data: chartDataList, refetch } = useGetChart(categoryId, 0, 100);
+  const { addChartData, clearChartDataList } = useChartStore();
 
   useEffect(() => {
-    if (chartDataList) {
-      // API에서 받은 데이터도 문자열로 올 수 있으므로 숫자로 변환 및 유효성 검사
-      const normalizedData = chartDataList
-        .map((item) => {
-          const o = typeof item.o === 'number' ? item.o : parseFloat(String(item.o));
-          const h = typeof item.h === 'number' ? item.h : parseFloat(String(item.h));
-          const l = typeof item.l === 'number' ? item.l : parseFloat(String(item.l));
-          const c = typeof item.c === 'number' ? item.c : parseFloat(String(item.c));
-          const t = typeof item.t === 'number' ? item.t : parseInt(String(item.t), 10);
-
-          // 유효하지 않은 데이터는 필터링
-          if (
-            !Number.isFinite(o) ||
-            !Number.isFinite(h) ||
-            !Number.isFinite(l) ||
-            !Number.isFinite(c) ||
-            !Number.isFinite(t)
-          ) {
-            return null;
-          }
-
-          return { t, o, h, l, c } as ChartData;
-        })
-        .filter((item): item is ChartData => item !== null);
-
-      setChartData(normalizedData);
-    }
-    refetch();
-  }, [categoryId, refetch, chartDataList, setChartData]);
+    clearChartDataList();
+  }, [categoryId, clearChartDataList]);
 
   useEffect(() => {
     if (!isConnected || !stompClientRef.current || !categoryId) {
@@ -68,6 +39,7 @@ export const useChart = (categoryId: number) => {
         ) {
           return;
         }
+        if (isNaN(t) || isNaN(c)) return;
 
         const data: ChartData = {
           t,

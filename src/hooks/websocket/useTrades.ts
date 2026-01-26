@@ -11,8 +11,14 @@ import type { TradesData } from '../../types/websocket';
  */
 export const useTrades = () => {
   const { isConnected, stompClientRef } = useWebsocket();
-  const { addTrade } = useTradesStore();
+  const { addTrade, clearTradesList, clearTradesData } = useTradesStore();
   const categoryId = useCategoryIdStore((state) => state.categoryId);
+
+  // categoryId 변경 시 기존 데이터 초기화
+  useEffect(() => {
+    clearTradesList();
+    clearTradesData();
+  }, [categoryId, clearTradesList, clearTradesData]);
 
   useEffect(() => {
     if (isConnected && stompClientRef.current && categoryId) {

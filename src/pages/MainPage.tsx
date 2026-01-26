@@ -1,6 +1,5 @@
 import React from 'react';
 import InfoCoin from '../components/chart/InfoCoin';
-import MarketPanel from '../components/market/MarketPanel';
 import OrderBookPanel from '../components/orderbook/OrderBookPanel';
 import Right from '../components/right/Right';
 
@@ -14,8 +13,6 @@ export default function MainPage() {
           <Right />
         </div>
       </div>
-
-      <MarketPanel />
     </div>
   );
 }

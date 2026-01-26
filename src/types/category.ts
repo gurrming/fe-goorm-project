@@ -5,6 +5,7 @@ export type Category = {
   tradePrice: number;
   changeRate: number;
   changeAmount: number;
+  openPrice: number;
   dailyHigh: number;
   dailyLow: number;
   accVolume: number;

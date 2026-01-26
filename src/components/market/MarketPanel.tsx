@@ -190,7 +190,7 @@ export default function MarketPanel() {
   };
 
   return (
-    <div className="w-[400px] bg-white flex flex-col h-full-calc(100vh-120px)">
+    <div className="w-[400px] bg-white flex flex-col h-[calc(100vh)] mb-30">
       <MarketSearchBar searchKeyword={searchKeyword} onSearchKeywordChange={setSearchKeyword} />
       <MarketTabs activeTab={activeTab} onTabChange={setActiveTab} />
       <div className="w-full bg-white flex flex-col flex-1 min-h-0 overflow-hidden">

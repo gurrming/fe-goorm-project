@@ -1,8 +1,8 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, HttpHandler } from 'msw';
 
 // GET
 
-export const handlers = [
+export const handlers: HttpHandler[] = [
   // 해당 url 요청이 오면
   http.get('https://example.com/user', () => {
     // 아래의 가짜 응답을 반환

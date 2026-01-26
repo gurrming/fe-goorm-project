@@ -1,6 +1,7 @@
 export type TMyAsset = {
   assetCash: number;
   totalAsset: number;
+  assetCanOrder: number;
 };
 
 export type TMyPortfolio = {

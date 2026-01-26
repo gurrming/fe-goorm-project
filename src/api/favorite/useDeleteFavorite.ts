@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { request } from '../common/axiosInstance';
 
-export const deleteInterest = (interestId: number, memberId: number): Promise<void> => {
+export const deleteInterest = (interestId: number, memberId: number)=> {
   return request<void>({
     method: 'DELETE',
     url: `/api/interests/${interestId}`,

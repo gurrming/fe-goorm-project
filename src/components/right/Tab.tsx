@@ -13,12 +13,7 @@ const Tab = ({ handleTab, tab }: { handleTab: (tab: string) => void; tab: string
       >
         매도
       </p>
-      <p
-        className={`w-full text-sm font-bold text-center py-3 ${tab === 'asset' ? 'font-extrabold border-b-[3px]' : ''}`}
-        onClick={() => handleTab('asset')}
-      >
-        보유자산
-      </p>
+
       <p
         className={`w-full text-sm font-bold text-center py-3 ${tab === 'transaction' ? 'font-extrabold border-b-[3px]' : ''}`}
         onClick={() => handleTab('transaction')}

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { request } from '../common/axiosInstance';
 import type { TOrderRequest, TOrderResponse } from '../../types/order';
 
-export const postOrder = (data: TOrderRequest): Promise<TOrderResponse> => {
+export const postOrder = (data: TOrderRequest)=> {
   return request<TOrderResponse>({
     method: 'POST',
     url: '/api/orders',
