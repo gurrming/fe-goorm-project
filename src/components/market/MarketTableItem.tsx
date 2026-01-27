@@ -14,7 +14,6 @@ type MarketTableItemProps = {
   portfolioAsset?: TAssets;
   isFavorite: boolean;
   onToggleFavorite: () => void;
-  initialCategory?: Category;
 };
 
 function formatTradeAmountKRW(tradeAmount: number) {
@@ -32,26 +31,18 @@ export default function MarketTableItem({
   portfolioAsset,
   isFavorite,
   onToggleFavorite,
-  initialCategory,
 }: MarketTableItemProps) {
   const setCategoryId = useCategoryIdStore((state) => state.setCategoryId);
 
   // 원화/관심 탭 행 티커
   const ticker = useTickerStore((state) => (category ? state.tickerByCategoryId[category.categoryId] : undefined));
-  // 보유 탭 행 티커
-  const holdingTicker = useTickerStore((state) =>
-    portfolioAsset ? state.tickerByCategoryId[portfolioAsset.categoryId] : undefined,
-  );
 
   // 보유 탭일 때 다른 UI 표시
   if (activeTab === 'holding' && portfolioAsset) {
-    const currentPrice = holdingTicker?.price ?? initialCategory?.tradePrice ?? 0;
-    const buyAmount =
-      portfolioAsset.buyAmount > 0 ? portfolioAsset.buyAmount : portfolioAsset.avgPrice * portfolioAsset.investCount;
-    const evaluateAmountValue = portfolioAsset.evaluationAmount;
-    const evaluateAmount = currentPrice > 0 ? currentPrice * portfolioAsset.investCount : evaluateAmountValue;
-    const profit = currentPrice > 0 ? evaluateAmount - buyAmount : (portfolioAsset.evaluationProfit ?? 0);
-    const profitRate = buyAmount > 0 ? (profit / buyAmount) * 100 : (portfolioAsset.profitRate ?? 0);
+    // 서버에서 받은 값 그대로 사용, 불필요하게 프론트에서 가공해서 넣은 값 뺌
+    const evaluateAmount = portfolioAsset.evaluationAmount;
+    const profit = portfolioAsset.evaluationProfit;
+    const profitRate = portfolioAsset.profitRate;
 
     const profitColor = profitRate > 0 ? 'text-primary-700' : profitRate < 0 ? 'text-primary-900' : 'text-primary-100';
     const profitPrefix = profitRate > 0 ? '+' : '';

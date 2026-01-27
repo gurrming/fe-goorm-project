@@ -39,7 +39,7 @@ export default function MarketPanel() {
   const { data: categories } = useGetCategories();
 
   // 포트폴리오 - 보유 데이터 조회
-  const { data: portfolio } = useGetInvest(memberId!);
+  const { data: portfolio } = useGetInvest(memberId!, 0, 30);
 
   // 관심 종목 목록 조회
   const { data: Interest } = useGetFavorite(memberId ?? null);
@@ -211,19 +211,15 @@ export default function MarketPanel() {
                 </div>
               </div>
             ) : (
-              sortedPortfolioAssets.map((asset) => {
-                const initialCategory = categoryList.find((item) => item.categoryId === asset.categoryId);
-                return (
-                  <MarketTableItem
-                    key={asset.categoryId}
-                    activeTab={activeTab}
-                    portfolioAsset={asset}
-                    initialCategory={initialCategory}
-                    isFavorite={isFavoriteCategory(asset.categoryId)}
-                    onToggleFavorite={() => handleToggleFavorite(asset.categoryId)}
-                  />
-                );
-              })
+              sortedPortfolioAssets.map((asset) => (
+                <MarketTableItem
+                  key={asset.categoryId}
+                  activeTab={activeTab}
+                  portfolioAsset={asset}
+                  isFavorite={isFavoriteCategory(asset.categoryId)}
+                  onToggleFavorite={() => handleToggleFavorite(asset.categoryId)}
+                />
+              ))
             )
           ) : sortedCategories.length === 0 ? (
             <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">

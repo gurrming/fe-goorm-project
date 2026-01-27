@@ -10,6 +10,7 @@ export type TMyPortfolio = {
   totalProfit: number;
   totalProfitRate: number;
   assetList: TAssets[];
+  hasNext: boolean;
 };
 
 export type TAssets = {

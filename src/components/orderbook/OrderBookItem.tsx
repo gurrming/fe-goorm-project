@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import FlashConclusion from './FlashConclusion';
 import { formatNumber } from '../../lib/price';
 import { cn } from '../../lib/utils';
@@ -16,12 +17,25 @@ type OrderBookItemProps = {
 export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderBookItemProps) {
   const categoryId = useCategoryIdStore((state) => state.categoryId);
   const lastPrice = useOrderbookStore((state) => state.lastPrice);
+  const [isFlashing, setIsFlashing] = useState(false);
   const { setSelectedPrice, setSelectedPriceAndQuantity } = useSelectedPriceStore();
   const { data: categoryInfo } = useGetCategoryInfo(categoryId);
-  const openPrice =  categoryInfo?.openPrice ?? 0;
+  const openPrice = categoryInfo?.openPrice ?? 0;
 
-  const itemPrice = Number(item.orderPrice);
-  const itemVolume = Number(item.totalRemainingCount);
+  const itemPrice = item.orderPrice;
+  const itemVolume = item.totalRemainingCount;
+
+  const flashTime = 220;
+
+  const isLastPriceRow = lastPrice?.price && itemPrice === lastPrice?.price;
+  const lastPriceNumber = lastPrice?.price;
+
+  useEffect(() => {
+    if (!lastPriceNumber || itemPrice !== lastPriceNumber) return;
+    setIsFlashing(true);
+    const flashTimeout = window.setTimeout(() => setIsFlashing(false), flashTime);
+    return () => window.clearTimeout(flashTimeout);
+  }, [lastPrice, lastPriceNumber, itemPrice]);
 
   const handlePriceClick = () => {
     setSelectedPrice(itemPrice);
@@ -44,12 +58,10 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
   const volumeRate = maxVolume > 0 ? itemVolume / maxVolume : 0;
   const barWidth = volumeRate * 100;
 
-  const isLastPriceRow = typeof lastPrice?.price === 'number' && itemPrice === lastPrice.price;
-
   const row = (
     <div
       className={cn(
-        'group grid px-2 text-xs border-t  border-white transition-colors w-full items-center justify-center',
+        'group grid px-2 text-xs border-t border-white transition-colors w-full items-center justify-center',
         isSell
           ? 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6] hover:border hover:border-[#bdd2f9]'
           : 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1] hover:border hover:border-[#ffbaba]',
@@ -60,8 +72,8 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
       <div className="flex flex-col items-center justify-center cursor-pointer" onClick={handlePriceClick}>
         {!isSell && (
           <>
-            {isLastPriceRow ? (
-              <FlashConclusion value={lastPrice?.price} className="rounded-[2px]">
+            {lastPriceNumber ? (
+              <FlashConclusion isFlashing={isFlashing} className="rounded-[2px]">
                 <div className={`${priceColor}`}>
                   <span className="font-semibold">{price}</span>
                   <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
@@ -77,7 +89,7 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
         )}
       </div>
 
-{/* Bar Chart */}
+      {/* Bar Chart */}
       <div
         className="relative flex items-center justify-center min-h-6 text-[11px] cursor-pointer w-full h-full border-white border-x py-4"
         onClick={handleQuantityClick}
@@ -105,8 +117,8 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
       <div className="flex flex-col items-center justify-center pl-3 cursor-pointer" onClick={handlePriceClick}>
         {isSell && (
           <>
-            {isLastPriceRow ? (
-              <FlashConclusion value={lastPrice?.price} className="rounded-[2px]">
+            {lastPriceNumber ? (
+              <FlashConclusion isFlashing={isFlashing} className="rounded-[2px]">
                 <div className={cn(priceColor)}>
                   <span className="font-semibold">{price}</span>
                   <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>

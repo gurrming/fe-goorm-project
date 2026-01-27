@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { TMyPortfolio } from '../../types/asset';
+import type { TAssets } from '../../types/asset';
 
 interface IAssetStore {
   myAsset:{
@@ -8,10 +8,17 @@ interface IAssetStore {
     assetCanOrder: number | null;
   },
   wsTotalAsset: number | null;
-  summary: TMyPortfolio | null;
+  summary: {
+    totalBuyAmount: number;
+    totalEvaluation: number;
+    totalProfit: number;
+    totalProfitRate: number;
+  }
+  assetList: TAssets[];
   setMyAsset: (data: { assetCash: number | null; totalAsset: number | null; assetCanOrder: number | null }) => void;
   setWsTotalAsset: (data: number | null) => void;
-  setSummary: (data: TMyPortfolio) => void;
+  setSummary: (data: { totalBuyAmount: number; totalEvaluation: number; totalProfit: number; totalProfitRate: number }) => void;
+  setAssetList: (data: TAssets[]) => void;
 }
 
 export const useAssetStore = create<IAssetStore>((set) => ({
@@ -21,8 +28,15 @@ export const useAssetStore = create<IAssetStore>((set) => ({
     assetCanOrder: null,
   },
   wsTotalAsset: null,
-  summary: null,
+  summary: {
+    totalBuyAmount: 0,
+    totalEvaluation: 0,
+    totalProfit: 0,
+    totalProfitRate: 0,
+  },
+  assetList: [],
   setMyAsset: (data) => set({ myAsset: data }),
   setWsTotalAsset: (data) => set({ wsTotalAsset: data }),
   setSummary: (data) => set({ summary: data }),
+  setAssetList: (data: TAssets[]) => set({ assetList: data }),
 }));

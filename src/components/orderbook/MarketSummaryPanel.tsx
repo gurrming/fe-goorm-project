@@ -70,7 +70,7 @@ export default function MarketSummaryPanel() {
           <div className="text-[10px] text-primary-300">당일저가</div>
           <div className="flex flex-col items-end">
             <div className="text-[10px] text-blue-500">{formatNumber(low)}</div>
-            <div className="text-[10px] text-blue-500">{`- ${lowChangeRate.toFixed(2)}`}%</div>
+            <div className="text-[10px] text-blue-500">{`${lowChangeRate.toFixed(2)}`}%</div>
           </div>
         </div>
       </div>

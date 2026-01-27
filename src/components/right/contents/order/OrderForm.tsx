@@ -26,7 +26,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const memberId = user?.id;
   // 서버에서 데이터 가져오기
   const { data: myAsset } = useGetMyAsset();
-  const { data: portfolio } = useGetInvest(memberId!);
+  const { data: portfolio } = useGetInvest(memberId!, 0, 30);
   const { data: categories } = useGetCategories();
   const { categoryId } = useCategoryIdStore();
 
@@ -70,15 +70,19 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const quantityNum = changeNumber(quantity);
 
   // 서버에 전송하기 위한 숫자로 변환된 총액 값
-  const totalAmountValue = userTotalAmount ? Math.round(changeNumber(userTotalAmount)) : Math.round(changedPriceNum * quantityNum);
+  const totalMoney = userTotalAmount
+    ? Math.round(changeNumber(userTotalAmount))
+    : Math.round(changedPriceNum * quantityNum);
   // 사용자가 입력한 총액 값을 표시하기 위해 문자열 상태인 총액 값
-  const totalAmountDisplay = totalAmountValue ? formatInteger(totalAmountValue) : '';
+  const totalDisplayMoney = totalMoney ? formatInteger(totalMoney) : '';
 
   const priceUpDown = (clickType: 'up' | 'down') => {
     // 숫자값으로 변환한 값을 가지고 + / - 테이블에 맞게 계산하기 위해 getPriceTickSize 함수 사용
     const step = getPriceTickSize(changedPriceNum);
     const newPrice = clickType === 'up' ? changedPriceNum + step : changedPriceNum - step;
-    setPrice(formatNumber(newPrice));
+    // 틱을 통한 가격 조정 시 0 미만으로 떨어지지 않도록 보정
+    const minPrice = Math.max(0, newPrice);
+    setPrice(formatNumber(minPrice));
     setUserTotalAmount('');
   };
 
@@ -91,12 +95,9 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   // 주문 수량 변경 시
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/[^0-9.]/g, '');
-    const parts = value.split('.'); // 숫자마다 .으로 구분해서 배열에 저장
 
-    // 배열로 저장된 구분된 숫자 값이 2개 이상인 경우, 첫번째 값과 뒤에 오는 나머지 값을 합쳐서 하나의 숫자로 변환 0.234
-    if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
-    // 배열에 저장된 구분된 숫자 값이 2개이고 두번째 값의 길이가 8자리 이상인 경우, 첫번째 값과 두번째 값의 첫 8자리를 합쳐서 하나의 숫자로 변환 0.23456789
-    if (parts.length === 2 && parts[1].length > 8) value = parts[0] + '.' + parts[1].substring(0, 8);
+    // 소수점 8자리 제한 (정규식으로 첫 번째 소수점 이후 8자리까지만 허용)
+    value = value.replace(/(\.\d{8})\d+/, '$1');
 
     setQuantity(value);
     setUserTotalAmount(''); // 주문 수량 변경 시 사용자 입력값 초기화하여 계산값 표시
@@ -140,7 +141,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
     }
 
     // 주문 총액이 5000미만일 때
-    if (totalAmountValue < 5000) {
+    if (totalMoney < 5000) {
       openModal(
         <Modal
           title={isBuy ? '매수 주문 안내' : '매도 주문 안내'}
@@ -155,7 +156,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
     }
 
     // 주문 가능 금액이 부족할 때 (매수일 시)
-    if (isBuy && totalAmountValue > buyAvailableCash) {
+    if (isBuy && totalMoney > buyAvailableCash) {
       openModal(
         <Modal
           title="매수 주문 안내"
@@ -249,7 +250,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
           주문총액 <span className="text-primary-500 text-[10px] ml-1">(KRW)</span>
         </span>
         <input
-          value={totalAmountDisplay}
+          value={totalDisplayMoney}
           onChange={handleTotalAmountChange}
           placeholder="0"
           className="w-90 px-2 py-2 text-[13px] text-right border border-gray-300 rounded-[2px]"
