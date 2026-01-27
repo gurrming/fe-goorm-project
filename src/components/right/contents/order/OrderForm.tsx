@@ -26,7 +26,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
   const memberId = user?.id;
   // 서버에서 데이터 가져오기
   const { data: myAsset } = useGetMyAsset();
-  const { data: portfolio } = useGetInvest(memberId!);
+  const { data: portfolio } = useGetInvest(memberId!, 0, 30);
   const { data: categories } = useGetCategories();
   const { categoryId } = useCategoryIdStore();
 
