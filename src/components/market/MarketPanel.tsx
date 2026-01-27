@@ -211,19 +211,15 @@ export default function MarketPanel() {
                 </div>
               </div>
             ) : (
-              sortedPortfolioAssets.map((asset) => {
-                const initialCategory = categoryList.find((item) => item.categoryId === asset.categoryId);
-                return (
-                  <MarketTableItem
-                    key={asset.categoryId}
-                    activeTab={activeTab}
-                    portfolioAsset={asset}
-                    initialCategory={initialCategory}
-                    isFavorite={isFavoriteCategory(asset.categoryId)}
-                    onToggleFavorite={() => handleToggleFavorite(asset.categoryId)}
-                  />
-                );
-              })
+              sortedPortfolioAssets.map((asset) => (
+                <MarketTableItem
+                  key={asset.categoryId}
+                  activeTab={activeTab}
+                  portfolioAsset={asset}
+                  isFavorite={isFavoriteCategory(asset.categoryId)}
+                  onToggleFavorite={() => handleToggleFavorite(asset.categoryId)}
+                />
+              ))
             )
           ) : sortedCategories.length === 0 ? (
             <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">
