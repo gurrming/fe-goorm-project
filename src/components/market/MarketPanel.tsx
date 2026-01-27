@@ -39,7 +39,7 @@ export default function MarketPanel() {
   const { data: categories } = useGetCategories();
 
   // 포트폴리오 - 보유 데이터 조회
-  const { data: portfolio } = useGetInvest(memberId!);
+  const { data: portfolio } = useGetInvest(memberId!, 0, 30);
 
   // 관심 종목 목록 조회
   const { data: Interest } = useGetFavorite(memberId ?? null);

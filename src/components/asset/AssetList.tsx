@@ -1,4 +1,7 @@
+import { useEffect, useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
 import AssetItem from './AssetItem';
+import { useGetInfiniteInvest } from '../../hooks/infinite/useGetInfiniteInvest';
 import { useAsset, useSummary } from '../../hooks/websocket/useAsset';
 import useUserStore from '../../store/useUserStore';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
@@ -7,9 +10,48 @@ import type { TAssets } from '../../types/asset';
 const AssetList = () => {
   const user = useUserStore((state) => state.user);
   const memberId = user?.id;
-  const { summary } = useAssetStore();
+  const { data: investData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteInvest(memberId!, 10);
+  const { setSummary, setAssetList } = useAssetStore();
   useAsset(memberId!);
   useSummary(memberId!);
+
+  useEffect(() => {
+    if (investData) {
+      const totalBuyAmount: number = investData.pages[0].totalBuyAmount;
+      const totalEvaluation: number = investData.pages[0].totalEvaluation;
+      const totalProfit: number = investData.pages[0].totalProfit;
+      const totalProfitRate: number = investData.pages[0].totalProfitRate;
+
+      const summary = {
+        totalBuyAmount,
+        totalEvaluation,
+        totalProfit,
+        totalProfitRate,
+      };
+      
+      setSummary(summary);
+    }
+  }, [investData, setSummary]);
+
+  const assetListData = useMemo(() => {
+    return investData?.pages.flatMap((page) => page.assetList) || [];
+  }, [investData]);
+
+  useEffect(() => {
+    if (assetListData) {
+      setAssetList(assetListData);
+    }
+  }, [assetListData, setAssetList]);
+
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+
+  useEffect(() => {
+    if (inView && !isFetching && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   return (
     <div className="h-[600px] overflow-y-auto flex flex-col gap-3 border-t-[0.3px] border-gray-200 pt-3">
@@ -36,8 +78,8 @@ const AssetList = () => {
           </tr>
         </thead>
         <tbody>
-          {summary?.assetList && summary?.assetList.length > 0 ? (
-            summary?.assetList.map((item: TAssets) => <AssetItem key={item.symbol} item={item} />)
+          {assetListData && assetListData.length > 0 ? (
+            assetListData.map((item: TAssets) => <AssetItem key={item.symbol} item={item} />)
           ) : (
             <tr>
               <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
@@ -45,6 +87,7 @@ const AssetList = () => {
               </td>
             </tr>
           )}
+          <tr ref={ref} />
         </tbody>
       </table>
     </div>
