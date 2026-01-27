@@ -3,6 +3,7 @@ import { Mock, vi } from 'vitest';
 import { useGetMyAsset } from '../../../api/asset/useGetAsset';
 import { usePostOrder } from '../../../api/orders/usePostOrder';
 import { useGetInvest } from '../../../api/useGetInvest';
+import { useGetInfiniteInvest } from '../../../hooks/infinite/useGetInfiniteInvest';
 import { mockUseUserStore, mockUseAssetStore } from '../../../lib/test/mockZustandStore';
 import Asset from '../Asset';
 import Header from '@/components/layout/Header';
@@ -15,6 +16,10 @@ vi.mock('../../../api/asset/useGetAsset', () => ({
 
 vi.mock('../../../api/useGetInvest', () => ({
   useGetInvest: vi.fn(),
+}));
+
+vi.mock('../../../hooks/infinite/useGetInfiniteInvest', () => ({
+  useGetInfiniteInvest: vi.fn(),
 }));
 
 vi.mock('../../../api/orders/usePostOrder', () => ({
@@ -50,7 +55,12 @@ describe('<Asset /> 통합 테스트', () => {
             totalAsset: null, 
             assetCanOrder: null,
           },
-          summary: null 
+          summary: {
+            totalBuyAmount: 0,
+            totalEvaluation: 0,
+            totalProfit: 0,
+            totalProfitRate: 0,
+          } 
         });
 
         (useWebsocket as Mock).mockReturnValue({
@@ -62,6 +72,12 @@ describe('<Asset /> 통합 테스트', () => {
     
         (useGetMyAsset as Mock).mockReturnValue({ data: null }); 
         (useGetInvest as Mock).mockReturnValue({ data: null });
+        (useGetInfiniteInvest as Mock).mockReturnValue({
+            data: { pages: [], pageParams: [] },
+            fetchNextPage: vi.fn(),
+            hasNextPage: false,
+            isFetching: false,
+        });
       });
 
       afterEach(()=>{
@@ -223,20 +239,6 @@ describe('<Asset /> 통합 테스트', () => {
                         totalEvaluation: 100000000,
                         totalProfit: 0,
                         totalProfitRate: 0,
-                        assetList: [
-                            {
-                                categoryId: 1,
-                                avgPrice: 100000000,
-                                categoryName: '비트코인',
-                                symbol: 'BTC',
-                                investCount: 1,
-                                currentPrice: 100000000,
-                                buyAmount: 100000000,
-                                evaluationAmount: 100000000,
-                                evaluationProfit: 0,
-                                profitRate: 0,
-                            },
-                        ],
                     },
                 });
             });
@@ -479,20 +481,6 @@ describe('<Asset /> 통합 테스트', () => {
                         totalEvaluation: 60000000, // [변동] 평가금액 상승
                         totalProfit: 10000000,     // [변동] 이익 +1,000만
                         totalProfitRate: 20.0,     // [변동] 수익률 +20%
-                        assetList: [
-                            {
-                                categoryId: 1,
-                                categoryName: '비트코인',
-                                symbol: 'BTC',
-                                investCount: 1,
-                                avgPrice: 50000000,
-                                currentPrice: 60000000, // [변동] 현재가 상승
-                                buyAmount: 50000000,
-                                evaluationAmount: 60000000, // [변동]
-                                evaluationProfit: 10000000, // [변동]
-                                profitRate: 20.0,
-                            },
-                        ],
                     },
                 });
             });
@@ -530,21 +518,64 @@ describe('<Asset /> 통합 테스트', () => {
             });
         });
         it('AS-13: 실시간 보유자산 업데이트 확인', async () => {
-            mockUseAssetStore({
-                summary: {
-                    totalBuyAmount: 0,
-                    totalEvaluation: 0,
-                    totalProfit: 0,
-                    totalProfitRate: 0,
-                    assetList: [],
-                }
+            (useGetInfiniteInvest as Mock).mockReturnValue({
+                data: {
+                    pages: [{
+                        totalBuyAmount: 0,
+                        totalEvaluation: 0,
+                        totalProfit: 0,
+                        totalProfitRate: 0,
+                        assetList: [],
+                        hasNext: false,
+                    }],
+                    pageParams: [0],
+                },
+                fetchNextPage: vi.fn(),
+                hasNextPage: false,
+                isFetching: false,
             });
             await render(<Asset />);
             expect(screen.getByText('보유 자산이 없습니다.')).toBeInTheDocument();
 
             act(()=>{
-                mockUseAssetStore({
-                    summary: {
+                (useGetInfiniteInvest as Mock).mockReturnValue({
+                    data: {
+                        pages: [{
+                            totalBuyAmount: 0,
+                            totalEvaluation: 0,
+                            totalProfit: 0,
+                            totalProfitRate: 0,
+                            assetList: [
+                                {
+                                    categoryId: 1,
+                                    avgPrice: 1000000,
+                                    categoryName: '비트코인',
+                                    symbol: 'BTC',
+                                    investCount: 1,
+                                    currentPrice: 1000000,
+                                    buyAmount: 1000000,
+                                    evaluationAmount: 1000000,
+                                    evaluationProfit: 1000000,
+                                    profitRate: 1000000,
+                                },
+                            ],
+                            hasNext: false,
+                        }],
+                        pageParams: [0],
+                    },
+                    fetchNextPage: vi.fn(),
+                    hasNextPage: false,
+                    isFetching: false,
+                });
+            });
+            await waitFor(() => {
+                expect(screen.getByText('BTC')).toBeInTheDocument();
+            });
+        });
+        it('AS-14: 보유자산 목록 상세 정보 확인', async () => {
+            (useGetInfiniteInvest as Mock).mockReturnValue({
+                data: {
+                    pages: [{
                         totalBuyAmount: 0,
                         totalEvaluation: 0,
                         totalProfit: 0,
@@ -563,37 +594,15 @@ describe('<Asset /> 통합 테스트', () => {
                                 profitRate: 1000000,
                             },
                         ],
-                    }
-                });
+                        hasNext: false,
+                    }],
+                    pageParams: [0],
+                },
+                fetchNextPage: vi.fn(),
+                hasNextPage: false,
+                isFetching: false,
             });
-            await waitFor(() => {
-                expect(screen.getByText('BTC')).toBeInTheDocument();
-            });
-        });
-        it('AS-14: 보유자산 목록 상세 정보 확인', async () => {
-            mockUseAssetStore({
-                summary: {
-                    totalBuyAmount: 0,
-                    totalEvaluation: 0,
-                    totalProfit: 0,
-                    totalProfitRate: 0,
-                    assetList: [
-                        {
-                            categoryId: 1,
-                            avgPrice: 1000000,
-                            categoryName: '비트코인',
-                            symbol: 'BTC',
-                            investCount: 1,
-                            currentPrice: 1000000,
-                            buyAmount: 1000000,
-                            evaluationAmount: 1000000,
-                            evaluationProfit: 1000000,
-                            profitRate: 1000000,
-                        },
-                    ],
-                }
-            });
-            render(<Asset />);
+            await render(<Asset />);
             await waitFor(() => {
                 expect(screen.getByText('BTC')).toBeInTheDocument();
             });
