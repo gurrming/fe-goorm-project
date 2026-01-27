@@ -1,4 +1,14 @@
-import { describe, it, expect } from 'vitest';
+import { screen, act } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
+import { describe, it, beforeEach, expect } from 'vitest';
+import MarketSummaryPanel from '../MarketSummaryPanel';
+import { WebsocketProvider } from '@/hooks/useWebsocket';
+import { mockUseCategoryIdStore } from '@/lib/test/mockZustandStore';
+import render from '@/lib/test/render';
+import { testServer } from '@/mocks/testServer';
+import useCategoryIdStore from '@/store/useCategoryId';
+import { useTickerStore } from '@/store/websocket/useTickerStore';
+import { useTradesStore } from '@/store/websocket/useTradesStore';
 
 /**
  * MarketSummaryPanel의 고가/저가 % 계산 로직 검증
@@ -64,5 +74,94 @@ describe('MarketSummaryPanel 고가/저가 % 계산', () => {
       // Assert
       expect(result).toBe(10);
     });
+  });
+});
+
+describe('MarketSummaryPanel', () => {
+  const initialCategoryState = useCategoryIdStore.getState();
+  const initialTickerState = useTickerStore.getState();
+  const initialTradesState = useTradesStore.getState();
+
+  beforeEach(() => {
+    window.localStorage.clear();
+    useCategoryIdStore.setState(initialCategoryState, true);
+    useTickerStore.setState(initialTickerState, true);
+    useTradesStore.setState(initialTradesState, true);
+  });
+
+  /**
+   * A-14: 호가 상단 우측(전일종가 영역) 실시간 업데이트
+   * Level: RTL Integration
+   * Goal: 전일종가, 거래량, 거래대금이 실시간으로 업데이트됨
+   */
+  it('A-14: 호가 상단 우측(전일종가 영역) 실시간 업데이트', async () => {
+    // Arrange: categoryId 설정 + 초기 데이터
+    mockUseCategoryIdStore({ categoryId: 1 });
+    testServer.use(
+      http.get('*/api/category', () =>
+        HttpResponse.json({
+          categoryId: 1,
+          categoryName: '비트코인',
+          symbol: 'BTC',
+          tradePrice: 100000,
+          changeRate: 0,
+          changeAmount: 0,
+          openPrice: 95000,
+          dailyHigh: 0,
+          dailyLow: 0,
+          accVolume: 0,
+          accAmount: 0,
+        }),
+      ),
+    );
+
+    await render(
+      <WebsocketProvider>
+        <MarketSummaryPanel />
+      </WebsocketProvider>,
+    );
+
+    // Assert: 초기 전일종가 표시
+    expect(await screen.findByText('95,000')).toBeInTheDocument();
+
+    // Act: ticker 데이터 업데이트 (거래량 변경)
+    await act(async () => {
+      useTickerStore.setState({
+        tickerByCategoryId: {
+          1: {
+            price: 100000,
+            changeRate: 0,
+            changeAmount: 0,
+            high: 0,
+            low: 0,
+            volume: 1000, // 거래량 변경
+            amount: 0,
+          },
+        },
+      });
+    });
+
+    // Assert: 거래량 출력이 갱신됨
+    expect(await screen.findByText('1,000')).toBeInTheDocument();
+
+    // Act: ticker 데이터 업데이트 (거래대금 변경)
+    await act(async () => {
+      useTickerStore.setState({
+        tickerByCategoryId: {
+          1: {
+            price: 100000,
+            changeRate: 0,
+            changeAmount: 0,
+            high: 0,
+            low: 0,
+            volume: 1000,
+            amount: 50000000, // 거래대금 변경
+          },
+        },
+      });
+    });
+
+    // Assert: 거래대금 출력이 갱신됨
+    expect(await screen.findByText('50,000,000')).toBeInTheDocument();
   });
 });
