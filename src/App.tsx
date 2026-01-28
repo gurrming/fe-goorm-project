@@ -5,6 +5,7 @@ import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
 import SignupPage from './pages/SignupPage';
+import AiAnalysisPage from './pages/AiAnalysisPage';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/asset" element={<AssetPage />} />
+          <Route path="/ai-analysis" element={<AiAnalysisPage />} />
         </Route>
       </Routes>
     </ModalProvider>
