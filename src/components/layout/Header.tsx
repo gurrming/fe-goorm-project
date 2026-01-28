@@ -1,3 +1,5 @@
+import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useLocation } from 'react-router-dom';
 import { usePostLogout } from '../../api/member/usePostLogout';
 import useUserStore from '../../store/useUserStore';
@@ -47,6 +49,7 @@ export default function Header() {
           {user ? (
             <>
               <p className="text-white text-sm font-semibold text-nowrap">{user.nickname}님, 환영합니다.</p>
+              <FontAwesomeIcon icon={faBell} color="white" size="xl" />
               <Button
                 colorType="white"
                 onClick={() => {
