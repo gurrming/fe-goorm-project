@@ -33,6 +33,7 @@ export default function MarketTableItem({
   onToggleFavorite,
 }: MarketTableItemProps) {
   const setCategoryId = useCategoryIdStore((state) => state.setCategoryId);
+  const currentCategoryId = useCategoryIdStore((state) => state.categoryId);
 
   // 원화/관심 탭 행 티커
   const ticker = useTickerStore((state) => (category ? state.tickerByCategoryId[category.categoryId] : undefined));
@@ -47,11 +48,14 @@ export default function MarketTableItem({
     const profitColor = profitRate > 0 ? 'text-primary-700' : profitRate < 0 ? 'text-primary-900' : 'text-primary-100';
     const profitPrefix = profitRate > 0 ? '+' : '';
     const rightAlignClass = 'flex justify-end items-center';
+    const isCurrentItem = currentCategoryId === portfolioAsset.categoryId;
 
     return (
       // 보유 탭입니다
       <div
-        className="grid grid-cols-[1.5fr_1.2fr_2.5fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4"
+        className={`grid grid-cols-[1.5fr_1.2fr_2.5fr_1.3fr] border-b border-gray-200 hover:bg-gray-100 px-4 ${
+          isCurrentItem ? 'bg-gray-100' : ''
+        }`}
         onClick={() => setCategoryId(portfolioAsset.categoryId)}
       >
         <div className="text-xs min-w-0 flex ">
@@ -94,6 +98,7 @@ export default function MarketTableItem({
 
   // 기본 탭 (원화, 관심)
   if (!category) return null;
+  const isCurrentItem = currentCategoryId === category.categoryId;
 
   // 실시간 데이터가 없으면 category의 REST API에서 받아온 값 사용
   const lastPrice = ticker?.price ?? category.tradePrice ?? 0;
@@ -107,7 +112,9 @@ export default function MarketTableItem({
 
   return (
     <div
-      className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4 py-2"
+      className={`grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-100 px-4 py-2 transition-opacity hover:cursor-pointer ${
+        isCurrentItem ? 'bg-gray-100' : ''
+      }`}
       onClick={() => setCategoryId(category.categoryId)}
     >
       <div className="text-xs min-w-0">
@@ -119,7 +126,7 @@ export default function MarketTableItem({
               e.stopPropagation();
               onToggleFavorite();
             }}
-            className="w-5 h-5 flex items-center justify-center text-primary-500 hover:text-primary-300 shrink-0"
+            className="w-5 h-5 flex items-center justify-center text-[#ffca43] hover:text-[#ffb457] shrink-0"
           >
             <FontAwesomeIcon icon={isFavorite ? faStarSolid : faStarRegular} />
           </button>
