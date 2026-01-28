@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { Transaction_Skeleton } from './loading/Transaction_Skeleton';
 import SettledItem from './SettledItem';
 import { useGetInfiniteSettled } from '../../../../hooks/infinite/useGetInfiniteSettled';
 import useUserStore from '../../../../store/useUserStore';
@@ -13,7 +14,7 @@ const Settled = () => {
   if (!user) return null;
   const memberId = user.id;
 
-  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteSettled(memberId, 10);
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching, isPending } = useGetInfiniteSettled(memberId, 10);
 
   const settledList = useMemo(() => {
     return infiniteData?.pages.flat() || [];
@@ -24,6 +25,12 @@ const Settled = () => {
       fetchNextPage();
     }
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
+
+  if (isPending) {
+    return (
+      <Transaction_Skeleton />
+    );
+  }
 
   return (
     <div className="max-h-[650px] overflow-y-auto w-full border-collapse bg-white">

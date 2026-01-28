@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { Transaction_Skeleton } from './loading/Transaction_Skeleton';
 import UnSettledItem from './UnSettledItem';
 import {usePatchCancelAll} from '../../../../api/orders/usePatchCancelAll';
 import { useGetInfiniteUnSettled } from '../../../../hooks/infinite/useGetInfiniteUnSettled';
@@ -14,7 +15,7 @@ const UnSettled = () => {
   if (!user) return null;
   const memberId = user.id;
   
-  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteUnSettled(memberId, 10);
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching, isPending } = useGetInfiniteUnSettled(memberId, 10);
   const totalOpenOrderCount = infiniteData?.pages[0]?.totalOpenOrderCount;
  
   const { mutate: cancelAll } = usePatchCancelAll();
@@ -25,6 +26,12 @@ const UnSettled = () => {
       fetchNextPage();
     }
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
+
+  if (isPending) {
+    return (
+      <Transaction_Skeleton />
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3">
