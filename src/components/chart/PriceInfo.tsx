@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
-import { formatNumber } from '../../lib/price';
+import { formatInteger, formatNumber } from '../../lib/price';
 import { useTickerStore } from '../../store/websocket/useTickerStore';
 import Text from '../common/Text';
 
@@ -46,7 +46,7 @@ const PriceInfo = ({ categoryId, quote = 'KRW', symbol }: PriceInfoProps) => {
         <div className="flex flex-col gap-2 w-full">
           <Text size="xs" text="거래량" price={formatNumber(volume)} priceColor="black" type={symbol} />
           <div className="h-[0.5px] bg-gray-200 w-full" />
-          <Text size="xs" text="거래대금" price={formatNumber(amount)} priceColor="black" type={quote} />
+          <Text size="xs" text="거래대금" price={formatInteger(amount)} priceColor="black" type={quote} />
         </div>
       </div>
     </div>
