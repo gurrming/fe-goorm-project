@@ -21,21 +21,22 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
   const { setSelectedPrice, setSelectedPriceAndQuantity } = useSelectedPriceStore();
   const { data: categoryInfo } = useGetCategoryInfo(categoryId);
   const openPrice = categoryInfo?.openPrice ?? 0;
+  const nowPrice = categoryInfo?.tradePrice;
 
   const itemPrice = item.orderPrice;
   const itemVolume = item.totalRemainingCount;
 
-  const flashTime = 220;
-
-  const isLastPriceRow = lastPrice?.price && itemPrice === lastPrice?.price;
   const lastPriceNumber = lastPrice?.price;
 
+  // 웹소켓 먼저, 이후에 REST 현재가
+  const flashPrice = lastPriceNumber ?? nowPrice;
+  const isLastPriceRow = flashPrice != null && itemPrice === flashPrice;
+
   useEffect(() => {
-    if (!lastPriceNumber || itemPrice !== lastPriceNumber) return;
+    if (flashPrice == null) return;
+    if (itemPrice !== flashPrice) return;
     setIsFlashing(true);
-    const flashTimeout = window.setTimeout(() => setIsFlashing(false), flashTime);
-    return () => window.clearTimeout(flashTimeout);
-  }, [lastPrice, lastPriceNumber, itemPrice]);
+  }, [flashPrice, itemPrice]);
 
   const handlePriceClick = () => {
     setSelectedPrice(itemPrice);
@@ -65,26 +66,19 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
         isSell
           ? 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6] hover:border hover:border-[#bdd2f9]'
           : 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1] hover:border hover:border-[#ffbaba]',
-        isLastPriceRow && 'border border-black',
+        isLastPriceRow && 'border-2 border-black',
       )}
     >
       {/* 좌측 영역 */}
       <div className="flex flex-col items-center justify-center cursor-pointer" onClick={handlePriceClick}>
         {!isSell && (
           <>
-            {lastPriceNumber ? (
-              <FlashConclusion isFlashing={isFlashing} className="rounded-[2px]">
-                <div className={`${priceColor}`}>
-                  <span className="font-semibold">{price}</span>
-                  <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
-                </div>
-              </FlashConclusion>
-            ) : (
+            <FlashConclusion isFlashing={isFlashing}>
               <div className={`${priceColor}`}>
                 <span className="font-semibold">{price}</span>
                 <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
               </div>
-            )}
+            </FlashConclusion>
           </>
         )}
       </div>
@@ -117,19 +111,12 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
       <div className="flex flex-col items-center justify-center pl-3 cursor-pointer" onClick={handlePriceClick}>
         {isSell && (
           <>
-            {lastPriceNumber ? (
-              <FlashConclusion isFlashing={isFlashing} className="rounded-[2px]">
-                <div className={cn(priceColor)}>
-                  <span className="font-semibold">{price}</span>
-                  <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
-                </div>
-              </FlashConclusion>
-            ) : (
+            <FlashConclusion isFlashing={isFlashing} className="rounded-[2px]">
               <div className={cn(priceColor)}>
                 <span className="font-semibold">{price}</span>
                 <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
               </div>
-            )}
+            </FlashConclusion>
           </>
         )}
       </div>
