@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { calculateMergedData } from './CalculateMergedData';
 import Chart from './Chart';
 import Chatting from './chatting/Chatting';
+import { Chart_Skeleton } from './loading/Chart_Skeleton';
 import PriceInfo from './PriceInfo';
 import Tab from './Tab';
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
@@ -27,18 +28,25 @@ const InfoCoin = () => {
   };
 
   const realtimeData = useChartStore((state) => state.chartDataList);
-  const { data: infiniteData, fetchNextPage, hasNextPage } = useGetInfiniteChart(categoryId, 300);
+  const { data: infiniteData, fetchNextPage, hasNextPage, isPending } = useGetInfiniteChart(categoryId, 300);
 
   const mergedData = useMemo(() => {
     return calculateMergedData<ChartData>(infiniteData, realtimeData, data => data.t,(a, b) => a.t - b.t);
   }, [infiniteData, realtimeData]);
 
+  if(isPending) {
+    return (
+      <Chart_Skeleton />
+    );
+  }
+  
   return (
     <div className="flex flex-col bg-white">
       <Tab title={TITLE} tab={tab} handleTab={handleTab} />
       {tab === 'price' && (
         <div className="flex flex-col">
           <PriceInfo categoryId={categoryId} quote="KRW" symbol={categoryInfo?.symbol} />
+          {isPending && <Chart_Skeleton />}
           {mergedData && mergedData.length > 0 ? (
             <Chart data={mergedData} fetchNextPage={fetchNextPage} hasMore={hasNextPage} />
           ) : (

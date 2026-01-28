@@ -1,9 +1,23 @@
+import { useEffect, useState } from 'react';
 import { formatInteger } from '../../lib/price';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import Text from '../common/Text';
+import MyAsset_Skeleton from './loading/MyAsset_Skeleton';
 
 const MyAsset = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const { myAsset, wsTotalAsset, summary } = useAssetStore();
+
+  useEffect(() => {
+    // myAsset 데이터가 로드되면 로딩 종료
+    if (myAsset.assetCash !== null || myAsset.totalAsset !== null || myAsset.assetCanOrder !== null) {
+      setIsLoading(false);
+    }
+  }, [myAsset]);
+
+  if (isLoading) {
+    return <MyAsset_Skeleton />;
+  }
 
   return (
     <div className="flex flex-col  gap-3 px-4 py-4">

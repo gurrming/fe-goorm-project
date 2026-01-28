@@ -10,8 +10,12 @@ export function getPriceTickSize(price: number): number {
   return 1;
 }
 
-export const formatNumber = (point: number | undefined | null): string => {
-  return point?.toLocaleString('ko-KR') ?? '0';
+export const formatNumber = (point: number | string | undefined | null): string => {
+  if (point == null) return '0';
+  const value = typeof point === 'number' ? point : parseFloat(String(point).replace(/,/g, ''));
+
+  if (!Number(value)) return '0';
+  return value.toLocaleString('ko-KR');
 };
 
 // 소숫점 첫째자리에서 반올림하여 정수로 만들기

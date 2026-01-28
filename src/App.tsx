@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { ModalProvider } from './components/common/Modal/ModalProvider';
 import Layout from './components/layout/Layout';
+import AiAnalysisPage from './pages/AiAnalysisPage';
 import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/asset" element={<AssetPage />} />
+          <Route path="/ai-analysis" element={<AiAnalysisPage />} />
         </Route>
       </Routes>
     </ModalProvider>

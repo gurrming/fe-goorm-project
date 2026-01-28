@@ -4,6 +4,7 @@ import SettledItem from './SettledItem';
 import { useGetInfiniteSettled } from '../../../../hooks/infinite/useGetInfiniteSettled';
 import useUserStore from '../../../../store/useUserStore';
 import type { TSettledData } from '../../../../types/transaction';
+import { Loading_Spinner } from '@/components/common/loading/Loading_Spinner';
 
 const Settled = () => {
   const { ref, inView } = useInView({
@@ -13,7 +14,7 @@ const Settled = () => {
   if (!user) return null;
   const memberId = user.id;
 
-  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteSettled(memberId, 10);
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching, isPending } = useGetInfiniteSettled(memberId, 10);
 
   const settledList = useMemo(() => {
     return infiniteData?.pages.flat() || [];
@@ -48,7 +49,7 @@ const Settled = () => {
           </tr>
         </thead>
         <tbody>
-          {settledList.length > 0 ? (
+          {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Loading_Spinner /></td></tr>) : settledList.length > 0 ? (
             settledList.map((item: TSettledData) => <SettledItem key={item.tradeId} item={item} />)
           ) : (
             <tr>

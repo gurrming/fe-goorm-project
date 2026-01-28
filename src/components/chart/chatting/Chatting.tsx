@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import Chat from './Chat';
+import { Chatting_Skeleton } from './loading/Chatting_Skeleton';
 import { useGetInfiniteChat } from '../../../hooks/infinite/useGetInfiniteChat';
 import { useChatting } from '../../../hooks/websocket/useChatting';
 import useCategoryIdStore from '../../../store/useCategoryId';
@@ -23,7 +24,7 @@ const Chatting = () => {
 
   const { isConnected, sendChat, chatHistory } = useChatting({ categoryId });
 
-  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteChat(categoryId, 10);
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching, isPending } = useGetInfiniteChat(categoryId, 10);
 
   const mergedChatList = useMemo(() => {
     return calculateMergedData<TChat>(
@@ -66,6 +67,12 @@ const Chatting = () => {
       }, 0);
     }
   };
+
+  if (isPending) {
+    return (
+      <Chatting_Skeleton />
+    );
+  }
 
   return (
     <div className="flex flex-col w-[1000px] h-[537px]">

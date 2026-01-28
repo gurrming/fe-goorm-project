@@ -1,6 +1,6 @@
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
 import { useTicker } from '../../hooks/websocket/useTicker';
-import { formatNumber } from '../../lib/price';
+import { formatInteger, formatNumber } from '../../lib/price';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useTickerStore } from '../../store/websocket/useTickerStore';
 
@@ -51,7 +51,7 @@ export default function MarketSummaryPanel() {
         <div className="flex justify-between items-center">
           <div className="text-[10px] text-primary-300">거래대금</div>
           <div className="flex flex-col items-end">
-            <div className="text-[10px] text-primary-100">{formatNumber(amount)}</div>
+            <div className="text-[10px] text-primary-100">{formatInteger(amount)}</div>
             <div className="text-[10px] text-primary-500">(최근24시간)</div>
           </div>
         </div>

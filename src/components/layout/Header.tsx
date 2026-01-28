@@ -33,6 +33,14 @@ export default function Header() {
           >
             보유자산
           </Link>
+          <Link
+            to={"/ai-analysis"}
+            className={`text-md font-semibold text-nowrap ml-7 ${
+              location.pathname === '/ai-analysis' ? 'text-white' : 'text-white/60 hover:text-white'
+            }`}
+          >
+            AI 분석
+          </Link>
         </div>
 
         <div className="flex items-center gap-8">

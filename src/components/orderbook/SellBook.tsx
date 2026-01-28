@@ -8,13 +8,12 @@ export default function SellBook() {
   const payload = useOrderbookStore((state) => state.orderbookData[categoryId]);
   const sellSide = payload?.sellSide || [];
 
-
   const sellItems = sellSide.filter((item) => Number(item.totalRemainingCount) > 0);
   const maxVolume =
     sellItems.length > 0 ? Math.max(0, ...sellItems.map((item) => Number(item.totalRemainingCount))) : 0;
 
   return (
-    <div className="col-span-2 flex flex-col justify-end">
+    <div className="col-span-2 flex flex-col-reverse">
       {sellItems.length > 0 ? (
         sellItems.map((item: OrderbookItemData, index) => (
           <OrderBookItem key={`${item.orderPrice}-${index}`} item={item} isSell={true} maxVolume={maxVolume} />
