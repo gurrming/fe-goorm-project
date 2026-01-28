@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Transaction_Spinner } from './loading/Transaction_Spinner';
 import SettledItem from './SettledItem';
 import { useGetInfiniteSettled } from '../../../../hooks/infinite/useGetInfiniteSettled';
 import useUserStore from '../../../../store/useUserStore';
 import type { TSettledData } from '../../../../types/transaction';
+import { Loading_Spinner } from '@/components/common/loading/Loading_Spinner';
 
 const Settled = () => {
   const { ref, inView } = useInView({
@@ -49,7 +49,7 @@ const Settled = () => {
           </tr>
         </thead>
         <tbody>
-          {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Transaction_Spinner /></td></tr>) : settledList.length > 0 ? (
+          {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Loading_Spinner /></td></tr>) : settledList.length > 0 ? (
             settledList.map((item: TSettledData) => <SettledItem key={item.tradeId} item={item} />)
           ) : (
             <tr>

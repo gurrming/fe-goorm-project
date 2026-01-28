@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Transaction_Spinner } from './loading/Transaction_Spinner';
 import UnSettledItem from './UnSettledItem';
 import {usePatchCancelAll} from '../../../../api/orders/usePatchCancelAll';
 import { useGetInfiniteUnSettled } from '../../../../hooks/infinite/useGetInfiniteUnSettled';
 import useUserStore from '../../../../store/useUserStore';
 import type { TUnSettledData } from '../../../../types/transaction';
+import { Loading_Spinner } from '@/components/common/loading/Loading_Spinner';
 
 const UnSettled = () => {
   const { ref, inView } = useInView({
@@ -66,14 +66,14 @@ const UnSettled = () => {
             </tr>
           </thead>
           <tbody>
-            {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Transaction_Spinner /></td></tr>) : (
+            {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Loading_Spinner /></td></tr>) : (
               infiniteData?.pages && infiniteData.pages.some(page => page?.orders?.content && page.orders.content.length > 0) ? (
                 infiniteData?.pages.map((page)=>
                   page?.orders?.content?.map((item: TUnSettledData) => <UnSettledItem key={item.orderId} item={item} />))
               ) : (
                 <tr>
                   <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
-                    <Transaction_Spinner />
+                    미체결 내역이 없습니다.
                   </td>
                 </tr>
               )
