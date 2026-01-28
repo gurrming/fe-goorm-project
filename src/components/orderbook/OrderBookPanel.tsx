@@ -3,6 +3,7 @@ import BuyBook from './BuyBook';
 import MarketSummaryPanel from './MarketSummaryPanel';
 import OrderBookGridLayout from './OrderBookGridLayout';
 import OrderbookHeader from './OrderbookHeader';
+import OrderBookSkeleton from './OrderBookSkeleton';
 import SellBook from './SellBook';
 import TradeTapeSection from './TradeTapeSection';
 import { useOrderbookId } from '../../hooks/websocket/useOrderbookId';
@@ -15,6 +16,7 @@ export default function OrderBookPanel() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const categoryId = useCategoryIdStore((state) => state.categoryId);
   const orderbookData = useOrderbookStore((state) => state.orderbookData[categoryId]);
+  const isLoading = !orderbookData;
 
   // WebSocket 구독 훅 (orderbook/trades)
   // 매수 / 매도 좌 우측 테이블
@@ -56,12 +58,16 @@ export default function OrderBookPanel() {
     <div className="w-[495px] h-[800px] flex flex-col bg-white">
       <OrderbookHeader />
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0">
-        <OrderBookGridLayout>
-          <SellBook />
-          <MarketSummaryPanel />
-          <TradeTapeSection />
-          <BuyBook />
-        </OrderBookGridLayout>
+        {isLoading ? (
+          <OrderBookSkeleton />
+        ) : (
+          <OrderBookGridLayout>
+            <SellBook />
+            <MarketSummaryPanel />
+            <TradeTapeSection />
+            <BuyBook />
+          </OrderBookGridLayout>
+        )}
       </div>
     </div>
   );
