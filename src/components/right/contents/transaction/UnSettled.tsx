@@ -5,6 +5,7 @@ import {usePatchCancelAll} from '../../../../api/orders/usePatchCancelAll';
 import { useGetInfiniteUnSettled } from '../../../../hooks/infinite/useGetInfiniteUnSettled';
 import useUserStore from '../../../../store/useUserStore';
 import type { TUnSettledData } from '../../../../types/transaction';
+import { Loading_Spinner } from '@/components/common/loading/Loading_Spinner';
 
 const UnSettled = () => {
   const { ref, inView } = useInView({
@@ -14,7 +15,7 @@ const UnSettled = () => {
   if (!user) return null;
   const memberId = user.id;
   
-  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteUnSettled(memberId, 10);
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching, isPending } = useGetInfiniteUnSettled(memberId, 10);
   const totalOpenOrderCount = infiniteData?.pages[0]?.totalOpenOrderCount;
  
   const { mutate: cancelAll } = usePatchCancelAll();
@@ -65,15 +66,17 @@ const UnSettled = () => {
             </tr>
           </thead>
           <tbody>
-            {infiniteData?.pages && infiniteData.pages.some(page => page?.orders?.content && page.orders.content.length > 0) ? (
-              infiniteData?.pages.map((page)=>
-                page?.orders?.content?.map((item: TUnSettledData) => <UnSettledItem key={item.orderId} item={item} />))
-            ) : (
-              <tr>
-                <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
-                  미체결 내역이 없습니다.
-                </td>
-              </tr>
+            {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Loading_Spinner /></td></tr>) : (
+              infiniteData?.pages && infiniteData.pages.some(page => page?.orders?.content && page.orders.content.length > 0) ? (
+                infiniteData?.pages.map((page)=>
+                  page?.orders?.content?.map((item: TUnSettledData) => <UnSettledItem key={item.orderId} item={item} />))
+              ) : (
+                <tr>
+                  <td colSpan={10} className="text-[13px] text-center text-[#666666] border-b border-gray-200 py-10">
+                    미체결 내역이 없습니다.
+                  </td>
+                </tr>
+              )
             )}
             <tr ref={ref} />
           </tbody>

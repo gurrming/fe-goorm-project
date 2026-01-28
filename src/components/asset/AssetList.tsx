@@ -6,11 +6,12 @@ import { useAsset, useSummary } from '../../hooks/websocket/useAsset';
 import useUserStore from '../../store/useUserStore';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import type { TAssets } from '../../types/asset';
+import { Loading_Spinner } from '@/components/common/loading/Loading_Spinner';
 
 const AssetList = () => {
   const user = useUserStore((state) => state.user);
   const memberId = user?.id;
-  const { data: investData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteInvest(memberId!, 10);
+  const { data: investData, fetchNextPage, hasNextPage, isFetching, isPending } = useGetInfiniteInvest(memberId!, 10);
   const { setSummary, setAssetList } = useAssetStore();
   useAsset(memberId!);
   useSummary(memberId!);
@@ -78,7 +79,8 @@ const AssetList = () => {
           </tr>
         </thead>
         <tbody>
-          {assetListData && assetListData.length > 0 ? (
+          {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Loading_Spinner /></td></tr>) : (
+            assetListData && assetListData.length > 0 ? (
             assetListData.map((item: TAssets) => <AssetItem key={item.symbol} item={item} />)
           ) : (
             <tr>
@@ -86,7 +88,7 @@ const AssetList = () => {
                 보유 자산이 없습니다.
               </td>
             </tr>
-          )}
+          ))}
           <tr ref={ref} />
         </tbody>
       </table>
