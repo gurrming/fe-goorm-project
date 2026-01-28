@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import useCategoryIdStore from '@/store/useCategoryId';
 import { useGetAnalysis } from '@/api/useGetAnalysis';
 import { useGetCategories } from '@/api/useGetCategories';
+import useCategoryIdStore from '@/store/useCategoryId';
 
 const COINS = ['BTC', 'ETH'] as const;
 
