@@ -8,7 +8,7 @@ const patchNotification = (notificationId: number) => {
   });
 };
 
-export const usePatchNotification = (notificationId: number) => {
+export const usePatchNotification = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
