@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Transaction_Skeleton } from './loading/Transaction_Skeleton';
+import { Transaction_Spinner } from './loading/Transaction_Spinner';
 import SettledItem from './SettledItem';
 import { useGetInfiniteSettled } from '../../../../hooks/infinite/useGetInfiniteSettled';
 import useUserStore from '../../../../store/useUserStore';
@@ -26,12 +26,6 @@ const Settled = () => {
     }
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
-  if (isPending) {
-    return (
-      <Transaction_Skeleton />
-    );
-  }
-
   return (
     <div className="max-h-[650px] overflow-y-auto w-full border-collapse bg-white">
       <table className="w-full border-collapse bg-white">
@@ -55,7 +49,7 @@ const Settled = () => {
           </tr>
         </thead>
         <tbody>
-          {settledList.length > 0 ? (
+          {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Transaction_Spinner /></td></tr>) : settledList.length > 0 ? (
             settledList.map((item: TSettledData) => <SettledItem key={item.tradeId} item={item} />)
           ) : (
             <tr>
