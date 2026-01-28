@@ -51,7 +51,7 @@ export default function MarketTableItem({
     return (
       // 보유 탭입니다
       <div
-        className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4"
+        className="grid grid-cols-[1.5fr_1.2fr_2.5fr_1.3fr] border-b border-gray-200 hover:bg-gray-50 px-4"
         onClick={() => setCategoryId(portfolioAsset.categoryId)}
       >
         <div className="text-xs min-w-0 flex ">
@@ -74,7 +74,7 @@ export default function MarketTableItem({
         <div className={`text-xs text-right text-primary-100 font-semibold min-w-[80px] ${rightAlignClass}`}>
           <div className="flex flex-col">
             {/* 매수 평균 가격 */}
-            <span>{portfolioAsset.avgPrice.toLocaleString('ko-KR')}</span>
+            <span>{portfolioAsset.avgPrice.toLocaleString('ko-KR')}123</span>
             <span className="text-[11px] text-primary-500 font-normal">KRW</span>
           </div>
         </div>
@@ -130,19 +130,19 @@ export default function MarketTableItem({
           </div>
         </div>
       </div>
-      <div className={`text-xs text-right min-w-[90px] font-semibold ${changeColor}`}>
-        {lastPrice.toLocaleString('ko-KR')}
-      </div>
       <FlashComparison
-        value={isLiveTicker ? changeRate : null}
+        value={isLiveTicker ? lastPrice : null}
         enabled={isLiveTicker}
-        className={`text-xs text-right min-w-[80px] font-semibold ${changeColor} rounded-[2px]`}
+        className={`text-xs text-right min-w-[90px] font-semibold ${changeColor} rounded-[2px]`}
       >
+        {lastPrice.toLocaleString('ko-KR')}
+      </FlashComparison>
+      <div className={`text-xs text-right min-w-[80px] font-semibold ${changeColor}`}>
         <>
           {changePrefix}
           {Number(changeRate.toFixed(2))}%
         </>
-      </FlashComparison>
+      </div>
       <div className="text-xs text-right text-primary-100 font-semibold min-w-[100px]">
         {formatTradeAmountKRW(tradeAmount)}
         <span className="text-primary-500 font-normal">백만</span>
