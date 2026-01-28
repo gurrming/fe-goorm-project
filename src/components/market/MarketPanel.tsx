@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MarketSearchBar from './MarketSearchBar';
 import MarketTableHeader from './MarketTableHeader';
 import MarketTableItem from './MarketTableItem';
+import MarketTableSkeleton from './MarketTableSkeleton';
 import MarketTabs from './MarketTabs';
 import { useDeleteFavorite } from '../../api/favorite/useDeleteFavorite';
 import { useGetFavorite } from '../../api/favorite/useGetFavorite';
@@ -36,10 +37,10 @@ export default function MarketPanel() {
   const [sortPriceArray, setSortPriceArray] = useState<SortPriceArray>('base');
 
   // 마켓 전체 데이터 조회
-  const { data: categories } = useGetCategories();
+  const { data: categories, isPending: isCategoriesPending } = useGetCategories();
 
   // 포트폴리오 - 보유 데이터 조회
-  const { data: portfolio } = useGetInvest(memberId!, 0, 30);
+  const { data: portfolio, isPending: isPortfolioPending } = useGetInvest(memberId!, 0, 30);
 
   // 관심 종목 목록 조회
   const { data: Interest } = useGetFavorite(memberId ?? null);
@@ -204,7 +205,9 @@ export default function MarketPanel() {
         </div>
         <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0">
           {activeTab === 'holding' ? (
-            sortedPortfolioAssets.length === 0 ? (
+            !!memberId && isPortfolioPending ? (
+              <MarketTableSkeleton />
+            ) : sortedPortfolioAssets.length === 0 ? (
               <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">
                 <div className="px-4 py-6 text-center text-primary-300- col-span-4 text-xs text-primary-500">
                   {!user ? '로그인하면 내 보유자산을 확인할 수 있습니다.' : '표시할 종목이 없습니다.'}
@@ -221,6 +224,8 @@ export default function MarketPanel() {
                 />
               ))
             )
+          ) : isCategoriesPending ? (
+            <MarketTableSkeleton />
           ) : sortedCategories.length === 0 ? (
             <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr]">
               <div className="px-4 py-6 text-center text-primary-300- col-span-4 text-xs text-primary-500">
