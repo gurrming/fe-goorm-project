@@ -36,7 +36,7 @@ export default function Notification({
   }
   return (
     <div
-      className="relative bg-white pt-6 pointer-events-auto border-none rounded-xs shadow-lg flex flex-col h-[300px] overflow-y-auto"
+      className="relative bg-white pt-6 pointer-events-auto border-none rounded-xs shadow-lg flex flex-col max-h-[300px] overflow-y-auto"
       style={positionStyle}
       onClick={(e) => e.stopPropagation()}
       onMouseLeave={handleMouseLeave}
