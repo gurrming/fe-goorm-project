@@ -1,7 +1,7 @@
 import NotificationItem from './NotificationItem';
 import { useGetNotification } from '../../api/notification/useGetNotification';
+import { usePatchAllNotification } from '../../api/notification/usePetchNotification';
 import useUserStore from '../../store/useUserStore';
-
 export default function Notification({
   anchorRect,
   width = '400px',
@@ -15,6 +15,7 @@ export default function Notification({
   if (!user) return null;
   const memberId = user.id;
   const { data } = useGetNotification(memberId);
+  const patchAllNotification = usePatchAllNotification(memberId);
 
   const parsedWidth = Number.parseInt(width, 10) || 400;
 
@@ -29,33 +30,23 @@ export default function Notification({
 
   const sortedData = data?.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
+  const handleMouseLeave = () => {
+    setOpen(false);
+    patchAllNotification.mutate();
+  }
   return (
     <div
-<<<<<<< HEAD
-        className="relative bg-white py-6 pointer-events-auto border-none rounded-xs shadow-lg flex flex-col gap-2 h-[300px] overflow-y-auto"
-        style={positionStyle}
-        onClick={(e) => e.stopPropagation()}
-        onMouseLeave={() => setOpen(false)}
-      >
-        <p className="px-4 text-lg font-bold text-gray-700">알림</p>
-        {sortedData && sortedData.length > 0 ? sortedData.map((item) => (
-            <NotificationItem key={item.notificationId} item={item} />
-        )) : <p className="p-20 text-sm text-center text-gray-500">알림이 없습니다.</p>}
-       
-      </div>
-=======
-      className="relative bg-white py-6 pointer-events-auto border-none rounded-xs shadow-lg flex flex-col gap-2 h-[300px] overflow-y-auto"
+      className="relative bg-white pt-6 pointer-events-auto border-none rounded-xs shadow-lg flex flex-col h-[300px] overflow-y-auto"
       style={positionStyle}
       onClick={(e) => e.stopPropagation()}
-      onMouseLeave={() => setOpen(false)}
+      onMouseLeave={handleMouseLeave}
     >
-      <p className="px-4 text-lg font-bold text-gray-700">알림</p>
+      <p className="px-4 pb-4 text-lg font-bold text-gray-700">알림</p>
       {sortedData && sortedData.length > 0 ? (
         sortedData.map((item) => <NotificationItem key={item.notificationId} item={item} />)
       ) : (
         <p className="p-20 text-sm text-center text-gray-500">알림이 없습니다.</p>
       )}
     </div>
->>>>>>> 1b9a9ac5c1e773f91a947eb75fde3e343f49fb07
   );
 }
