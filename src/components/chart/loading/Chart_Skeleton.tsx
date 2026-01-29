@@ -47,7 +47,7 @@ export const Chart_Skeleton = () => {
                     </div>
                 </div>  
             </div>
-            <Skeleton count={1} width={1000} height={450} />
+            <Skeleton count={1} width={1000} height={450} baseColor="#ffffff" highlightColor="#efefef" />
         </div>
     )
 }

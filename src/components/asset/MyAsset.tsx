@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import MyAsset_Skeleton from './loading/MyAsset_Skeleton';
 import { formatInteger } from '../../lib/price';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import Text from '../common/Text';
-import MyAsset_Skeleton from './loading/MyAsset_Skeleton';
 
 const MyAsset = () => {
   const [isLoading, setIsLoading] = useState(true);
