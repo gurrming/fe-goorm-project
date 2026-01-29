@@ -61,7 +61,6 @@
 }
 
 .notification-marquee {
-  display: inline-block;
   animation: notification-marquee 12s linear forwards;
   will-change: transform;
 }

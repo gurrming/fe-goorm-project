@@ -10,6 +10,7 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
@@ -58,7 +59,8 @@ axiosInstance.interceptors.response.use(
     if (
       error.response.status === 401 &&
       !originalRequest._retry &&
-      error.response.data.message === 'Access Token이 만료되었습니다.'
+      error.response.data.code === 'AUTH401_2'
+      // error.response.data.message === 'Access Token이 만료되었습니다.'
     ) {
       originalRequest._retry = true;
 

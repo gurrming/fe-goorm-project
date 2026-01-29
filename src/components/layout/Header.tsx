@@ -67,7 +67,7 @@ export default function Header() {
           {notificationData && notificationData.length > 0 && (
             <div
               key={notificationData[0].notificationId}
-              className="whitespace-nowrap notification-marquee text-white text-sm inline-block"
+              className="whitespace-nowrap notification-marquee text-white text-sm"
               onAnimationEnd={handleTickerEnd}
             >
               {notificationData[0].notificationContent}
