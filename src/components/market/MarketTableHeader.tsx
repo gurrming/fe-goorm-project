@@ -31,7 +31,7 @@ export default function MarketTableHeader({
   // 보유 탭일 때 다른 헤더 표시
   if (activeTab === 'holding') {
     return (
-      <div className="grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-t border-gray-200 bg-[#F7F7F7] px-4">
+      <div className="grid grid-cols-[1.5fr_1.2fr_2.5fr_1.3fr] border-b border-t border-gray-200 bg-[#F7F7F7] px-4">
         <div className="py-[6px] text-left text-[11px] font-medium text-primary-300 min-w-0">코인명</div>
         <div
           className="py-[6px] text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[90px]"

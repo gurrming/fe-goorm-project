@@ -32,3 +32,7 @@ export type TOrderbookPageable = {
   size: number;
   sort?: string[];
 };
+
+export type TIntensity = {
+  intensity?: number;
+};
