@@ -30,7 +30,7 @@ export const useTradesStore = create<TradesStore>((set) => ({
       set({ tradesList: [], tradesData: null });
       return;
     }
-    
+
     // 백엔드에서 정렬된 데이터 제공
     // 최신 데이터는 WebSocket에서만 사용하므로 null로 설정
     set({

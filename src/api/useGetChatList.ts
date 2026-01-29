@@ -2,11 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { request } from './common/axiosInstance';
 import type { TChat } from '../types/chat';
 
-export const getChatList = (
-  categoryId: number,
-  lastChatroomId?: number | undefined,
-  size?: number,
-)=> {
+export const getChatList = (categoryId: number, lastChatroomId?: number | undefined, size?: number) => {
   const queryParam = lastChatroomId ? `?lastChatroomId=${lastChatroomId}&` : '?';
   return request<TChat[]>({
     method: 'GET',

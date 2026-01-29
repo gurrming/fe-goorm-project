@@ -31,15 +31,18 @@ const InfoCoin = () => {
   const { data: infiniteData, fetchNextPage, hasNextPage, isPending } = useGetInfiniteChart(categoryId, 300);
 
   const mergedData = useMemo(() => {
-    return calculateMergedData<ChartData>(infiniteData, realtimeData, data => data.t,(a, b) => a.t - b.t);
+    return calculateMergedData<ChartData>(
+      infiniteData,
+      realtimeData,
+      (data) => data.t,
+      (a, b) => a.t - b.t,
+    );
   }, [infiniteData, realtimeData]);
 
-  if(isPending) {
-    return (
-      <Chart_Skeleton />
-    );
+  if (isPending) {
+    return <Chart_Skeleton />;
   }
-  
+
   return (
     <div className="flex flex-col bg-white">
       <Tab title={TITLE} tab={tab} handleTab={handleTab} />

@@ -42,9 +42,9 @@ export type TUnSettledData = {
 export type TUnSettledResponse = {
   orders: {
     content: TUnSettledData[];
-    last: boolean;      // 마지막 페이지 여부
-    number: number;     // 현재 페이지 번호
-    pageable:{
+    last: boolean; // 마지막 페이지 여부
+    number: number; // 현재 페이지 번호
+    pageable: {
       offset: number;
       pageSize: number; // 전체 페이지 수
       pageNumber: number; // 현재 페이지 번호

@@ -10,8 +10,7 @@ interface INotificationStore {
 
 export const useNotificationStore = create<INotificationStore>((set) => ({
   notificationData: null,
-  addNotificationData: (data) =>
-    set((state) => ({ notificationData: [...(state.notificationData || []), data] })),
+  addNotificationData: (data) => set((state) => ({ notificationData: [...(state.notificationData || []), data] })),
   clearNotificationData: () => set({ notificationData: null }),
   popNotification: () =>
     set((state) => {

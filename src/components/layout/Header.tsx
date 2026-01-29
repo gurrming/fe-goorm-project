@@ -47,7 +47,7 @@ export default function Header() {
             거래소
           </Link>
           <Link
-            to={user?"/asset":"/login"}
+            to={user ? '/asset' : '/login'}
             className={`text-md font-semibold text-nowrap ml-7 ${
               location.pathname === '/asset' ? 'text-white' : 'text-white/60 hover:text-white'
             }`}
@@ -55,7 +55,7 @@ export default function Header() {
             보유자산
           </Link>
           <Link
-            to={"/ai-analysis"}
+            to={'/ai-analysis'}
             className={`text-md font-semibold text-nowrap ml-7 ${
               location.pathname === '/ai-analysis' ? 'text-white' : 'text-white/60 hover:text-white'
             }`}
@@ -79,7 +79,7 @@ export default function Header() {
             <>
               <p className="text-white text-sm font-semibold text-nowrap">{user.nickname}님, 환영합니다.</p>
               <FontAwesomeIcon icon={faBell} color="white" size="xl" onClick={handleClick} />
-              {open && anchorRect && <Notification anchorRect={anchorRect} width="400px" setOpen={setOpen}/>}
+              {open && anchorRect && <Notification anchorRect={anchorRect} width="400px" setOpen={setOpen} />}
               <Button
                 colorType="white"
                 onClick={() => {
