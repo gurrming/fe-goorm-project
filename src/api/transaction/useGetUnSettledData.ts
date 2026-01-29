@@ -3,7 +3,7 @@ import useUserStore from '../../store/useUserStore';
 import { request } from '../common/axiosInstance';
 import type { TUnSettledResponse } from '../../types/transaction';
 
-export const getUnSettledData = (memberId: number, page: number, size: number)=> {
+export const getUnSettledData = (memberId: number, page: number, size: number) => {
   return request<TUnSettledResponse>({
     method: 'GET',
     url: `/api/orders/open?memberId=${memberId}&page=${page}&size=${size}`,

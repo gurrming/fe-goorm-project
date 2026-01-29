@@ -29,7 +29,7 @@ const AssetList = () => {
         totalProfit,
         totalProfitRate,
       };
-      
+
       setSummary(summary);
     }
   }, [investData, setSummary]);
@@ -79,8 +79,13 @@ const AssetList = () => {
           </tr>
         </thead>
         <tbody>
-          {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Loading_Spinner /></td></tr>) : (
-            assetListData && assetListData.length > 0 ? (
+          {isPending ? (
+            <tr>
+              <td colSpan={10} className="h-[300px]">
+                <Loading_Spinner />
+              </td>
+            </tr>
+          ) : assetListData && assetListData.length > 0 ? (
             assetListData.map((item: TAssets) => <AssetItem key={item.symbol} item={item} />)
           ) : (
             <tr>
@@ -88,7 +93,7 @@ const AssetList = () => {
                 보유 자산이 없습니다.
               </td>
             </tr>
-          ))}
+          )}
           <tr ref={ref} />
         </tbody>
       </table>

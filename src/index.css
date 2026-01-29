@@ -50,3 +50,16 @@
 .flash-down {
   animation: FlashDown 220ms ease-in-out 1;
 }
+
+@keyframes notification-marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.notification-marquee {
+  animation: notification-marquee 12s linear forwards;
+}

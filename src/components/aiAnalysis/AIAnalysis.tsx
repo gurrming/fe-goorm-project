@@ -46,9 +46,7 @@ export default function AIAnalysis() {
   useEffect(() => {
     if (!categories) return;
     const normalizedSelected = normalizeSymbol(selectedCoin);
-    const matched = categories.find(
-      (item) => normalizeSymbol(item.symbol).endsWith(normalizedSelected),
-    );
+    const matched = categories.find((item) => normalizeSymbol(item.symbol).endsWith(normalizedSelected));
     if (matched && matched.categoryId !== categoryId) {
       setCategoryId(matched.categoryId);
     }
@@ -57,14 +55,8 @@ export default function AIAnalysis() {
   const selectedData = useMemo(() => {
     if (!aiData) return null;
     const normalizedSelected = normalizeSymbol(selectedCoin);
-    return (
-      aiData.find((item) => normalizeSymbol(item.symbol).endsWith(normalizedSelected)) ??
-      null
-    );
+    return aiData.find((item) => normalizeSymbol(item.symbol).endsWith(normalizedSelected)) ?? null;
   }, [aiData, selectedCoin]);
-
-  
-  
 
   return (
     <div className="pt-24 px-64 min-h-screen">
@@ -81,9 +73,9 @@ export default function AIAnalysis() {
               key={coin}
               onClick={() => setSelectedCoin(coin)}
               className={`px-6 py-2 rounded-full font-semibold transition ${
-                selectedCoin === coin 
-                ? 'bg-[#003597] text-white' 
-                : 'bg-white text-primary-300 border border-gray-200 hover:text-primary-100'
+                selectedCoin === coin
+                  ? 'bg-[#003597] text-white'
+                  : 'bg-white text-primary-300 border border-gray-200 hover:text-primary-100'
               }`}
             >
               {coin}

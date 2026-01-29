@@ -49,7 +49,13 @@ const Settled = () => {
           </tr>
         </thead>
         <tbody>
-          {isPending ? (<tr><td colSpan={10} className="h-[300px]"><Loading_Spinner /></td></tr>) : settledList.length > 0 ? (
+          {isPending ? (
+            <tr>
+              <td colSpan={10} className="h-[300px]">
+                <Loading_Spinner />
+              </td>
+            </tr>
+          ) : settledList.length > 0 ? (
             settledList.map((item: TSettledData) => <SettledItem key={item.tradeId} item={item} />)
           ) : (
             <tr>

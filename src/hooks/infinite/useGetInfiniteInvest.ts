@@ -1,6 +1,6 @@
 import { useInfiniteQuery, type UseInfiniteQueryResult, type InfiniteData } from '@tanstack/react-query';
 import { getInvest } from '../../api/useGetInvest';
-import type { TMyPortfolio } from '../../types/asset';  
+import type { TMyPortfolio } from '../../types/asset';
 
 export const useGetInfiniteInvest = (
   memberId: number,
@@ -11,8 +11,8 @@ export const useGetInfiniteInvest = (
     queryFn: ({ pageParam = 0 }) => getInvest(memberId, pageParam, size),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.hasNext==false) return undefined;
+      if (lastPage.hasNext == false) return undefined;
       return allPages.length;
     },
   });
-}; 
+};

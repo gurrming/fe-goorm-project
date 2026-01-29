@@ -30,8 +30,8 @@ const Chatting = () => {
     return calculateMergedData<TChat>(
       infiniteData,
       chatHistory,
-      (chat) => chat.chatId,        // 고유 키: 채팅 ID
-      (a, b) => a.chatId - b.chatId // 정렬: 채팅 ID 오름차순
+      (chat) => chat.chatId, // 고유 키: 채팅 ID
+      (a, b) => a.chatId - b.chatId, // 정렬: 채팅 ID 오름차순
     );
   }, [infiniteData, chatHistory]);
 
@@ -69,14 +69,16 @@ const Chatting = () => {
   };
 
   if (isPending) {
-    return (
-      <Chatting_Skeleton />
-    );
+    return <Chatting_Skeleton />;
   }
 
   return (
     <div className="flex flex-col w-[1000px] h-[537px]">
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-2" data-testid="chat-scroll-container">
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-2"
+        data-testid="chat-scroll-container"
+      >
         {mergedChatList.length === 0 && (
           <div className="flex justify-center items-center h-full">
             <p className="text-center text-gray-500">채팅 내역이 없습니다.</p>

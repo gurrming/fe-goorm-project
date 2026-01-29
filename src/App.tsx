@@ -8,7 +8,6 @@ import MainPage from './pages/MainPage';
 import SignupPage from './pages/SignupPage';
 
 function App() {
-
   return (
     <ModalProvider>
       <Routes>

@@ -49,8 +49,10 @@ export const useTicker = (categoryIds: number[]) => {
           // 백엔드에서 문자열로 보낼 수 있으므로 number로 변환
           const data: TickerData = {
             price: typeof rawData.price === 'number' ? rawData.price : parseFloat(rawData.price) || 0,
-            changeRate: typeof rawData.changeRate === 'number' ? rawData.changeRate : parseFloat(rawData.changeRate) || 0,
-            changeAmount: typeof rawData.changeAmount === 'number' ? rawData.changeAmount : parseFloat(rawData.changeAmount) || 0,
+            changeRate:
+              typeof rawData.changeRate === 'number' ? rawData.changeRate : parseFloat(rawData.changeRate) || 0,
+            changeAmount:
+              typeof rawData.changeAmount === 'number' ? rawData.changeAmount : parseFloat(rawData.changeAmount) || 0,
             high: typeof rawData.high === 'number' ? rawData.high : parseFloat(rawData.high) || 0,
             low: typeof rawData.low === 'number' ? rawData.low : parseFloat(rawData.low) || 0,
             volume: typeof rawData.volume === 'number' ? rawData.volume : parseFloat(rawData.volume) || 0,

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import MyAsset_Skeleton from './loading/MyAsset_Skeleton';
 import { formatInteger } from '../../lib/price';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import Text from '../common/Text';
-import MyAsset_Skeleton from './loading/MyAsset_Skeleton';
 
 const MyAsset = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,13 +33,7 @@ const MyAsset = () => {
         />
       </div>
       <div className="flex justify-center w-full gap-20">
-        <Text
-          size="sm"
-          text="총 매수"
-          price={formatInteger(summary?.totalBuyAmount)}
-          priceColor="black"
-          type="KRW"
-        />
+        <Text size="sm" text="총 매수" price={formatInteger(summary?.totalBuyAmount)} priceColor="black" type="KRW" />
         <Text
           size="sm"
           text="총평가손익"
@@ -49,13 +43,7 @@ const MyAsset = () => {
         />
       </div>
       <div className="flex justify-center w-full gap-20">
-        <Text
-          size="sm"
-          text="총 평가"
-          price={formatInteger(summary?.totalEvaluation)}
-          priceColor="black"
-          type="KRW"
-        />
+        <Text size="sm" text="총 평가" price={formatInteger(summary?.totalEvaluation)} priceColor="black" type="KRW" />
         <Text
           size="sm"
           text="총평가수익률"

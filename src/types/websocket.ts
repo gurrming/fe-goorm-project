@@ -54,3 +54,11 @@ export type ChartData = {
   c: number;
   tradeId?: number;
 };
+
+export type TNotification = {
+  notificationId: number;
+  notificationContent: string;
+  notificationType: string;
+  notificationIsRead: boolean;
+  createdAt: string;
+};

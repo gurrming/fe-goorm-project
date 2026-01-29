@@ -26,11 +26,7 @@ const OrderFormButtons = ({ onReset, onOrder, buttonColorType, orderButtonText }
             <FontAwesomeIcon icon={faArrowRotateRight} />
             <span>초기화</span>
           </button>
-          <Button
-            colorType={buttonColorType}
-            onClick={onOrder}
-            className="flex-4 w-full rounded-[2px] text-[13px]"
-          >
+          <Button colorType={buttonColorType} onClick={onOrder} className="flex-4 w-full rounded-[2px] text-[13px]">
             {orderButtonText}
           </Button>
         </>
@@ -55,4 +51,3 @@ const OrderFormButtons = ({ onReset, onOrder, buttonColorType, orderButtonText }
 };
 
 export default OrderFormButtons;
-

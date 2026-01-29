@@ -1,4 +1,4 @@
-import type { InfiniteData } from "@tanstack/react-query";
+import type { InfiniteData } from '@tanstack/react-query';
 
 /**
  * 무한 스크롤 데이터(historical)와 실시간 데이터(realtime)를 병합하는 제네릭 함수
@@ -11,7 +11,7 @@ export const calculateMergedData = <T>(
   infiniteData: InfiniteData<T[], unknown> | undefined,
   realtimeData: T[],
   uniqueKeyFn?: (item: T) => string | number,
-  sortFn?: (a: T, b: T) => number
+  sortFn?: (a: T, b: T) => number,
 ): T[] => {
   const historical = infiniteData ? infiniteData.pages.flat() : [];
 
