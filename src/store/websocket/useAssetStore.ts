@@ -2,22 +2,27 @@ import { create } from 'zustand';
 import type { TAssets } from '../../types/asset';
 
 interface IAssetStore {
-  myAsset:{
+  myAsset: {
     assetCash: number | null;
     totalAsset: number | null;
     assetCanOrder: number | null;
-  },
+  };
   wsTotalAsset: number | null;
   summary: {
     totalBuyAmount: number;
     totalEvaluation: number;
     totalProfit: number;
     totalProfitRate: number;
-  }
+  };
   assetList: TAssets[];
   setMyAsset: (data: { assetCash: number | null; totalAsset: number | null; assetCanOrder: number | null }) => void;
   setWsTotalAsset: (data: number | null) => void;
-  setSummary: (data: { totalBuyAmount: number; totalEvaluation: number; totalProfit: number; totalProfitRate: number }) => void;
+  setSummary: (data: {
+    totalBuyAmount: number;
+    totalEvaluation: number;
+    totalProfit: number;
+    totalProfitRate: number;
+  }) => void;
   setAssetList: (data: TAssets[]) => void;
 }
 
