@@ -63,11 +63,11 @@ export default function Header() {
             AI 분석
           </Link>
         </div>
-        <div className="flex-1 overflow-hidden mx-3">
+        <div className="flex-1 overflow-hidden mx-3 relative">
           {notificationData && notificationData.length > 0 && (
             <div
               key={notificationData[0].notificationId}
-              className="whitespace-nowrap notification-marquee text-white text-sm"
+              className="whitespace-nowrap notification-marquee text-white text-sm inline-block"
               onAnimationEnd={handleTickerEnd}
             >
               {notificationData[0].notificationContent}
