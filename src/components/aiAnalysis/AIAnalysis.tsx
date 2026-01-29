@@ -69,7 +69,7 @@ export default function AIAnalysis() {
   return (
     <div className="pt-24 px-64 min-h-screen">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-8 text-primary-100">AI 감정 분석 결과</h1>
+        <h1 className="text-2xl font-bold mb-8 text-primary-100">AI 감성 분석 결과</h1>
         <div className="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-primary-300 text-sm">
           점수는 -1 ~ 1 범위입니다. 0에 가까울수록 중립이며, 양수는 긍정, 음수는 부정을 의미합니다.
         </div>
