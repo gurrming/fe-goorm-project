@@ -36,7 +36,7 @@ export default function Notification({ anchorRect, width = '400px', setOpen }: {
         <p className="px-4 text-lg font-bold text-gray-700">알림</p>
         {sortedData && sortedData.length > 0 ? sortedData.map((item) => (
             <NotificationItem key={item.notificationId} item={item} />
-        )) : <p>알림이 없습니다.</p>}
+        )) : <p className="p-20 text-sm text-center text-gray-500">알림이 없습니다.</p>}
        
       </div>
   );
