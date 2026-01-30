@@ -31,12 +31,12 @@ export default function Notification({
 
   return (
     <div
-      className="relative bg-white py-6 pointer-events-auto border-none rounded-xs shadow-lg flex flex-col gap-2 h-[300px] overflow-y-auto"
+      className="relative bg-white pt-6 pointer-events-auto border-none rounded-xs shadow-lg flex flex-col h-[300px] overflow-y-auto"
       style={positionStyle}
       onClick={(e) => e.stopPropagation()}
       onMouseLeave={() => setOpen(false)}
     >
-      <p className="px-4 text-lg font-bold text-gray-700">알림</p>
+      <p className="px-4 pb-2 text-lg font-bold text-gray-700">알림</p>
       {sortedData && sortedData.length > 0 ? (
         sortedData.map((item) => <NotificationItem key={item.notificationId} item={item} />)
       ) : (
