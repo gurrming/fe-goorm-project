@@ -62,4 +62,5 @@
 
 .notification-marquee {
   animation: notification-marquee 12s linear forwards;
+  will-change: transform;
 }

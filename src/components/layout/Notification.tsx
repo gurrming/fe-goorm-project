@@ -1,7 +1,7 @@
 import NotificationItem from './NotificationItem';
 import { useGetNotification } from '../../api/notification/useGetNotification';
+import { usePatchAllNotification } from '../../api/notification/usePetchNotification';
 import useUserStore from '../../store/useUserStore';
-
 export default function Notification({
   anchorRect,
   width = '400px',
@@ -15,6 +15,7 @@ export default function Notification({
   if (!user) return null;
   const memberId = user.id;
   const { data } = useGetNotification(memberId);
+  const patchAllNotification = usePatchAllNotification(memberId);
 
   const parsedWidth = Number.parseInt(width, 10) || 400;
 
@@ -29,12 +30,16 @@ export default function Notification({
 
   const sortedData = data?.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
+  const handleMouseLeave = () => {
+    setOpen(false);
+    patchAllNotification.mutate();
+  }
   return (
     <div
       className="relative bg-white pt-6 pointer-events-auto border-none rounded-xs shadow-lg flex flex-col h-[300px] overflow-y-auto"
       style={positionStyle}
       onClick={(e) => e.stopPropagation()}
-      onMouseLeave={() => setOpen(false)}
+      onMouseLeave={handleMouseLeave}
     >
       <p className="px-4 pb-2 text-lg font-bold text-gray-700">알림</p>
       {sortedData && sortedData.length > 0 ? (

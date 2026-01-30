@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import Chat from './Chat';
 import { Chatting_Skeleton } from './loading/Chatting_Skeleton';
@@ -15,6 +15,8 @@ const Chatting = () => {
   const [textLength, setTextLength] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef<number>(0);
+  const prevChatListLengthRef = useRef<number>(0);
+  const isScrollingToBottomRef = useRef<boolean>(false);
   const { ref, inView } = useInView({
     threshold: 0,
   });
@@ -30,11 +32,12 @@ const Chatting = () => {
     return calculateMergedData<TChat>(
       infiniteData,
       chatHistory,
-      (chat) => chat.chatId, // 고유 키: 채팅 ID
-      (a, b) => a.chatId - b.chatId, // 정렬: 채팅 ID 오름차순
+      (chat) => chat.chatId, 
+      (a, b) => a.chatId - b.chatId,
     );
   }, [infiniteData, chatHistory]);
 
+  // 무한 스크롤: 이전 메시지 불러오기
   useEffect(() => {
     if (inView && hasNextPage && !isFetching && scrollContainerRef.current) {
       prevScrollHeightRef.current = scrollContainerRef.current.scrollHeight;
@@ -42,29 +45,57 @@ const Chatting = () => {
     }
   }, [inView, hasNextPage, isFetching, fetchNextPage]);
 
+  // 무한 스크롤 후 스크롤 위치 유지
   useEffect(() => {
+    if (isFetching || !scrollContainerRef.current) return;
+
+    const container = scrollContainerRef.current;
+    const currentScrollHeight = container.scrollHeight;
+    const prevScrollHeight = prevScrollHeightRef.current;
+
+    // 이전 메시지를 불러온 경우 (스크롤 높이가 증가)
+    if (currentScrollHeight > prevScrollHeight && prevScrollHeight > 0) {
+      const scrollDiff = currentScrollHeight - prevScrollHeight;
+      container.scrollTop = container.scrollTop + scrollDiff;
+      prevScrollHeightRef.current = currentScrollHeight;
+    }
+  }, [isFetching, mergedChatList.length]);
+
+  // 새 메시지 추가 시 스크롤 조정
+  useLayoutEffect(() => {
     if (!scrollContainerRef.current) return;
 
-    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
-    const isAtBottom = scrollHeight - scrollTop - clientHeight <= 100;
+    const container = scrollContainerRef.current;
+    const currentLength = mergedChatList.length;
+    const prevLength = prevChatListLengthRef.current;
 
-    if (isAtBottom || chatHistory[chatHistory.length - 1]?.memberId === user?.id) {
-      setTimeout(() => {
-        if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
-      }, 0);
+    // 새 메시지가 추가된 경우
+    if (currentLength > prevLength) {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      const isAtBottom = scrollHeight - scrollTop - clientHeight <= 100;
+      const lastChat = mergedChatList[mergedChatList.length - 1];
+      const isMyMessage = lastChat?.memberId === user?.id;
+
+      // 맨 아래에 있거나 내 메시지인 경우에만 스크롤
+      if (isAtBottom || isMyMessage || isScrollingToBottomRef.current) {
+        requestAnimationFrame(() => {
+          if (container) {
+            container.scrollTop = container.scrollHeight;
+            isScrollingToBottomRef.current = false;
+          }
+        });
+      }
     }
-  }, [chatHistory, user?.id]);
+
+    prevChatListLengthRef.current = currentLength;
+  }, [mergedChatList, user?.id]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && message.trim() !== '' && !isComposing && isConnected) {
+      isScrollingToBottomRef.current = true;
       sendChat(message);
       setMessage('');
       setTextLength(0);
-      setTimeout(() => {
-        if (scrollContainerRef.current) {
-          scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
-        }
-      }, 0);
     }
   };
 
