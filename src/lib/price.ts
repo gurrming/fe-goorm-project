@@ -23,7 +23,7 @@ export const formatNumber = (point: number | string | undefined | null): string 
 // 소숫점 첫째자리에서 반올림하여 정수로 만들기
 export const formatInteger = (point: number | undefined | null): string => {
   if (point == null) return '0';
-  return Math.round(point).toLocaleString('ko-KR', { maximumFractionDigits: 8 });
+  return Math.round(point).toLocaleString('ko-KR');
 };
 
 // 문자열을 숫자로 변환하면서 쉼표 제거해주기
