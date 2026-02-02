@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useGetNotification } from '../../api/notification/useGetNotification';
 import { useNotificationStore } from '../../store/websocket/useNotificationStore';
 import { useWebsocket } from '../useWebsocket';
 import type { TNotification } from '../../types/websocket';
@@ -6,6 +7,7 @@ import type { TNotification } from '../../types/websocket';
 export const useNotification = (memberId: number) => {
   const { isConnected, stompClientRef } = useWebsocket();
   const { addNotificationData } = useNotificationStore();
+  const { refetch } = useGetNotification(memberId);
 
   useEffect(() => {
     if (isConnected && stompClientRef.current && memberId) {
@@ -13,6 +15,7 @@ export const useNotification = (memberId: number) => {
         try {
           const data: TNotification = JSON.parse(message.body);
           addNotificationData(data);
+          refetch();
         } catch (error) {
           console.error('[useAsset] 데이터 파싱 에러:', error);
         }
@@ -21,5 +24,5 @@ export const useNotification = (memberId: number) => {
         subscription.unsubscribe();
       };
     }
-  }, [isConnected, memberId, addNotificationData, stompClientRef]);
+  }, [isConnected, memberId, addNotificationData, stompClientRef, refetch]);
 };
