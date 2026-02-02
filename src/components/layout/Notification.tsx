@@ -32,7 +32,9 @@ export default function Notification({
 
   const handleMouseLeave = () => {
     setOpen(false);
-    patchAllNotification.mutate();
+    if(data && data.length > 0 && !data[0].notificationIsRead) {
+      patchAllNotification.mutate();
+    }
   }
   return (
     <div
