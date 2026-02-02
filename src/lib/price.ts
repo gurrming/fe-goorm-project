@@ -11,17 +11,25 @@ export function getPriceTickSize(price: number): number {
 }
 
 export const formatNumber = (point: number | string | undefined | null): string => {
-  if (point == null) return '0';
   const value = typeof point === 'number' ? point : parseFloat(String(point).replace(/,/g, ''));
 
   if (!Number(value)) return '0';
   return value.toLocaleString('ko-KR');
 };
 
+// 매수/매도 가격: 최대 소수점 10자리까지 표시
+export const formatPrice = (point: number | string | undefined | null): string => {
+  const value = typeof point === 'number' ? point : parseFloat(String(point).replace(/,/g, ''));
+  if (!Number(value)) return '0';
+  return Number(value).toLocaleString('ko-KR', {
+    maximumFractionDigits: 10,
+  });
+};
+
 // 소숫점 첫째자리에서 반올림하여 정수로 만들기
 export const formatInteger = (point: number | undefined | null): string => {
   if (point == null) return '0';
-  return Math.round(point).toLocaleString('ko-KR');
+  return Math.round(point).toLocaleString('ko-KR', { maximumFractionDigits: 8 });
 };
 
 // 문자열을 숫자로 변환하면서 쉼표 제거해주기
@@ -41,3 +49,11 @@ export const dotQuantity = (point: number): string => {
   if (point === 0) return '';
   return point.toFixed(8).replace(/\.?0+$/, '');
 };
+
+// +/- 표시, 색상 클래스 +는 빨강, -는 파랑, 0: black
+export function formatChangePricePercentage(PricePercentage: number): { text: string; textStyle: string } {
+  const fixed = PricePercentage.toFixed(2);
+  if (PricePercentage > 0) return { text: `+${fixed}`, textStyle: 'text-red-600' };
+  if (PricePercentage < 0) return { text: fixed, textStyle: 'text-blue-600' };
+  return { text: fixed, textStyle: 'text-primary-100' };
+}
