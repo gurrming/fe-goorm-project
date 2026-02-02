@@ -1,6 +1,6 @@
 import NotificationItem from './NotificationItem';
 import { useGetNotification } from '../../api/notification/useGetNotification';
-import { usePatchAllNotification } from '../../api/notification/usePetchNotification';
+import { usePatchAllNotification } from '../../api/notification/usePatchNotification';
 import useUserStore from '../../store/useUserStore';
 export default function Notification({
   anchorRect,
@@ -38,6 +38,7 @@ export default function Notification({
   }
   return (
     <div
+      data-testid="notification-container"
       className="relative bg-white pt-6 pointer-events-auto border-none rounded-xs shadow-lg flex flex-col max-h-[300px] overflow-y-auto"
       style={positionStyle}
       onClick={(e) => e.stopPropagation()}
