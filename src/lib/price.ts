@@ -10,20 +10,14 @@ export function getPriceTickSize(price: number): number {
   return 1;
 }
 
+// 정수 10째짜리 까지 적을 수 있도록 (매수/매도 금액 입력 시에 사용함)
+export const limitPrice = (str: string, maxDigits = 10): string => str.replace(/[^0-9]/g, '').slice(0, maxDigits);
+
 export const formatNumber = (point: number | string | undefined | null): string => {
   const value = typeof point === 'number' ? point : parseFloat(String(point).replace(/,/g, ''));
 
   if (!Number(value)) return '0';
   return value.toLocaleString('ko-KR');
-};
-
-// 매수/매도 가격: 최대 소수점 10자리까지 표시
-export const formatPrice = (point: number | string | undefined | null): string => {
-  const value = typeof point === 'number' ? point : parseFloat(String(point).replace(/,/g, ''));
-  if (!Number(value)) return '0';
-  return Number(value).toLocaleString('ko-KR', {
-    maximumFractionDigits: 10,
-  });
 };
 
 // 소숫점 첫째자리에서 반올림하여 정수로 만들기
