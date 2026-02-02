@@ -22,10 +22,6 @@ function formatTradeAmountKRW(tradeAmount: number) {
   return `${Math.round(million).toLocaleString('ko-KR')}`;
 }
 
-function formatQuantity(quantity: number) {
-  return quantity.toLocaleString('ko-KR', { maximumFractionDigits: 8 });
-}
-
 export default function MarketTableItem({
   activeTab,
   category,
@@ -68,7 +64,9 @@ export default function MarketTableItem({
         <div className={`text-xs text-right text-primary-100 min-w-[90px] ${rightAlignClass}`}>
           <div className="flex flex-col">
             {/* 보유 수량 */}
-            <span className="font-semibold">{formatQuantity(portfolioAsset.investCount)}</span>
+            <span className="font-semibold">
+              {portfolioAsset.investCount.toLocaleString('ko-KR', { maximumFractionDigits: 8 })}
+            </span>
             <span className="text-[11px] text-primary-300 font-normal">
               {/* 보유 금액 한국 돈으로 바꿨을 때 */}
               {Math.round(evaluateAmount).toLocaleString('ko-KR')}
@@ -79,7 +77,7 @@ export default function MarketTableItem({
         <div className={`text-xs text-right text-primary-100 font-semibold min-w-[80px] ${rightAlignClass}`}>
           <div className="flex flex-col">
             {/* 매수 평균 가격 */}
-            <span>{portfolioAsset.avgPrice.toLocaleString('ko-KR')}</span>
+            <span>{portfolioAsset.avgPrice.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}</span>
             <span className="text-[11px] text-primary-500 font-normal">KRW</span>
           </div>
         </div>
