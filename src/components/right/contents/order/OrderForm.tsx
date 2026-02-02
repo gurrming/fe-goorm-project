@@ -3,7 +3,14 @@ import OrderFormButtons from './OrderFormButtons';
 import { useGetMyAsset } from '../../../../api/asset/useGetAsset';
 import { useGetCategories } from '../../../../api/useGetCategories';
 import { useGetInvest } from '../../../../api/useGetInvest';
-import { changeNumber, dotQuantity, formatInteger, formatNumber, getPriceTickSize } from '../../../../lib/price';
+import {
+  changeNumber,
+  dotQuantity,
+  formatInteger,
+  formatNumber,
+  getPriceTickSize,
+  deleteZero,
+} from '../../../../lib/price';
 import useCategoryIdStore from '../../../../store/useCategoryId';
 import useSelectedPriceStore from '../../../../store/useSelectedPriceStore';
 import useUserStore from '../../../../store/useUserStore';
@@ -88,16 +95,23 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
 
   // 사용자가 가격 / 수량 변경 시에
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPrice(formatNumber(changeNumber(e.target.value.replace(/[^0-9]/g, ''))));
+    const digits = e.target.value.replace(/[^0-9]/g, '');
+    const normalized = deleteZero(digits);
+    setPrice(formatNumber(changeNumber(normalized)));
     setUserTotalAmount(''); // 가격 변경 시 사용자 입력값 초기화, 계산값으로 전환
   };
 
   // 주문 수량 변경 시
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/[^0-9.]/g, '');
+    let value = e.target.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
 
     // 소수점 8자리 제한 (정규식으로 첫 번째 소수점 이후 8자리까지만 허용)
     value = value.replace(/(\.\d{8})\d+/, '$1');
+
+    // 소수점 삭제 시 맨 앞 0 제거 (0.123 → 0123 → 123)
+    if (!value.includes('.') && value.length > 1 && value.startsWith('0')) {
+      value = deleteZero(value);
+    }
 
     setQuantity(value);
     setUserTotalAmount(''); // 주문 수량 변경 시 사용자 입력값 초기화하여 계산값 표시

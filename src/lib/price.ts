@@ -28,6 +28,13 @@ export const formatInteger = (point: number | undefined | null): string => {
 // 빈 문자열이나 숫자가 아닌 문자열이 들어오면 0으로 변환, 매수 가격 지웠을 때 문제가 생김.
 export const changeNumber = (strPoint: string): number => parseFloat(strPoint.replace(/,/g, '')) || 0;
 
+// 소수점 삭제 시 0.123 → 123.     0 혼자있는 건
+export const deleteZero = (coin: string): string => {
+  if (!coin || coin === '0') return coin;
+  const coinCount = coin.replace(/^0+/, '');
+  return coinCount === '' ? '0' : coinCount;
+};
+
 // 소숫점 8째자리까지 표시하기 (소숫점 9째자리부터는 반올림되어 표시되지 않음)
 // 뒷자리 0 나열 제거
 export const dotQuantity = (point: number): string => {
