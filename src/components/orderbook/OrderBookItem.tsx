@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import FlashConclusion from './FlashConclusion';
-import { formatNumber } from '../../lib/price';
+import { formatNumber, formatPrice } from '../../lib/price';
 import { cn } from '../../lib/utils';
 import useSelectedPriceStore from '../../store/useSelectedPriceStore';
 import { useOrderbookStore } from '../../store/websocket/useOrderbookStore';
@@ -50,8 +50,8 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
   // openPrice가 0이거나 유효하지 않으면 등락률을 0으로 설정
   const changeRate = openPrice > 0 ? ((itemPrice - openPrice) / openPrice) * 100 : 0;
 
-  const price = formatNumber(itemPrice);
-  const priceColor = changeRate === 0 ? 'text-black' : changeRate > 0 ? 'text-red-500' : 'text-blue-500';
+  const price = formatPrice(itemPrice);
+  const priceColor = changeRate === 0 ? 'text-black' : changeRate > 0 ? 'text-red-600' : 'text-blue-600';
   const changePrefix = changeRate > 0 ? '+' : '';
   const percentageNumber = changeRate === 0 ? '0.00%' : `${changePrefix}${changeRate.toFixed(2)}%`;
 
