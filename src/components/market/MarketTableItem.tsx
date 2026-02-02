@@ -2,6 +2,7 @@ import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FlashComparison from './FlashComparison';
+import { formatChangePricePercentage } from '../../lib/price';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useTickerStore } from '../../store/websocket/useTickerStore';
 import type { TAssets } from '../../types/asset';
@@ -19,10 +20,6 @@ type MarketTableItemProps = {
 function formatTradeAmountKRW(tradeAmount: number) {
   const million = tradeAmount / 1000000;
   return `${Math.round(million).toLocaleString('ko-KR')}`;
-}
-
-function formatQuantity(quantity: number) {
-  return quantity.toLocaleString('ko-KR', { maximumFractionDigits: 8 });
 }
 
 export default function MarketTableItem({
@@ -67,7 +64,9 @@ export default function MarketTableItem({
         <div className={`text-xs text-right text-primary-100 min-w-[90px] ${rightAlignClass}`}>
           <div className="flex flex-col">
             {/* 보유 수량 */}
-            <span className="font-semibold">{formatQuantity(portfolioAsset.investCount)}</span>
+            <span className="font-semibold">
+              {portfolioAsset.investCount.toLocaleString('ko-KR', { maximumFractionDigits: 8 })}
+            </span>
             <span className="text-[11px] text-primary-300 font-normal">
               {/* 보유 금액 한국 돈으로 바꿨을 때 */}
               {Math.round(evaluateAmount).toLocaleString('ko-KR')}
@@ -78,7 +77,7 @@ export default function MarketTableItem({
         <div className={`text-xs text-right text-primary-100 font-semibold min-w-[80px] ${rightAlignClass}`}>
           <div className="flex flex-col">
             {/* 매수 평균 가격 */}
-            <span>{portfolioAsset.avgPrice.toLocaleString('ko-KR')}123</span>
+            <span>{portfolioAsset.avgPrice.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}</span>
             <span className="text-[11px] text-primary-500 font-normal">KRW</span>
           </div>
         </div>
@@ -105,10 +104,7 @@ export default function MarketTableItem({
   const changeRate = ticker?.changeRate ?? category.changeRate ?? 0;
   const tradeAmount = ticker?.amount ?? category.accAmount ?? 0;
   const isLiveTicker = !!ticker;
-
-  // + 이면 primary-700, - 이면 primary-900, 그냥 변동사항 없으면 primary-100
-  const changeColor = changeRate > 0 ? 'text-primary-700' : changeRate < 0 ? 'text-primary-900' : 'text-primary-100';
-  const changePrefix = changeRate > 0 ? '+' : '';
+  const changePricePercentage = formatChangePricePercentage(changeRate);
 
   return (
     <div
@@ -140,15 +136,12 @@ export default function MarketTableItem({
       <FlashComparison
         value={isLiveTicker ? lastPrice : null}
         enabled={isLiveTicker}
-        className={`text-xs text-right min-w-[90px] font-semibold ${changeColor} rounded-[2px]`}
+        className={`text-xs text-right min-w-[90px] font-semibold ${changePricePercentage.textStyle} rounded-[2px]`}
       >
         {lastPrice.toLocaleString('ko-KR')}
       </FlashComparison>
-      <div className={`text-xs text-right min-w-[80px] font-semibold ${changeColor}`}>
-        <>
-          {changePrefix}
-          {Number(changeRate.toFixed(2))}%
-        </>
+      <div className={`text-xs text-right min-w-[80px] font-semibold ${changePricePercentage.textStyle}`}>
+        {changePricePercentage.text}%
       </div>
       <div className="text-xs text-right text-primary-100 font-semibold min-w-[100px]">
         {formatTradeAmountKRW(tradeAmount)}

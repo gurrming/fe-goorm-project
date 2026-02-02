@@ -10,6 +10,7 @@ import {
   formatNumber,
   getPriceTickSize,
   deleteZero,
+  limitPrice,
 } from '../../../../lib/price';
 import useCategoryIdStore from '../../../../store/useCategoryId';
 import useSelectedPriceStore from '../../../../store/useSelectedPriceStore';
@@ -93,11 +94,10 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
     setUserTotalAmount('');
   };
 
-  // 사용자가 가격 / 수량 변경 시에
+  // 사용자가 가격 / 수량 변경 시에 (10자리까지 매수/매도 가능)
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const digits = e.target.value.replace(/[^0-9]/g, '');
-    const normalized = deleteZero(digits);
-    setPrice(formatNumber(changeNumber(normalized)));
+    const price = limitPrice(e.target.value);
+    setPrice(formatNumber(changeNumber(price)));
     setUserTotalAmount(''); // 가격 변경 시 사용자 입력값 초기화, 계산값으로 전환
   };
 
@@ -117,9 +117,9 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
     setUserTotalAmount(''); // 주문 수량 변경 시 사용자 입력값 초기화하여 계산값 표시
   };
 
-  // 주문 총액 입력 시 주문수량 계산하기
+  // 주문 총액 입력 시 주문수량 계산하기 (10자리까지 매수/매도 가능)
   const handleTotalAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, '');
+    const value = limitPrice(e.target.value);
     setUserTotalAmount(value);
     // 주문 총액을 정수로 반올림하여 수량 계산
     const roundedAmount = value ? Math.round(changeNumber(value)) : 0;
@@ -215,7 +215,7 @@ const OrderForm = ({ orderType, onOrder, reset }: OrderFormProps) => {
       <div className="flex items-center justify-between py-2 text-[13px] text-primary-100 ">
         <span>주문가능</span>
         <span className="text-sm font-semibold">
-          {isBuy ? formatInteger(buyAvailableCash) : formatNumber(sellAvailableQuantity)}
+          {isBuy ? formatInteger(buyAvailableCash) : dotQuantity(sellAvailableQuantity)}
           <span className="text-primary-300 text-[10px] ml-1 font-medium">{isBuy ? 'KRW' : selectedSymbol}</span>
         </span>
       </div>

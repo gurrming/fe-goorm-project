@@ -10,8 +10,10 @@ export function getPriceTickSize(price: number): number {
   return 1;
 }
 
+// 정수 10째짜리 까지 적을 수 있도록 (매수/매도 금액 입력 시에 사용함)
+export const limitPrice = (str: string, maxDigits = 10): string => str.replace(/[^0-9]/g, '').slice(0, maxDigits);
+
 export const formatNumber = (point: number | string | undefined | null): string => {
-  if (point == null) return '0';
   const value = typeof point === 'number' ? point : parseFloat(String(point).replace(/,/g, ''));
 
   if (!Number(value)) return '0';
@@ -41,3 +43,11 @@ export const dotQuantity = (point: number): string => {
   if (point === 0) return '';
   return point.toFixed(8).replace(/\.?0+$/, '');
 };
+
+// +/- 표시, 색상 클래스 +는 빨강, -는 파랑, 0: black
+export function formatChangePricePercentage(PricePercentage: number): { text: string; textStyle: string } {
+  const fixed = PricePercentage.toFixed(2);
+  if (PricePercentage > 0) return { text: `+${fixed}`, textStyle: 'text-red-600' };
+  if (PricePercentage < 0) return { text: fixed, textStyle: 'text-blue-600' };
+  return { text: fixed, textStyle: 'text-primary-100' };
+}
