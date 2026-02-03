@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build-storybook": "storybook build",
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "chromatic": "npx chromatic --project-token=chpt_529eed7eb3e5b87"
   },
   "dependencies": {
     "@canvasjs/react-stockcharts": "^1.0.2",
@@ -25,6 +27,7 @@
     "@tanstack/react-query-devtools": "^5.91.1",
     "@typescript-eslint/parser": "^8.50.1",
     "axios": "^1.13.2",
+    "build": "^0.1.4",
     "clsx": "^2.1.1",
     "eslint-config-prettier": "^10.1.8",
     "lightweight-charts": "^5.1.0",
@@ -46,6 +49,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@storybook/react-vite": "^10.2.4",
+    "storybook": "^10.2.4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -55,6 +60,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/sockjs-client": "^1.5.4",
     "@vitejs/plugin-react-swc": "^4.2.2",
+    "chromatic": "^15.0.0",
     "eslint": "^9.39.1",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.2",
