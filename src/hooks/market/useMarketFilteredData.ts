@@ -1,8 +1,4 @@
-import {
-  getCategorySortValue,
-  getHoldingSortValue,
-  getSortDirection,
-} from '../../components/market/utils/marketSortUtils';
+import { getCategorySortValue, getHoldingSortValue, getSortDirection } from '../../lib/marketSortUtils';
 import type { TAssets } from '../../types/asset';
 import type { Category } from '../../types/category';
 import type { TabKey, SortTable, SortPriceArray } from '../../types/market';

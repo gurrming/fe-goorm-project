@@ -1,6 +1,6 @@
-import type { TAssets } from '../../../types/asset';
-import type { Category } from '../../../types/category';
-import type { SortTable, SortPriceArray } from '../../../types/market';
+import type { TAssets } from '../types/asset';
+import type { Category } from '../types/category';
+import type { SortTable, SortPriceArray } from '../types/market';
 
 export function getNextSortOrder(current: SortPriceArray): SortPriceArray {
   if (current === 'base') return 'descending';

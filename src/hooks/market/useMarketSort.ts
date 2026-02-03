@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getNextSortOrder } from '../../components/market/utils/marketSortUtils';
+import { getNextSortOrder } from '../../lib/marketSortUtils';
 import type { SortTable, SortPriceArray } from '../../types/market';
 
 export function useMarketSort() {
