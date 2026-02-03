@@ -1,4 +1,4 @@
-import NotificationItem from './NotificationItem';
+import NotificationItem from '../layout/NotificationItem';
 import type { TNotification } from '@/types/websocket';
 import type { Meta, StoryObj } from '@storybook/react';
 
