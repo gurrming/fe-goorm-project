@@ -7,7 +7,14 @@ import tseslint from 'typescript-eslint';
 
 export default [
   {
-    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.vite/**', '**/*.config.js'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/.vite/**',
+      '**/storybook-static/**',
+      '**/*.config.js',
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
