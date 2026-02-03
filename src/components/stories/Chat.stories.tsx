@@ -4,6 +4,11 @@ import Chat from '../chart/chatting/Chat';
 export default {
     title: 'Chat',
     component: Chat,
+    parameters: {
+        backgrounds: {
+            default: 'white',
+        },
+    },
     argTypes:{
         nickname: { control: 'text' },
         message: { control: 'text' },

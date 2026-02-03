@@ -3,6 +3,11 @@ import AssetItem from '../asset/AssetItem';
 export default {
     title: 'AssetItem',
     component: AssetItem,
+    parameters: {
+        backgrounds: {
+            default: 'white',
+        },
+    },
     argTypes: {
         item: { control: 'object' },
     },

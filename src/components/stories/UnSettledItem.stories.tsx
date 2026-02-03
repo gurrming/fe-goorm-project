@@ -4,6 +4,11 @@ import UnSettledItem from '../right/contents/transaction/UnSettledItem';
 export default {
     title: 'UnSettledItem',
     component: UnSettledItem,
+    parameters: {
+        backgrounds: {
+            default: 'white',
+        },
+    },
     argTypes: {
         item: { control: 'object' },
     },
