@@ -4,6 +4,7 @@ import useUserStore from '../../store/useUserStore';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import { useChartStore } from '../../store/websocket/useChartStore';
 import type { StoreApi } from 'zustand';
+import { useNotificationStore } from '@/store/websocket/useNotificationStore';
 
 const mockStore = <T,>(hook: StoreApi<T>, state: Partial<T>) => {
   const initStore = hook.getState();
@@ -28,4 +29,8 @@ export const mockUseChartStore = (state: Partial<ReturnType<typeof useChartStore
 
 export const mockUseAssetStore = (state: Partial<ReturnType<typeof useAssetStore.getState>>) => {
   mockStore(useAssetStore, state);
+};
+
+export const mockUseNotificationStore = (state: Partial<ReturnType<typeof useNotificationStore.getState>>) => {
+  mockStore(useNotificationStore, state);
 };
