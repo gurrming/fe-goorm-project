@@ -1,5 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import { Mock, vi } from 'vitest';
+import { formatTimeAgo } from '../formatTimeAgo';
 import { useGetNotification } from '@/api/notification/useGetNotification';
 import { usePatchAllNotification } from '@/api/notification/usePatchNotification';
 import { useWebsocket } from '@/hooks/useWebsocket';
@@ -179,6 +180,19 @@ describe('Notification 통합 테스트', () => {
                 expect(screen.getByText('test2')).toBeInTheDocument();
                 expect(screen.getByText('test1')).not.toBeInTheDocument();
             });
+        });
+    });
+
+    describe('실시간 알림 처리 테스트', () => {
+        beforeEach(() => {
+            vi.setSystemTime(new Date('2026-02-03T12:10:00'));
+        });
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+        it('N-07: 알림 시간 로직 테스트', async () => {
+            const time = formatTimeAgo('2026-02-03T12:00:00');
+            expect(time).toBe('10분 전');
         });
     });
       
