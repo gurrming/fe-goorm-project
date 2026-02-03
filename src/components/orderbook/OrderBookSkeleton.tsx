@@ -11,7 +11,7 @@ function OrderBookSkeletonRow({ isSell, barWidthPercent }: { isSell: boolean; ba
   return (
     <div className={`grid ${grid} px-2 text-xs border-t border-white w-full items-center justify-center ${boxColor}`}>
       {/* 매수 / 매도 가격 영역 스켈레톤 */}
-      <div className="flex flex-col itㅑems-center justify-center py-2">
+      <div className="flex flex-col items-center justify-center py-2">
         {!isSell ? (
           <div className="flex items-center gap-2">
             <SkeletonBlock className="h-3 w-14" />
