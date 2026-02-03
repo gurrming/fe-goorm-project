@@ -11,10 +11,7 @@ type OrderBookSideProps = {
 };
 
 function OrderBookSide({ items, flashPrice, openPrice, isSell, emptyMessage }: OrderBookSideProps) {
-  const filteredItems = useMemo(
-    () => items.filter((item) => Number(item.totalRemainingCount) > 0),
-    [items],
-  );
+  const filteredItems = useMemo(() => items.filter((item) => Number(item.totalRemainingCount) > 0), [items]);
 
   const maxVolume = useMemo(() => {
     if (filteredItems.length === 0) {
