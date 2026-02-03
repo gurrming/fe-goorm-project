@@ -15,6 +15,7 @@ import { useGetCategoryInfo } from '@/api/useGetCategoryInfo';
 
 export default function OrderBookPanel() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const hasCenteredRef = useRef<number | null>(null);
   const categoryId = useCategoryIdStore((state) => state.categoryId);
   const orderbookData = useOrderbookStore((state) => state.orderbookData[categoryId]);
   const lastPrice = useOrderbookStore((state) => state.lastPrice);
@@ -28,6 +29,12 @@ export default function OrderBookPanel() {
   useTrades();
 
   useLayoutEffect(() => {
+    if (!orderbookData) {
+      return;
+    }
+    if (hasCenteredRef.current === categoryId) {
+      return;
+    }
     const container = scrollContainerRef.current;
     if (!container) {
       return;
@@ -48,6 +55,7 @@ export default function OrderBookPanel() {
         const centerScroll = (scrollHeight - clientHeight) / 2;
         container.scrollTop = centerScroll;
       }
+      hasCenteredRef.current = categoryId;
     });
   }, [orderbookData, categoryId]);
 
