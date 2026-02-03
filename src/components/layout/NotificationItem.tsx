@@ -1,3 +1,4 @@
+import { formatTimeAgo } from './formatTimeAgo';
 import type { TNotification } from '../../types/websocket';
 
 export default function NotificationItem({ item }: { item: TNotification }) {
@@ -5,20 +6,8 @@ export default function NotificationItem({ item }: { item: TNotification }) {
     TRADE: '체결',
     SYSTEM: '시스템',
   };
-  const NOW = new Date().getTime();
-  const milliSeconds = NOW - new Date(item.createdAt).getTime();
-  const seconds = milliSeconds / 1000;
-  const minutes = seconds / 60;
-  const hours = minutes / 60;
-  const days = hours / 24;
-  const time =
-    days > 1
-      ? `${Math.floor(days)}일 전`
-      : hours > 1
-        ? `${Math.floor(hours)}시간 전`
-        : minutes > 1
-          ? `${Math.floor(minutes)}분 전`
-          : `${Math.floor(seconds)}초 전`;
+  
+  const time = formatTimeAgo(item.createdAt);
   return (
     <div
       key={item.notificationId}
