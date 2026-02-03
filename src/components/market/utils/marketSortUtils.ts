@@ -10,7 +10,7 @@ export function getNextSortOrder(current: SortPriceArray): SortPriceArray {
 
 export function getCategorySortValue(category: Category, sortTable: SortTable): number {
   switch (sortTable) {
-    case 'lastPrice':
+    case 'nowPrice':
       return category.tradePrice ?? 0;
     case 'changeRate':
       return category.changeRate ?? 0;
