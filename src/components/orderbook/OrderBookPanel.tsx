@@ -11,11 +11,14 @@ import { useOrderbookLastPrice } from '../../hooks/websocket/useOrderbookLastPri
 import { useTrades } from '../../hooks/websocket/useTrades';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useOrderbookStore } from '../../store/websocket/useOrderbookStore';
+import { useGetCategoryInfo } from '@/api/useGetCategoryInfo';
 
 export default function OrderBookPanel() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const categoryId = useCategoryIdStore((state) => state.categoryId);
   const orderbookData = useOrderbookStore((state) => state.orderbookData[categoryId]);
+  const lastPrice = useOrderbookStore((state) => state.lastPrice);
+  const { data: categoryInfo } = useGetCategoryInfo(categoryId);
   const isLoading = !orderbookData;
 
   // WebSocket 구독 훅 (orderbook/trades)
@@ -54,6 +57,11 @@ export default function OrderBookPanel() {
   // 컨텐츠의 중앙(scrollHeight/2)이 화면의 중앙(scrollTop + clientHeight/2)에 오도록 scrollTop을 계산해서 설정
   // container.scrollTop = centerScroll;
 
+  const openPrice = categoryInfo?.openPrice ?? 0;
+  const flashPrice = lastPrice?.price ?? categoryInfo?.tradePrice ?? null;
+  const buySide = orderbookData?.buySide ?? [];
+  const sellSide = orderbookData?.sellSide ?? [];
+
   return (
     <div className="w-[495px] h-[800px] flex flex-col bg-white">
       <OrderbookHeader />
@@ -62,10 +70,10 @@ export default function OrderBookPanel() {
           <OrderBookSkeleton />
         ) : (
           <OrderBookGridLayout>
-            <SellBook />
+            <SellBook items={sellSide} flashPrice={flashPrice} openPrice={openPrice} />
             <MarketSummaryPanel />
             <TradeTapeSection />
-            <BuyBook />
+            <BuyBook items={buySide} flashPrice={flashPrice} openPrice={openPrice} />
           </OrderBookGridLayout>
         )}
       </div>
