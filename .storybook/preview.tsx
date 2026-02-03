@@ -24,7 +24,9 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <QueryClientProvider client={queryClient}>
-        <Story />
+        <div className="bg-white">
+          <Story />
+        </div>
       </QueryClientProvider>
     ),
   ],
