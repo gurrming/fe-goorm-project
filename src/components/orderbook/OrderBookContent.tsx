@@ -5,6 +5,7 @@ import OrderBookGridLayout from './OrderBookGridLayout';
 import OrderBookSkeleton from './OrderBookSkeleton';
 import SellBook from './SellBook';
 import TradeTapeSection from './TradeTapeSection';
+import { useGetCategoryInfo } from '@/api/useGetCategoryInfo';
 import { useOrderbookId } from '../../hooks/websocket/useOrderbookId';
 import { useOrderbookLastPrice } from '../../hooks/websocket/useOrderbookLastPrice';
 import { useTrades } from '../../hooks/websocket/useTrades';
@@ -16,14 +17,24 @@ type OrderBookContentProps = {
 
 export default function OrderBookContent({ categoryId }: OrderBookContentProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const hasCenteredRef = useRef<number | null>(null);
   const orderbookData = useOrderbookStore((state) => state.orderbookData[categoryId]);
+  const lastPrice = useOrderbookStore((state) => state.lastPrice);
+  const { data: categoryInfo } = useGetCategoryInfo(categoryId);
   const isLoading = !orderbookData;
+
+  const openPrice = categoryInfo?.openPrice ?? 0;
+  const flashPrice = lastPrice?.price ?? categoryInfo?.tradePrice ?? null;
+  const buySide = orderbookData?.buySide ?? [];
+  const sellSide = orderbookData?.sellSide ?? [];
 
   useOrderbookId(categoryId);
   useOrderbookLastPrice(categoryId);
   useTrades();
 
   useLayoutEffect(() => {
+    if (!orderbookData) return;
+    if (hasCenteredRef.current === categoryId) return;
     const container = scrollContainerRef.current;
     if (!container) return;
 
@@ -34,6 +45,7 @@ export default function OrderBookContent({ categoryId }: OrderBookContentProps) 
         const centerScroll = (scrollHeight - clientHeight) / 2;
         container.scrollTop = centerScroll;
       }
+      hasCenteredRef.current = categoryId;
     });
   }, [orderbookData, categoryId]);
 
@@ -43,10 +55,10 @@ export default function OrderBookContent({ categoryId }: OrderBookContentProps) 
         <OrderBookSkeleton />
       ) : (
         <OrderBookGridLayout>
-          <SellBook />
+          <SellBook items={sellSide} flashPrice={flashPrice} openPrice={openPrice} />
           <MarketSummaryPanel />
           <TradeTapeSection />
-          <BuyBook />
+          <BuyBook items={buySide} flashPrice={flashPrice} openPrice={openPrice} />
         </OrderBookGridLayout>
       )}
     </div>
