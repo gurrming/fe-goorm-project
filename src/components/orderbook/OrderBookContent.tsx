@@ -7,7 +7,6 @@ import SellBook from './SellBook';
 import TradeTapeSection from './TradeTapeSection';
 import { useOrderbookId } from '../../hooks/websocket/useOrderbookId';
 import { useOrderbookLastPrice } from '../../hooks/websocket/useOrderbookLastPrice';
-import { useTrades } from '../../hooks/websocket/useTrades';
 import { useOrderbookStore } from '../../store/websocket/useOrderbookStore';
 import { useGetCategoryInfo } from '@/api/useGetCategoryInfo';
 
@@ -30,7 +29,6 @@ export default function OrderBookContent({ categoryId }: OrderBookContentProps) 
 
   useOrderbookId(categoryId);
   useOrderbookLastPrice(categoryId);
-  useTrades();
 
   useLayoutEffect(() => {
     if (!orderbookData) return;
