@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { memo, ReactNode } from 'react';
 import { cn } from '../../lib/utils';
 
 type FlashConclusionProps = {
@@ -7,7 +7,7 @@ type FlashConclusionProps = {
   children: ReactNode;
 };
 
-export default function FlashConclusion({ isFlashing, className, children }: FlashConclusionProps) {
+function FlashConclusion({ isFlashing, className, children }: FlashConclusionProps) {
   return (
     <div className={cn('relative', className)}>
       {children}
@@ -15,3 +15,5 @@ export default function FlashConclusion({ isFlashing, className, children }: Fla
     </div>
   );
 }
+
+export default memo(FlashConclusion);

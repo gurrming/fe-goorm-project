@@ -5,6 +5,30 @@ import { cn } from '../../lib/utils';
 import useSelectedPriceStore from '../../store/useSelectedPriceStore';
 import type { OrderbookItemData } from '../../types/websocket';
 
+/** 호가 가격 + 등락률을 체결 플래시(FlashConclusion)로 감싸 표시 */
+const OrderBookPriceWithFlash = memo(function OrderBookPriceWithFlash({
+  isFlashing,
+  price,
+  percentageNumber,
+  priceColor,
+  className,
+}: {
+  isFlashing: boolean;
+  price: string;
+  percentageNumber: string;
+  priceColor: string;
+  className?: string;
+}) {
+  return (
+    <FlashConclusion isFlashing={isFlashing} className={className}>
+      <div className={priceColor}>
+        <span className="font-semibold">{price}</span>
+        <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
+      </div>
+    </FlashConclusion>
+  );
+});
+
 type OrderBookItemProps = {
   item: OrderbookItemData; // 호가창 아이템 데이터
   isSell?: boolean; // 매도인지 매수인지 구분값, true면 매도를 위해 올린 값
@@ -62,14 +86,12 @@ function OrderBookItem({ item, isSell = true, maxVolume, flashPrice, openPrice }
       {/* 좌측 영역 */}
       <div className="flex flex-col items-center justify-center cursor-pointer" onClick={handlePriceClick}>
         {!isSell && (
-          <>
-            <FlashConclusion isFlashing={isFlashing}>
-              <div className={`${priceColor}`}>
-                <span className="font-semibold">{price}</span>
-                <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
-              </div>
-            </FlashConclusion>
-          </>
+          <OrderBookPriceWithFlash
+            isFlashing={isFlashing}
+            price={price}
+            percentageNumber={percentageNumber}
+            priceColor={priceColor}
+          />
         )}
       </div>
 
@@ -100,14 +122,13 @@ function OrderBookItem({ item, isSell = true, maxVolume, flashPrice, openPrice }
       {/* Right 영역 */}
       <div className="flex flex-col items-center justify-center pl-3 cursor-pointer" onClick={handlePriceClick}>
         {isSell && (
-          <>
-            <FlashConclusion isFlashing={isFlashing} className="rounded-[2px]">
-              <div className={cn(priceColor)}>
-                <span className="font-semibold">{price}</span>
-                <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
-              </div>
-            </FlashConclusion>
-          </>
+          <OrderBookPriceWithFlash
+            isFlashing={isFlashing}
+            price={price}
+            percentageNumber={percentageNumber}
+            priceColor={priceColor}
+            className="rounded-[2px]"
+          />
         )}
       </div>
     </div>
