@@ -7,13 +7,10 @@ type SubscriptionLike = {
   unsubscribe: () => void;
 };
 
-/**
- * 여러 종목의 /topic/ticker/{categoryId} 를 일괄 구독하는 훅
- * - Market 테이블처럼 동시에 여러 행에 티커가 필요한 곳에서 사용합니다.
- */
 export const useTicker = (categoryIds: number[]) => {
   const { isConnected, stompClientRef } = useWebsocket();
-  const { setTickerData, clearTickerData } = useTickerStore();
+  const setTickerData = useTickerStore((state) => state.setTickerData);
+  const clearTickerData = useTickerStore((state) => state.clearTickerData);
   const subsRef = useRef<Record<number, SubscriptionLike>>({});
 
   const stableKey = useMemo(() => {
