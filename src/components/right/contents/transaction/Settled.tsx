@@ -27,7 +27,9 @@ const Settled = () => {
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   return (
-    <div className="max-h-[650px] overflow-y-auto w-full border-collapse bg-white">
+    <div 
+    data-testid="settled"
+    className="max-h-[650px] overflow-y-auto w-full border-collapse bg-white">
       <table className="w-full border-collapse bg-white">
         <thead className="sticky top-0 z-10">
           <tr className="border-b border-t border-gray-200 bg-[#F7F7F7]">
