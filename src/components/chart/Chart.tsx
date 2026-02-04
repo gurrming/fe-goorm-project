@@ -130,7 +130,7 @@ const Chart = ({
   }, [data]);
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div data-testid="Chart" className="flex flex-col items-center justify-center">
       <div ref={chartContainerRef} className="w-full" />
     </div>
   );

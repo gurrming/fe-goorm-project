@@ -61,6 +61,7 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
 
   const row = (
     <div
+      data-testid="orderbook-item"
       className={cn(
         'group grid px-2 text-xs border-t border-white transition-colors w-full items-center justify-center',
         isSell
