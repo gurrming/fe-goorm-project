@@ -10,6 +10,13 @@ declare global {
       login(): Chainable<void>;
       logout(): Chainable<void>;
       assertUrl(url: string): Chainable<void>;
+      /** CDP로 네트워크 지연/속도 시뮬레이션 (Chrome/Chromium 전용) */
+      emulateNetworkConditions(options: {
+        offline?: boolean;
+        latency?: number;
+        downloadThroughput?: number;
+        uploadThroughput?: number;
+      }): Chainable<void>;
     }
   }
 }
@@ -29,7 +36,7 @@ Cypress.Commands.add('signup', (email: string, password: string, nickname: strin
 });
 
 Cypress.Commands.add('login', () => {
-  const email = 'test@gmail.com';
+  const email = 'test2@gmail.com';
   const password = 'test1234';
 
   cy.visit('/login');
@@ -46,3 +53,36 @@ Cypress.Commands.add('logout', () => {
 Cypress.Commands.add('assertUrl', url => {
   cy.url().should('eq', `${Cypress.env('baseUrl')}${url}`);
 });
+
+/**
+ * Chrome DevTools Protocol(CDP)로 네트워크 조건 시뮬레이션.
+ * Chrome/Chromium 브라우저에서만 동작 (cypress run --browser chrome).
+ */
+Cypress.Commands.add(
+  'emulateNetworkConditions',
+  (options: {
+    offline?: boolean;
+    latency?: number;
+    downloadThroughput?: number;
+    uploadThroughput?: number;
+  } = {}) => {
+    const {
+      offline = false,
+      latency = 0,
+      downloadThroughput = -1,
+      uploadThroughput = -1,
+    } = options;
+
+    const promise = Cypress.automation('remote:debugger:protocol', {
+      command: 'Network.emulateNetworkConditions',
+      params: {
+        offline,
+        latency,
+        downloadThroughput,
+        uploadThroughput,
+      },
+    }) as Promise<void>;
+
+    return cy.wrap(null, { log: false }).then(() => promise);
+  }
+);
