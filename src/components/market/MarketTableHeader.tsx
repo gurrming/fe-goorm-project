@@ -76,12 +76,12 @@ export default function MarketTableHeader({
       <div className="py-[6px] text-left text-[11px] font-medium text-primary-300 min-w-0 pl-7">종목명</div>
       <div
         className="py-[6px] text-right text-[11px] font-medium text-primary-300 hover:cursor-pointer select-none min-w-[90px]"
-        onClick={() => onSortClick('lastPrice')}
+        onClick={() => onSortClick('nowPrice')}
       >
         <div className="flex items-center justify-end gap-1">
           <span>현재가</span>
           <span className="w-3 flex items-center justify-center">
-            <SortIcon sortPriceArray={getSortTable('lastPrice')} />
+            <SortIcon sortPriceArray={getSortTable('nowPrice')} />
           </span>
         </div>
       </div>
