@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import FlashConclusion from './FlashConclusion';
 import { formatNumber } from '../../lib/price';
 import { cn } from '../../lib/utils';
@@ -7,6 +7,30 @@ import { useOrderbookStore } from '../../store/websocket/useOrderbookStore';
 import type { OrderbookItemData } from '../../types/websocket';
 import { useGetCategoryInfo } from '@/api/useGetCategoryInfo';
 import useCategoryIdStore from '@/store/useCategoryId';
+
+/** 호가 가격 + 등락률을 체결 플래시(FlashConclusion)로 감싸 표시 */
+const OrderBookPriceWithFlash = memo(function OrderBookPriceWithFlash({
+  isFlashing,
+  price,
+  percentageNumber,
+  priceColor,
+  className,
+}: {
+  isFlashing: boolean;
+  price: string;
+  percentageNumber: string;
+  priceColor: string;
+  className?: string;
+}) {
+  return (
+    <FlashConclusion isFlashing={isFlashing} className={className}>
+      <div className={priceColor}>
+        <span className="font-semibold">{price}</span>
+        <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
+      </div>
+    </FlashConclusion>
+  );
+});
 
 type OrderBookItemProps = {
   item: OrderbookItemData; // 호가창 아이템 데이터
@@ -72,14 +96,12 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
       {/* 좌측 영역 */}
       <div className="flex flex-col items-center justify-center cursor-pointer" onClick={handlePriceClick}>
         {!isSell && (
-          <>
-            <FlashConclusion isFlashing={isFlashing}>
-              <div className={`${priceColor}`}>
-                <span className="font-semibold">{price}</span>
-                <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
-              </div>
-            </FlashConclusion>
-          </>
+          <OrderBookPriceWithFlash
+            isFlashing={isFlashing}
+            price={price}
+            percentageNumber={percentageNumber}
+            priceColor={priceColor}
+          />
         )}
       </div>
 
@@ -110,14 +132,13 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
       {/* Right 영역 */}
       <div className="flex flex-col items-center justify-center pl-3 cursor-pointer" onClick={handlePriceClick}>
         {isSell && (
-          <>
-            <FlashConclusion isFlashing={isFlashing} className="rounded-[2px]">
-              <div className={cn(priceColor)}>
-                <span className="font-semibold">{price}</span>
-                <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
-              </div>
-            </FlashConclusion>
-          </>
+          <OrderBookPriceWithFlash
+            isFlashing={isFlashing}
+            price={price}
+            percentageNumber={percentageNumber}
+            priceColor={priceColor}
+            className="rounded-[2px]"
+          />
         )}
       </div>
     </div>
