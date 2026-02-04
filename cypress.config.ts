@@ -1,6 +1,7 @@
 import { defineConfig } from 'cypress';
 
 const baseUrl = 'http://localhost:5173';
+const apiUrl = 'http://localhost:8080';
 
 export default defineConfig({
   e2e: {
@@ -12,5 +13,6 @@ export default defineConfig({
   },
   env: {
     baseUrl,
+    apiUrl,
   },
 });
