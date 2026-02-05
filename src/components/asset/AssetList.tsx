@@ -55,7 +55,9 @@ const AssetList = () => {
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   return (
-    <div className="h-[600px] overflow-y-auto flex flex-col gap-3 border-t-[0.3px] border-gray-200 pt-3">
+    <div 
+    data-testid="asset-list" 
+    className="h-[600px] overflow-y-auto flex flex-col gap-3 border-t-[0.3px] border-gray-200 pt-3">
       <p className="text-[15px] text-[#333333] font-bold px-4">보유자산 목록</p>
       <table className="w-full border-collapse bg-white text-nowrap">
         <thead className="sticky top-0 z-10 border-b border-gray-200">
