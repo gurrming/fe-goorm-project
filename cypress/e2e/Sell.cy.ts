@@ -45,6 +45,12 @@ describe('매도 테스트', () => {
         
         cy.findByPlaceholderText('코인명 / 심볼검색').type(COIN_NAME);
         cy.findByText(COIN_NAME).click();
+        cy.get('[data-testid="chart-tab"]').within(() => {
+            cy.findByText(COIN_NAME, { exact: false }).should('be.visible');
+        });
+
+        cy.get('[data-testid="sell-book"]').should('be.visible');
+        
         cy.findByText('매도').click();
 
 
