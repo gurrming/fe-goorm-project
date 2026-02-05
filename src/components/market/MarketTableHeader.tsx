@@ -1,5 +1,6 @@
 import { faAngleDown, faAngleUp, faUpDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { memo } from 'react';
 import type { SortTable, SortPriceArray, TabKey } from '../../types/market';
 
 type MarketTableHeaderProps = {
@@ -17,12 +18,7 @@ function SortIcon({ sortPriceArray }: { sortPriceArray: SortPriceArray }) {
   return <FontAwesomeIcon icon={faUpDown} className="text-[8px] text-primary-300" />;
 }
 
-export default function MarketTableHeader({
-  activeTab,
-  activeSortTable,
-  activeSortPriceArray,
-  onSortClick,
-}: MarketTableHeaderProps) {
+function MarketTableHeader({ activeTab, activeSortTable, activeSortPriceArray, onSortClick }: MarketTableHeaderProps) {
   const getSortTable = (item: SortTable): SortPriceArray => {
     if (activeSortTable !== item) return 'base';
     return activeSortPriceArray;
@@ -110,3 +106,5 @@ export default function MarketTableHeader({
     </div>
   );
 }
+
+export default memo(MarketTableHeader);
