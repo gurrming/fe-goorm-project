@@ -14,5 +14,6 @@ export default defineConfig({
   env: {
     baseUrl,
     apiUrl,
+    memberId: '2',
   },
 });

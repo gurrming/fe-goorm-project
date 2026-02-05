@@ -107,6 +107,8 @@ Cypress.Commands.add('notificationCheck',(notificationType: 'TRADE' | 'SYSTEM', 
     cy.findAllByText(notificationContent, { exact: false }).first().should('be.visible');
   });
   if(count) {
-    cy.findByText(count.toString()).should('be.visible');
+    cy.get('[data-testid="notification-container"]').within(() => {
+      cy.findAllByText(count.toString(), { exact: false }).first().should('be.visible');
+    });
   }
 });
