@@ -9,9 +9,14 @@ describe('매수 테스트', () => {
     })
     it('코인 매수 및 자산 반영 확인', () => {
         let initialAssetCash = 0;
-        let initialCoinCount = 0;
+        let initialCoinCount = 0.0;
+
+        cy.intercept('GET', `${Cypress.env('apiUrl')}/api/assets/${Cypress.env('memberId')}`).as('getAssets');
+
         cy.visit('/asset');
+        cy.wait('@getAssets');
         cy.assertUrl('/asset');
+
         cy.get('[data-testid="asset-cash"]',{timeout: 10000})
             .should('be.visible')
             .invoke('text')
@@ -27,7 +32,7 @@ describe('매수 테스트', () => {
                         .eq(1) 
                         .invoke('text')
                         .then((text) => {
-                          initialCoinCount = Number(text.replace(/[^0-9.-]+/g, ""));
+                          initialCoinCount = parseFloat(text.replace(/[^0-9.-]+/g, ""));
                           cy.log(`initialCoinCount: ${initialCoinCount}`);
                         });
                 });
@@ -80,6 +85,7 @@ describe('매수 테스트', () => {
                         expect(parsedDisplayed).to.be.closeTo(actualCoinCount, 0.0001);
                     });
 
+                cy.notificationCheck('TRADE', `[${COIN_NAME}] 매수 체결 완료!`, BUY_COUNT);
             } else {
                 cy.get('label[for="unsettled"]').click()
                 cy.findAllByText(BUY_PRICE).should('be.visible');
