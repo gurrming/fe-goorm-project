@@ -1,26 +1,20 @@
-import OrderBookItem from './OrderBookItem';
-import useCategoryIdStore from '../../store/useCategoryId';
-import { useOrderbookStore } from '../../store/websocket/useOrderbookStore';
-import type { OrderbookItemData } from '../../types/websocket';
+import type { OrderbookItemData } from '@/types/websocket';
+import OrderBookSide from '@/components/orderbook/OrderBookSide';
 
-export default function SellBook() {
-  const categoryId = useCategoryIdStore((state) => state.categoryId);
-  const payload = useOrderbookStore((state) => state.orderbookData[categoryId]);
-  const sellSide = payload?.sellSide || [];
+type SellBookProps = {
+  items: OrderbookItemData[];
+  flashPrice: number | null;
+  openPrice: number;
+};
 
-  const sellItems = sellSide.filter((item) => Number(item.totalRemainingCount) > 0);
-  const maxVolume =
-    sellItems.length > 0 ? Math.max(0, ...sellItems.map((item) => Number(item.totalRemainingCount))) : 0;
-
+export default function SellBook({ items, flashPrice, openPrice }: SellBookProps) {
   return (
-    <div className="col-span-2 flex flex-col-reverse">
-      {sellItems.length > 0 ? (
-        sellItems.map((item: OrderbookItemData, index) => (
-          <OrderBookItem key={`${item.orderPrice}-${index}`} item={item} isSell={true} maxVolume={maxVolume} />
-        ))
-      ) : (
-        <div className="text-center text-gray-400 text-[10px] py-4">매도 호가 데이터가 없습니다</div>
-      )}
-    </div>
+    <OrderBookSide
+      items={items}
+      flashPrice={flashPrice}
+      openPrice={openPrice}
+      isSell={true}
+      emptyMessage="매도 호가 데이터가 없습니다"
+    />
   );
 }

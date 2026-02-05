@@ -1,35 +1,49 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import FlashConclusion from './FlashConclusion';
 import { formatNumber } from '../../lib/price';
 import { cn } from '../../lib/utils';
 import useSelectedPriceStore from '../../store/useSelectedPriceStore';
-import { useOrderbookStore } from '../../store/websocket/useOrderbookStore';
 import type { OrderbookItemData } from '../../types/websocket';
-import { useGetCategoryInfo } from '@/api/useGetCategoryInfo';
-import useCategoryIdStore from '@/store/useCategoryId';
+
+/** 호가 가격 + 등락률을 체결 플래시(FlashConclusion)로 감싸 표시 */
+const OrderBookPriceWithFlash = memo(function OrderBookPriceWithFlash({
+  isFlashing,
+  price,
+  percentageNumber,
+  priceColor,
+  className,
+}: {
+  isFlashing: boolean;
+  price: string;
+  percentageNumber: string;
+  priceColor: string;
+  className?: string;
+}) {
+  return (
+    <FlashConclusion isFlashing={isFlashing} className={className}>
+      <div className={priceColor}>
+        <span className="font-semibold">{price}</span>
+        <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
+      </div>
+    </FlashConclusion>
+  );
+});
 
 type OrderBookItemProps = {
   item: OrderbookItemData; // 호가창 아이템 데이터
   isSell?: boolean; // 매도인지 매수인지 구분값, true면 매도를 위해 올린 값
   maxVolume: number; // 최대 거래량 (차트 바 너비 계산용)
+  flashPrice: number | null;
+  openPrice: number;
 };
 
-export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderBookItemProps) {
-  const categoryId = useCategoryIdStore((state) => state.categoryId);
-  const lastPrice = useOrderbookStore((state) => state.lastPrice);
+function OrderBookItem({ item, isSell = true, maxVolume, flashPrice, openPrice }: OrderBookItemProps) {
   const [isFlashing, setIsFlashing] = useState(false);
   const { setSelectedPrice, setSelectedPriceAndQuantity } = useSelectedPriceStore();
-  const { data: categoryInfo } = useGetCategoryInfo(categoryId);
-  const openPrice = categoryInfo?.openPrice ?? 0;
-  const nowPrice = categoryInfo?.tradePrice;
 
   const itemPrice = item.orderPrice;
   const itemVolume = item.totalRemainingCount;
 
-  const lastPriceNumber = lastPrice?.price;
-
-  // 웹소켓 먼저, 이후에 REST 현재가
-  const flashPrice = lastPriceNumber ?? nowPrice;
   const isLastPriceRow = flashPrice != null && itemPrice === flashPrice;
 
   useEffect(() => {
@@ -72,14 +86,12 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
       {/* 좌측 영역 */}
       <div className="flex flex-col items-center justify-center cursor-pointer" onClick={handlePriceClick}>
         {!isSell && (
-          <>
-            <FlashConclusion isFlashing={isFlashing}>
-              <div className={`${priceColor}`}>
-                <span className="font-semibold">{price}</span>
-                <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
-              </div>
-            </FlashConclusion>
-          </>
+          <OrderBookPriceWithFlash
+            isFlashing={isFlashing}
+            price={price}
+            percentageNumber={percentageNumber}
+            priceColor={priceColor}
+          />
         )}
       </div>
 
@@ -110,14 +122,13 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
       {/* Right 영역 */}
       <div className="flex flex-col items-center justify-center pl-3 cursor-pointer" onClick={handlePriceClick}>
         {isSell && (
-          <>
-            <FlashConclusion isFlashing={isFlashing} className="rounded-[2px]">
-              <div className={cn(priceColor)}>
-                <span className="font-semibold">{price}</span>
-                <span className={cn('text-[10px] ml-3', priceColor)}>{percentageNumber}</span>
-              </div>
-            </FlashConclusion>
-          </>
+          <OrderBookPriceWithFlash
+            isFlashing={isFlashing}
+            price={price}
+            percentageNumber={percentageNumber}
+            priceColor={priceColor}
+            className="rounded-[2px]"
+          />
         )}
       </div>
     </div>
@@ -125,3 +136,5 @@ export default function OrderBookItem({ item, isSell = true, maxVolume }: OrderB
 
   return row;
 }
+
+export default memo(OrderBookItem);

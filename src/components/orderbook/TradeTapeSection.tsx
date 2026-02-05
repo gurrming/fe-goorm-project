@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { useGetTrades } from '../../api/useGetTrades';
+import { useTrades } from '../../hooks/websocket/useTrades';
 import { formatNumber } from '../../lib/price';
 import useCategoryIdStore from '../../store/useCategoryId';
 import { useTradesStore } from '../../store/websocket/useTradesStore';
 import { useGetVolumePower } from '@/api/useGetVolumePower';
 
 export default function TradeTapeSection() {
+  useTrades();
   const { tradesList, tradesData, restApiInitData } = useTradesStore();
   const categoryId = useCategoryIdStore((state) => state.categoryId);
   const { data: trades } = useGetTrades(categoryId);
