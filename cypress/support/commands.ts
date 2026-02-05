@@ -102,7 +102,10 @@ Cypress.Commands.add('notificationCheck',(notificationType: 'TRADE' | 'SYSTEM', 
   cy.visit('/');
   cy.assertUrl('/');
   cy.get('[data-testid="bell-icon"]').click();
-  cy.get('[data-testid="notification-container"]').findByText(notificationContent, { exact: false }).should('be.visible');
+  cy.get('[data-testid="notification-container"]').should('be.visible');
+  cy.get('[data-testid="notification-container"]').within(() => {
+    cy.findAllByText(notificationContent, { exact: false }).first().should('be.visible');
+  });
   if(count) {
     cy.findByText(count.toString()).should('be.visible');
   }
