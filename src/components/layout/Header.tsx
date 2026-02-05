@@ -78,7 +78,7 @@ export default function Header() {
           {user ? (
             <>
               <p className="text-white text-sm font-semibold text-nowrap">{user.nickname}님, 환영합니다.</p>
-              <FontAwesomeIcon icon={faBell} color="white" size="xl" onClick={handleClick} />
+              <FontAwesomeIcon data-testid="bell-icon" icon={faBell} color="white" size="xl" onClick={handleClick} />
               {open && anchorRect && <Notification anchorRect={anchorRect} width="400px" setOpen={setOpen} />}
               <Button
                 colorType="white"
