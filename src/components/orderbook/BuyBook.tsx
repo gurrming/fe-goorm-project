@@ -14,7 +14,9 @@ export default function BuyBook() {
   const maxVolume = buyItems.length > 0 ? Math.max(0, ...buyItems.map((item) => Number(item.totalRemainingCount))) : 0;
 
   return (
-    <div className="col-span-2 flex flex-col">
+    <div 
+    data-testid="buy-book"
+    className="col-span-2 flex flex-col">
       {buyItems.length > 0 ? (
         buyItems.map((item: OrderbookItemData, index) => (
           <OrderBookItem key={`${item.orderPrice}-${index}`} item={item} isSell={false} maxVolume={maxVolume} />
