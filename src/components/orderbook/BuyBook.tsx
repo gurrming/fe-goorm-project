@@ -1,29 +1,20 @@
-import OrderBookItem from './OrderBookItem';
-import useCategoryIdStore from '../../store/useCategoryId';
-import { useOrderbookStore } from '../../store/websocket/useOrderbookStore';
 import type { OrderbookItemData } from '../../types/websocket';
+import OrderBookSide from '@/components/orderbook/OrderBookSide';
 
-export default function BuyBook() {
-  const categoryId = useCategoryIdStore((state) => state.categoryId);
-  const payload = useOrderbookStore((state) => state.orderbookData[categoryId]);
-  const buySide = payload?.buySide || [];
+type BuyBookProps = {
+  items: OrderbookItemData[];
+  flashPrice: number | null;
+  openPrice: number;
+};
 
-  const buyItems = buySide.filter((item) => Number(item.totalRemainingCount) > 0);
-
-  // 최대 물량 계산 (차트 비율 계산용)
-  const maxVolume = buyItems.length > 0 ? Math.max(0, ...buyItems.map((item) => Number(item.totalRemainingCount))) : 0;
-
+export default function BuyBook({ items, flashPrice, openPrice }: BuyBookProps) {
   return (
-    <div 
-    data-testid="buy-book"
-    className="col-span-2 flex flex-col">
-      {buyItems.length > 0 ? (
-        buyItems.map((item: OrderbookItemData, index) => (
-          <OrderBookItem key={`${item.orderPrice}-${index}`} item={item} isSell={false} maxVolume={maxVolume} />
-        ))
-      ) : (
-        <div className="text-center text-gray-400 text-[10px] py-4">매수 호가 데이터가 없습니다</div>
-      )}
-    </div>
+    <OrderBookSide
+      items={items}
+      flashPrice={flashPrice}
+      openPrice={openPrice}
+      isSell={false}
+      emptyMessage="매수 호가 데이터가 없습니다"
+    />
   );
 }

@@ -65,8 +65,8 @@ export default function MarketPanel() {
 
   const TabKeyFiltered = () => {
     if (activeTab === 'holding') {
-      if (isPortfolioPending) return <MarketTableSkeleton />;
-      if (!hasHoldingData) return <MarketPanelEmptyMessage activeTab={activeTab} isLoggedIn={!!user} />;
+      if (memberId && isPortfolioPending) return <MarketTableSkeleton />;
+      if (!memberId || !hasHoldingData) return <MarketPanelEmptyMessage activeTab={activeTab} isLoggedIn={!!user} />;
       return sortedPortfolioAssets.map((asset) => (
         <MarketTableItem
           key={asset.categoryId}
