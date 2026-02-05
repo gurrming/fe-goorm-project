@@ -17,6 +17,8 @@ declare global {
         downloadThroughput?: number;
         uploadThroughput?: number;
       }): Chainable<void>;
+      orderAllCancel(): Chainable<void>;
+      notificationCheck(notificationType: 'TRADE' | 'SYSTEM', notificationContent: string, count?: string): Chainable<void>;
     }
   }
 }
@@ -86,3 +88,22 @@ Cypress.Commands.add(
     return cy.wrap(null, { log: false }).then(() => promise);
   }
 );
+
+Cypress.Commands.add('orderAllCancel', () => {
+  cy.visit('/');
+  cy.assertUrl('/');
+  cy.findByText('거래내역').click();
+  cy.get('label[for="unsettled"]').click()
+  cy.get('[data-testid="unsettled"]').find('button').eq(0).click();
+  cy.findByText('미체결 내역이 없습니다.').should('be.visible');
+});
+
+Cypress.Commands.add('notificationCheck',(notificationType: 'TRADE' | 'SYSTEM', notificationContent: string, count?: string) => {
+  cy.visit('/');
+  cy.assertUrl('/');
+  cy.get('[data-testid="bell-icon"]').click();
+  cy.get('[data-testid="notification-container"]').findByText(notificationContent, { exact: false }).should('be.visible');
+  if(count) {
+    cy.findByText(count.toString()).should('be.visible');
+  }
+});
