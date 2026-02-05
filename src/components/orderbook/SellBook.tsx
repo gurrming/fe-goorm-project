@@ -10,6 +10,7 @@ type SellBookProps = {
 export default function SellBook({ items, flashPrice, openPrice }: SellBookProps) {
   return (
     <OrderBookSide
+      data-testid="sell-book"
       items={items}
       flashPrice={flashPrice}
       openPrice={openPrice}

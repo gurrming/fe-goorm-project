@@ -10,6 +10,7 @@ type BuyBookProps = {
 export default function BuyBook({ items, flashPrice, openPrice }: BuyBookProps) {
   return (
     <OrderBookSide
+      data-testid="buy-book"
       items={items}
       flashPrice={flashPrice}
       openPrice={openPrice}
