@@ -14,7 +14,10 @@ describe('매도 테스트', () => {
         let initialAssetCash = 0;
         let initialCoinCount = 0.0;
 
+        cy.intercept('GET', `${Cypress.env('apiUrl')}/api/assets/${Cypress.env('memberId')}`).as('getAssets');
+
         cy.visit('/asset');
+        cy.wait('@getAssets');
         cy.assertUrl('/asset');
 
         cy.get('[data-testid="asset-cash"]',{timeout: 10000})
