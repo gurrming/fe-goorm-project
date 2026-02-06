@@ -8,9 +8,10 @@ type OrderBookSideProps = {
   openPrice: number;
   isSell: boolean;
   emptyMessage: string;
+  "data-testid": string;
 };
 
-function OrderBookSide({ items, flashPrice, openPrice, isSell, emptyMessage }: OrderBookSideProps) {
+function OrderBookSide({ items, flashPrice, openPrice, isSell, emptyMessage, "data-testid": dataTestId }: OrderBookSideProps) {
   const filteredItems = useMemo(() => items.filter((item) => Number(item.totalRemainingCount) > 0), [items]);
 
   const maxVolume = useMemo(() => {
@@ -21,7 +22,7 @@ function OrderBookSide({ items, flashPrice, openPrice, isSell, emptyMessage }: O
   }, [filteredItems]);
 
   return (
-    <div className={`col-span-2 flex ${isSell ? 'flex-col-reverse' : 'flex-col'}`}>
+    <div data-testid={dataTestId} className={`col-span-2 flex ${isSell ? 'flex-col-reverse' : 'flex-col'}`}>
       {filteredItems.length > 0 ? (
         filteredItems.map((item, index) => (
           <OrderBookItem

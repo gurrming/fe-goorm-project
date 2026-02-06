@@ -33,7 +33,9 @@ const UnSettled = () => {
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div 
+    data-testid="unsettled"
+    className="flex flex-col gap-3">
       <div className="flex justify-between items-center px-4">
         <p className="text-xs text-[#333333]">총 {totalOpenOrderCount}건</p>{' '}
         <button
