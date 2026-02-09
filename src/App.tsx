@@ -1,11 +1,13 @@
+import { lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ModalProvider } from './components/common/Modal/ModalProvider';
 import Layout from './components/layout/Layout';
-import AiAnalysisPage from './pages/AiAnalysisPage';
-import AssetPage from './pages/AssetPage';
-import LoginPage from './pages/LoginPage';
-import MainPage from './pages/MainPage';
-import SignupPage from './pages/SignupPage';
+
+const MainPage = lazy(() => import('./pages/MainPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const SignupPage = lazy(() => import('./pages/SignupPage'));
+const AssetPage = lazy(() => import('./pages/AssetPage'));
+const AiAnalysisPage = lazy(() => import('./pages/AiAnalysisPage'));
 
 function App() {
   return (
@@ -18,7 +20,7 @@ function App() {
           <Route path="/asset" element={<AssetPage />} />
           <Route path="/ai-analysis" element={<AiAnalysisPage />} />
         </Route>
-      </Routes>
+      </Routes>  
     </ModalProvider>
   );
 }
