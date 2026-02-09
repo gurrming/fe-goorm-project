@@ -104,7 +104,9 @@ export default function MarketPanel() {
             onSortClick={handleSortClick}
           />
         </div>
-        <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0">{TabKeyFiltered()}</div>
+        <div className="overflow-y-auto overflow-x-hidden flex-1 min-h-0" data-testid="market-item-list">
+          {TabKeyFiltered()}
+        </div>
       </div>
     </div>
   );
