@@ -11,6 +11,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "preview": "vite preview",
+    "analyze": "BUNDLE_ANALYZE=1 vite build", 
     "chromatic": "npx chromatic --project-token=chpt_529eed7eb3e5b87"
   },
   "dependencies": {
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@storybook/react-vite": "^10.2.4",
+    "@testing-library/cypress": "^10.0.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -60,7 +62,6 @@
     "@types/sockjs-client": "^1.5.4",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "chromatic": "^15.0.0",
-    "@testing-library/cypress": "^10.0.0",
     "cypress": "^15.10.0",
     "eslint": "^9.39.1",
     "eslint-plugin-import": "^2.31.0",
@@ -69,6 +70,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^27.4.0",
+    "rollup-plugin-visualizer": "^6.0.5",
     "storybook": "^10.2.4",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
