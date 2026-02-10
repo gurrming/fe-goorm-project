@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import AssetItem from './AssetItem';
 import { useGetInfiniteInvest } from '../../hooks/infinite/useGetInfiniteInvest';
-import { useAsset, useSummary } from '../../hooks/websocket/useAsset';
+import { useSummary } from '../../hooks/websocket/useAsset';
 import useUserStore from '../../store/useUserStore';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import type { TAssets } from '../../types/asset';
@@ -15,7 +15,6 @@ const AssetList = () => {
   const setSummary = useAssetStore((state) => state.setSummary);
   const setAssetList = useAssetStore((state) => state.setAssetList);
 
-  useAsset(memberId!);
   useSummary(memberId!);
 
   useEffect(() => {
