@@ -7,7 +7,11 @@ interface IAssetStore {
     totalAsset: number | null;
     assetCanOrder: number | null;
   };
-  wsTotalAsset: number | null;
+  wsAssetList: {
+    categoryId: number;
+    evaluationAmount: number;
+    evaluationProfit: number;
+  }[];
   summary: {
     totalBuyAmount: number;
     totalEvaluation: number;
@@ -16,7 +20,7 @@ interface IAssetStore {
   };
   assetList: TAssets[];
   setMyAsset: (data: { assetCash: number | null; totalAsset: number | null; assetCanOrder: number | null }) => void;
-  setWsTotalAsset: (data: number | null) => void;
+  setWsAssetList: (data: { categoryId: number; evaluationAmount: number; evaluationProfit: number }[]) => void;
   setSummary: (data: {
     totalBuyAmount: number;
     totalEvaluation: number;
@@ -32,7 +36,7 @@ export const useAssetStore = create<IAssetStore>((set) => ({
     totalAsset: null,
     assetCanOrder: null,
   },
-  wsTotalAsset: null,
+  wsAssetList: [],
   summary: {
     totalBuyAmount: 0,
     totalEvaluation: 0,
@@ -41,7 +45,7 @@ export const useAssetStore = create<IAssetStore>((set) => ({
   },
   assetList: [],
   setMyAsset: (data) => set({ myAsset: data }),
-  setWsTotalAsset: (data) => set({ wsTotalAsset: data }),
+  setWsAssetList: (data) => set({ wsAssetList: data }),
   setSummary: (data) => set({ summary: data }),
   setAssetList: (data: TAssets[]) => set({ assetList: data }),
 }));
