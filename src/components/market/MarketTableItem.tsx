@@ -1,6 +1,7 @@
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { memo } from 'react';
 import FlashComparison from './FlashComparison';
 import { formatChangePricePercentage } from '../../lib/price';
 import useCategoryIdStore from '../../store/useCategoryId';
@@ -8,6 +9,40 @@ import { useTickerStore } from '../../store/websocket/useTickerStore';
 import type { TAssets } from '../../types/asset';
 import type { Category } from '../../types/category';
 import type { TabKey } from '../../types/market';
+
+// 얘는 ticker 구독 안 해서 뺴고 memo 처리 (아이콘 렌더링 방지)
+const MarketTableItemSymbol = memo(function MarketTableItemSymbol({
+  categoryName,
+  symbol,
+  isFavorite,
+  onToggleFavorite,
+}: {
+  categoryName: string;
+  symbol: string;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+}) {
+  return (
+    <div className="text-xs min-w-0">
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite();
+          }}
+          className="w-5 h-5 flex items-center justify-center text-[#ffca43] hover:text-[#ffb457] shrink-0"
+        >
+          <FontAwesomeIcon icon={isFavorite ? faStarSolid : faStarRegular} />
+        </button>
+        <div className="flex flex-col min-w-0">
+          <span className="text-[13px] font-semibold text-primary-100">{categoryName}</span>
+          <span className="text-[11px] text-primary-300">{symbol}/(KRW)</span>
+        </div>
+      </div>
+    </div>
+  );
+});
 
 type MarketTableItemProps = {
   activeTab: TabKey;
@@ -113,26 +148,12 @@ export default function MarketTableItem({
       }`}
       onClick={() => setCategoryId(category.categoryId)}
     >
-      <div className="text-xs min-w-0">
-        <div className="flex items-center gap-2">
-          {/* 관심 종목 추가/삭제 버튼 */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFavorite();
-            }}
-            className="w-5 h-5 flex items-center justify-center text-[#ffca43] hover:text-[#ffb457] shrink-0"
-          >
-            <FontAwesomeIcon icon={isFavorite ? faStarSolid : faStarRegular} />
-          </button>
-          {/* 종목명 심볼 표시 */}
-          <div className="flex flex-col min-w-0">
-            <span className="text-[13px] font-semibold text-primary-100">{category.categoryName}</span>
-            <span className="text-[11px] text-primary-300">{category.symbol}/(KRW)</span>
-          </div>
-        </div>
-      </div>
+      <MarketTableItemSymbol
+        categoryName={category.categoryName}
+        symbol={category.symbol}
+        isFavorite={isFavorite}
+        onToggleFavorite={onToggleFavorite}
+      />
       <FlashComparison
         value={isLiveTicker ? lastPrice : null}
         enabled={isLiveTicker}
