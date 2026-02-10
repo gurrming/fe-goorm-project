@@ -79,9 +79,9 @@ function OrderBookItem({ item, isSell = true, maxVolume, flashPrice, openPrice }
       className={cn(
         'group grid px-2 text-xs border-t border-white transition-colors w-full items-center justify-center',
         isSell
-          ? 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6] hover:border hover:border-[#bdd2f9]'
-          : 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1] hover:border hover:border-[#ffbaba]',
-        isLastPriceRow && 'border-2 border-black',
+          ? 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6]'
+          : 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1]',
+        isLastPriceRow && 'ring-2 ring-black ring-inset',
       )}
     >
       {/* 좌측 영역 */}
