@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import MyAsset_Skeleton from './loading/MyAsset_Skeleton';
 import { formatInteger } from '../../lib/price';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
@@ -6,7 +7,13 @@ import Text from '../common/Text';
 
 const MyAsset = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const { myAsset, wsTotalAsset, summary } = useAssetStore();
+  const { myAsset, wsTotalAsset, summary } = useAssetStore(
+    useShallow((state) => ({
+      myAsset: state.myAsset,
+      wsTotalAsset: state.wsTotalAsset,
+      summary: state.summary,
+    })),
+  );
 
   useEffect(() => {
     // myAsset 데이터가 로드되면 로딩 종료
@@ -23,7 +30,14 @@ const MyAsset = () => {
     <div className="flex flex-col  gap-3 px-4 py-4">
       <p className="text-[15px] text-[#333333] font-bold">보유자산</p>
       <div className="flex justify-center w-full gap-20 border-b-[0.3px] border-gray-200 pb-3">
-        <Text data-testid="asset-cash" size="sm" text="보유잔액" price={formatInteger(myAsset.assetCash)} priceColor="black" type="KRW" />
+        <Text
+          data-testid="asset-cash"
+          size="sm"
+          text="보유잔액"
+          price={formatInteger(myAsset.assetCash)}
+          priceColor="black"
+          type="KRW"
+        />
         <Text
           size="sm"
           text="총 보유자산"
