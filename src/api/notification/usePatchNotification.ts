@@ -29,7 +29,7 @@ export const usePatchNotification = () => {
   });
 };
 
-export const usePatchAllNotification = (memberId: number) => {
+export const usePatchAllNotification = (memberId: number | undefined) => {
   const queryClient = useQueryClient();
 
   return useMutation({

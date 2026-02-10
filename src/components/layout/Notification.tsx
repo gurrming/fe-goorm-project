@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import NotificationItem from './NotificationItem';
 import { usePatchAllNotification } from '../../api/notification/usePatchNotification';
@@ -18,7 +18,7 @@ export default function Notification({
   });
   const { user } = useUserStore();
   const memberId = user?.id;
-  if (!memberId) return null;
+
   const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteNotification(memberId, 10);
   const patchAllNotification = usePatchAllNotification(memberId);
 
@@ -33,9 +33,10 @@ export default function Notification({
       }
     : { width };
 
-  const sortedData = infiniteData?.pages
-    .flat()
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const sortedData = useMemo(() => {
+    if (!infiniteData) return [];
+    return infiniteData.pages.flat().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [infiniteData]);
 
   const handleMouseLeave = () => {
     setOpen(false);
@@ -49,6 +50,8 @@ export default function Notification({
       fetchNextPage();
     }
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
+
+  if (!memberId) return null;
   return (
     <div
       data-testid="notification-container"
