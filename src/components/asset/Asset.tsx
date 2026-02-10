@@ -7,7 +7,7 @@ import { useAssetStore } from '../../store/websocket/useAssetStore';
 const Asset = () => {
   const { data: myAssetData } = useGetMyAsset();
 
-  const { setMyAsset } = useAssetStore();
+  const setMyAsset = useAssetStore((state) => state.setMyAsset);
 
   useEffect(() => {
     if (myAssetData) {
