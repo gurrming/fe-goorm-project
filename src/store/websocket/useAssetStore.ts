@@ -28,6 +28,7 @@ interface IAssetStore {
     totalProfitRate: number;
   }) => void;
   setAssetList: (data: TAssets[]) => void;
+  updateTotalAsset: (amount: number) => void;
 }
 
 export const useAssetStore = create<IAssetStore>((set) => ({
@@ -48,4 +49,6 @@ export const useAssetStore = create<IAssetStore>((set) => ({
   setWsAssetList: (data) => set({ wsAssetList: data }),
   setSummary: (data) => set({ summary: data }),
   setAssetList: (data: TAssets[]) => set({ assetList: data }),
+
+  updateTotalAsset: (amount: number) => set((state) => ({ myAsset: { ...state.myAsset, totalAsset: amount } })),
 }));
