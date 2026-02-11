@@ -5,8 +5,10 @@ export default function NotificationItem({ item }: { item: TNotification }) {
   const title = {
     TRADE: '체결',
     SYSTEM: '시스템',
+    ASSET: '보유자산',
+    INTEREST: '관심종목',
   };
-  
+
   const time = formatTimeAgo(item.createdAt);
   return (
     <div
@@ -14,10 +16,14 @@ export default function NotificationItem({ item }: { item: TNotification }) {
       className={`${item.notificationIsRead ? 'bg-gray-100' : 'bg-white'} p-4 flex flex-col gap-1 hover:bg-gray-100`}
     >
       <div className="flex justify-between items-center">
-        <p className={`text-sm ${item.notificationIsRead ? 'text-gray-500' : 'font-bold text-gray-700'}`}>{title[item.notificationType as keyof typeof title]}</p>
+        <p className={`text-sm ${item.notificationIsRead ? 'text-gray-500' : 'font-bold text-gray-700'}`}>
+          {title[item.notificationType as keyof typeof title]}
+        </p>
         <p className="text-xs text-gray-500">{time}</p>
       </div>
-      <p className={`text-sm ${item.notificationIsRead ? 'text-gray-500' : 'text-gray-700'}`}>{item.notificationContent}</p>
+      <p className={`text-sm ${item.notificationIsRead ? 'text-gray-500' : 'text-gray-700'}`}>
+        {item.notificationContent}
+      </p>
     </div>
   );
 }

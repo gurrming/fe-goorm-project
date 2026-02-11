@@ -47,10 +47,10 @@ describe('<Asset /> 통합 테스트', () => {
     mockUseAssetStore({
       myAsset: {
         assetCash: null,
-        totalAsset: null,
         assetCanOrder: null,
       },
       summary: {
+        totalAsset: 0,
         totalBuyAmount: 0,
         totalEvaluation: 0,
         totalProfit: 0,
@@ -94,7 +94,6 @@ describe('<Asset /> 통합 테스트', () => {
       (useGetMyAsset as Mock).mockReturnValue({
         data: {
           assetCash: 500000000,
-          totalAsset: 500000000,
           assetCanOrder: 100000000,
         },
       });
@@ -130,7 +129,6 @@ describe('<Asset /> 통합 테스트', () => {
       (useGetMyAsset as Mock).mockReturnValue({
         data: {
           assetCash: 500000000,
-          totalAsset: 500000000,
           assetCanOrder: 500000000,
         },
       });
@@ -175,7 +173,6 @@ describe('<Asset /> 통합 테스트', () => {
       (useGetMyAsset as Mock).mockReturnValue({
         data: {
           assetCash: 500000000,
-          totalAsset: 500000000,
           assetCanOrder: 500000000,
         },
       });
@@ -218,7 +215,6 @@ describe('<Asset /> 통합 테스트', () => {
         (useGetMyAsset as Mock).mockReturnValue({
           data: {
             assetCash: 400000000,
-            totalAsset: 500000000,
           },
         });
 
@@ -278,10 +274,10 @@ describe('<Asset /> 통합 테스트', () => {
         mockUseAssetStore({
           myAsset: {
             assetCash: 400000000,
-            totalAsset: 500000000,
             assetCanOrder: 100000000,
           },
           summary: {
+            totalAsset: 500000000,
             totalBuyAmount: 100000000,
             totalEvaluation: 100000000,
             totalProfit: 0,
@@ -308,6 +304,7 @@ describe('<Asset /> 통합 테스트', () => {
         data: {
           pages: [
             {
+              totalAsset: 200000000,
               totalBuyAmount: 150000000,
               totalEvaluation: 160000000,
               totalProfit: 10000000,
@@ -342,7 +339,6 @@ describe('<Asset /> 통합 테스트', () => {
       (useGetMyAsset as Mock).mockReturnValue({
         data: {
           assetCash: 350000000,
-          totalAsset: 510000000,
         },
       });
 
@@ -361,6 +357,7 @@ describe('<Asset /> 통합 테스트', () => {
         data: {
           pages: [
             {
+              totalAsset: 510000000,
               totalBuyAmount: 75000000,
               totalEvaluation: 80000000,
               totalProfit: 5000000,
@@ -395,7 +392,6 @@ describe('<Asset /> 통합 테스트', () => {
       (useGetMyAsset as Mock).mockReturnValue({
         data: {
           assetCash: 430000000,
-          totalAsset: 510000000,
         },
       });
 
@@ -436,7 +432,6 @@ describe('<Asset /> 통합 테스트', () => {
       (useGetMyAsset as Mock).mockReturnValue({
         data: {
           assetCash: 500000000,
-          totalAsset: 500000000,
         },
       });
 
@@ -456,6 +451,7 @@ describe('<Asset /> 통합 테스트', () => {
           pages: [
             {
               totalBuyAmount: 120000000,
+              totalAsset: 200000000,
               totalEvaluation: 150000000,
               totalProfit: 30000000,
               totalProfitRate: 25.0,
@@ -498,7 +494,6 @@ describe('<Asset /> 통합 테스트', () => {
       (useGetMyAsset as Mock).mockReturnValue({
         data: {
           assetCash: 50000000,
-          totalAsset: 200000000, // 현금 0.5억 + 평가 1.5억 = 2억
         },
       });
 
@@ -518,6 +513,7 @@ describe('<Asset /> 통합 테스트', () => {
     });
     it('AS-09: 시세 변동 시 평가금액 갱신', async () => {
       const initialData = {
+        totalAsset: 50000000,
         totalBuyAmount: 50000000,
         totalEvaluation: 50000000,
         totalProfit: 0,
@@ -549,7 +545,7 @@ describe('<Asset /> 통합 테스트', () => {
         isFetching: false,
       });
       (useGetMyAsset as Mock).mockReturnValue({
-        data: { assetCash: 0, totalAsset: 50000000 },
+        data: { assetCash: 0 },
       });
 
       const { rerender } = await render(<Asset />);
@@ -564,6 +560,7 @@ describe('<Asset /> 통합 테스트', () => {
           pages: [
             {
               totalBuyAmount: 50000000,
+              totalAsset: 60000000,
               totalEvaluation: 60000000,
               totalProfit: 10000000,
               totalProfitRate: 20.0,

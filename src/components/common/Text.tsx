@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 
 /**
  *
@@ -15,33 +15,35 @@ import React from 'react';
  * @returns
  */
 
-const Text = ({
-  size,
-  text,
-  price,
-  priceColor,
-  type,
-  'data-testid': testId
-}: {
-  size: 'xs' | 'sm';
-  text: string;
-  price: string | number | undefined;
-  priceColor: 'blue' | 'red' | 'black';
-  type?: string;
-  'data-testid'?: string;
-}) => {
-  const priceColorStyle = {
-    blue: 'text-[#0062DF]',
-    red: 'text-[#DD3C44]',
-    black: 'text-[#333333]',
-  };
-  return (
-    <div data-testid={testId} className="flex w-full justify-center items-center">
-      <p className="text-[13px] text-gray-500 ">{text}</p>
-      <span className={`text-${size}  flex-1 text-right ${priceColorStyle[priceColor]}`}>{price}</span>
-      <p className={`text-xs text-gray-500 ml-1`}>{type}</p>
-    </div>
-  );
-};
+const Text = memo(
+  ({
+    size,
+    text,
+    price,
+    priceColor,
+    type,
+    'data-testid': testId,
+  }: {
+    size: 'xs' | 'sm';
+    text: string;
+    price: string | number | undefined;
+    priceColor: 'blue' | 'red' | 'black';
+    type?: string;
+    'data-testid'?: string;
+  }) => {
+    const priceColorStyle = {
+      blue: 'text-[#0062DF]',
+      red: 'text-[#DD3C44]',
+      black: 'text-[#333333]',
+    };
+    return (
+      <div data-testid={testId} className="flex w-full justify-center items-center">
+        <p className="text-[13px] text-gray-500 ">{text}</p>
+        <span className={`text-${size}  flex-1 text-right ${priceColorStyle[priceColor]}`}>{price}</span>
+        <p className={`text-xs text-gray-500 ml-1`}>{type}</p>
+      </div>
+    );
+  },
+);
 
 export default Text;

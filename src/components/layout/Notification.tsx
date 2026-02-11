@@ -1,6 +1,8 @@
+import { useEffect, useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
 import NotificationItem from './NotificationItem';
-import { useGetNotification } from '../../api/notification/useGetNotification';
 import { usePatchAllNotification } from '../../api/notification/usePatchNotification';
+import { useGetInfiniteNotification } from '../../hooks/infinite/useGetInfiniteNotification';
 import useUserStore from '../../store/useUserStore';
 export default function Notification({
   anchorRect,
@@ -11,10 +13,13 @@ export default function Notification({
   width: string;
   setOpen: (open: boolean) => void;
 }) {
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
   const { user } = useUserStore();
-  if (!user) return null;
-  const memberId = user.id;
-  const { data } = useGetNotification(memberId);
+  const memberId = user?.id;
+
+  const { data: infiniteData, fetchNextPage, hasNextPage, isFetching } = useGetInfiniteNotification(memberId, 10);
   const patchAllNotification = usePatchAllNotification(memberId);
 
   const parsedWidth = Number.parseInt(width, 10) || 400;
@@ -28,14 +33,25 @@ export default function Notification({
       }
     : { width };
 
-  const sortedData = data?.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const sortedData = useMemo(() => {
+    if (!infiniteData) return [];
+    return infiniteData.pages.flat().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [infiniteData]);
 
   const handleMouseLeave = () => {
     setOpen(false);
-    if(data && data.length > 0 && !data[0].notificationIsRead) {
+    if (sortedData && sortedData.length > 0 && !sortedData[0].notificationIsRead) {
       patchAllNotification.mutate();
     }
-  }
+  };
+
+  useEffect(() => {
+    if (inView && !isFetching && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, isFetching, hasNextPage, fetchNextPage]);
+
+  if (!memberId) return null;
   return (
     <div
       data-testid="notification-container"
@@ -50,6 +66,7 @@ export default function Notification({
       ) : (
         <p className="p-20 text-sm text-center text-gray-500">알림이 없습니다.</p>
       )}
+      <div ref={ref} />
     </div>
   );
 }

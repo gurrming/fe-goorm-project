@@ -1,16 +1,27 @@
 import { useEffect, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import MyAsset_Skeleton from './loading/MyAsset_Skeleton';
+import { useSummary } from '../../hooks/websocket/useAsset';
 import { formatInteger } from '../../lib/price';
+import useUserStore from '../../store/useUserStore';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import Text from '../common/Text';
 
 const MyAsset = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const { myAsset, wsTotalAsset, summary } = useAssetStore();
+  const user = useUserStore((state) => state.user);
+  const memberId = user?.id;
+  useSummary(memberId!);
 
+  const { myAsset, summary } = useAssetStore(
+    useShallow((state) => ({
+      myAsset: state.myAsset,
+      summary: state.summary,
+    })),
+  );
   useEffect(() => {
     // myAsset 데이터가 로드되면 로딩 종료
-    if (myAsset.assetCash !== null || myAsset.totalAsset !== null || myAsset.assetCanOrder !== null) {
+    if (myAsset.assetCash !== null || myAsset.assetCanOrder !== null) {
       setIsLoading(false);
     }
   }, [myAsset]);
@@ -23,14 +34,15 @@ const MyAsset = () => {
     <div className="flex flex-col  gap-3 px-4 py-4">
       <p className="text-[15px] text-[#333333] font-bold">보유자산</p>
       <div className="flex justify-center w-full gap-20 border-b-[0.3px] border-gray-200 pb-3">
-        <Text data-testid="asset-cash" size="sm" text="보유잔액" price={formatInteger(myAsset.assetCash)} priceColor="black" type="KRW" />
         <Text
+          data-testid="asset-cash"
           size="sm"
-          text="총 보유자산"
-          price={formatInteger(wsTotalAsset ?? myAsset.totalAsset)}
+          text="보유잔액"
+          price={formatInteger(myAsset.assetCash)}
           priceColor="black"
           type="KRW"
         />
+        <Text size="sm" text="총 보유자산" price={formatInteger(summary?.totalAsset)} priceColor="black" type="KRW" />
       </div>
       <div className="flex justify-center w-full gap-20">
         <Text size="sm" text="총 매수" price={formatInteger(summary?.totalBuyAmount)} priceColor="black" type="KRW" />

@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import AssetItem from './AssetItem';
 import { useGetInfiniteInvest } from '../../hooks/infinite/useGetInfiniteInvest';
-import { useAsset, useSummary } from '../../hooks/websocket/useAsset';
+import { useSummary } from '../../hooks/websocket/useAsset';
 import useUserStore from '../../store/useUserStore';
 import { useAssetStore } from '../../store/websocket/useAssetStore';
 import type { TAssets } from '../../types/asset';
@@ -12,18 +12,21 @@ const AssetList = () => {
   const user = useUserStore((state) => state.user);
   const memberId = user?.id;
   const { data: investData, fetchNextPage, hasNextPage, isFetching, isPending } = useGetInfiniteInvest(memberId!, 10);
-  const { setSummary, setAssetList } = useAssetStore();
-  useAsset(memberId!);
+  const setSummary = useAssetStore((state) => state.setSummary);
+  const setAssetList = useAssetStore((state) => state.setAssetList);
+
   useSummary(memberId!);
 
   useEffect(() => {
     if (investData) {
+      const totalAsset: number = investData.pages[0].totalAsset;
       const totalBuyAmount: number = investData.pages[0].totalBuyAmount;
       const totalEvaluation: number = investData.pages[0].totalEvaluation;
       const totalProfit: number = investData.pages[0].totalProfit;
       const totalProfitRate: number = investData.pages[0].totalProfitRate;
 
       const summary = {
+        totalAsset,
         totalBuyAmount,
         totalEvaluation,
         totalProfit,
@@ -55,9 +58,10 @@ const AssetList = () => {
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   return (
-    <div 
-    data-testid="asset-list" 
-    className="h-[600px] overflow-y-auto flex flex-col gap-3 border-t-[0.3px] border-gray-200 pt-3">
+    <div
+      data-testid="asset-list"
+      className="h-[600px] overflow-y-auto flex flex-col gap-3 border-t-[0.3px] border-gray-200 pt-3"
+    >
       <p className="text-[15px] text-[#333333] font-bold px-4">보유자산 목록</p>
       <table className="w-full border-collapse bg-white text-nowrap">
         <thead className="sticky top-0 z-10 border-b border-gray-200">
