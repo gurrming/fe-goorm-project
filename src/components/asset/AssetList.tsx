@@ -19,12 +19,14 @@ const AssetList = () => {
 
   useEffect(() => {
     if (investData) {
+      const totalAsset: number = investData.pages[0].totalAsset;
       const totalBuyAmount: number = investData.pages[0].totalBuyAmount;
       const totalEvaluation: number = investData.pages[0].totalEvaluation;
       const totalProfit: number = investData.pages[0].totalProfit;
       const totalProfitRate: number = investData.pages[0].totalProfitRate;
 
       const summary = {
+        totalAsset,
         totalBuyAmount,
         totalEvaluation,
         totalProfit,

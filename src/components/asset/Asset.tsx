@@ -13,7 +13,6 @@ const Asset = () => {
     if (myAssetData) {
       setMyAsset({
         assetCash: myAssetData.assetCash,
-        totalAsset: myAssetData.totalAsset,
         assetCanOrder: myAssetData.assetCanOrder,
       });
     }
