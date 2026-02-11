@@ -50,6 +50,7 @@ export default function MarketTableItem({
     return (
       // 보유 탭입니다
       <div
+        data-testid="market-table-item"
         className={`grid grid-cols-[1.5fr_1.2fr_2.5fr_1.3fr] border-b border-gray-200 hover:bg-gray-100 px-4 ${
           isCurrentItem ? 'bg-gray-100' : ''
         }`}
@@ -108,6 +109,7 @@ export default function MarketTableItem({
 
   return (
     <div
+      data-testid="market-table-item"
       className={`grid grid-cols-[1.5fr_1.2fr_1fr_1.3fr] border-b border-gray-200 hover:bg-gray-100 px-4 py-2 transition-opacity hover:cursor-pointer ${
         isCurrentItem ? 'bg-gray-100' : ''
       }`}
