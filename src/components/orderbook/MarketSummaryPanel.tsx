@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
 import { useTicker } from '../../hooks/websocket/useTicker';
 import { formatChangePricePercentage, formatInteger, formatNumber } from '../../lib/price';
@@ -43,19 +44,36 @@ const PreviousClosePriceRow = memo(function PreviousClosePriceRow({ categoryId }
   return <PanelItem label="전일종가" value={formatNumber(previousClose)} />;
 });
 
-export default function MarketSummaryPanel() {
-  const categoryId = useCategoryIdStore((state) => state.categoryId);
+// 거래량/거래대금만 구독, 고가/저가 티커가 자주 와도 여기는 volume/amount 바뀔 때만 리렌더
+const VolumeAmountRow = memo(function VolumeAmountRow({ categoryId }: { categoryId: number }) {
   const { data: categoryInfo } = useGetCategoryInfo(categoryId);
-  const symbol = categoryInfo?.symbol;
+  const { volume: tickerVolume, amount: tickerAmount } = useTickerStore(
+    useShallow((state) => {
+      const volumeAmount = state.tickerByCategoryId[categoryId];
+      return { volume: volumeAmount?.volume, amount: volumeAmount?.amount };
+    }),
+  );
+  const volume = tickerVolume ?? categoryInfo?.accVolume ?? 0;
+  const amount = tickerAmount ?? categoryInfo?.accAmount ?? 0;
+  return (
+    <>
+      <PanelItem label="거래량" value={formatNumber(volume)} text={categoryInfo?.symbol} />
+      <PanelItem label="거래대금" value={formatInteger(amount)} text="(최근24시간)" />
+    </>
+  );
+});
 
-  useTicker([categoryId]);
-  const ticker = useTickerStore((state) => state.tickerByCategoryId[categoryId]);
-
-  const high = ticker?.high ?? categoryInfo?.dailyHigh ?? 0;
-  const low = ticker?.low ?? categoryInfo?.dailyLow ?? 0;
-  const volume = ticker?.volume ?? categoryInfo?.accVolume ?? 0;
-  const amount = ticker?.amount ?? categoryInfo?.accAmount ?? 0;
-
+// 당일고가/저가만 구독. 거래량/거래대금 티커만 와도 여기는 high/low 바뀔 때만 리렌더
+const DailyHighLowRow = memo(function DailyHighLowRow({ categoryId }: { categoryId: number }) {
+  const { data: categoryInfo } = useGetCategoryInfo(categoryId);
+  const { high: tickerHigh, low: tickerLow } = useTickerStore(
+    useShallow((state) => {
+      const highLow = state.tickerByCategoryId[categoryId];
+      return { high: highLow?.high, low: highLow?.low };
+    }),
+  );
+  const high = tickerHigh ?? categoryInfo?.dailyHigh ?? 0;
+  const low = tickerLow ?? categoryInfo?.dailyLow ?? 0;
   const previousClose = categoryInfo?.openPrice ?? 0;
   const highChangeRate =
     previousClose !== 0 ? ((high - previousClose) / previousClose) * 100 : (categoryInfo?.changeRate ?? 0);
@@ -63,23 +81,31 @@ export default function MarketSummaryPanel() {
     previousClose !== 0 ? ((low - previousClose) / previousClose) * 100 : (categoryInfo?.changeRate ?? 0);
   const highRate = formatChangePricePercentage(highChangeRate);
   const lowRate = formatChangePricePercentage(lowChangeRate);
+  return (
+    <>
+      <PanelItem
+        label="당일고가"
+        value={formatNumber(high)}
+        valueColor={highRate.textStyle}
+        changeRate={highRate}
+        borderTop
+      />
+      <PanelItem label="당일저가" value={formatNumber(low)} valueColor={lowRate.textStyle} changeRate={lowRate} />
+    </>
+  );
+});
+
+export default function MarketSummaryPanel() {
+  const categoryId = useCategoryIdStore((state) => state.categoryId);
+
+  useTicker([categoryId]);
 
   return (
     <div className="bg-gray-50 p-2 flex flex-col justify-end h-full">
       <div className="mt-auto space-y-3">
         <PreviousClosePriceRow categoryId={categoryId} />
-
-        <PanelItem label="거래량" value={formatNumber(volume)} text={symbol} />
-        <PanelItem label="거래대금" value={formatInteger(amount)} text="(최근24시간)" />
-
-        <PanelItem
-          label="당일고가"
-          value={formatNumber(high)}
-          valueColor={highRate.textStyle}
-          changeRate={highRate}
-          borderTop
-        />
-        <PanelItem label="당일저가" value={formatNumber(low)} valueColor={lowRate.textStyle} changeRate={lowRate} />
+        <VolumeAmountRow categoryId={categoryId} />
+        <DailyHighLowRow categoryId={categoryId} />
       </div>
     </div>
   );
