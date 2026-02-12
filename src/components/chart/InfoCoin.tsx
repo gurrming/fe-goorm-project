@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { calculateMergedData } from './CalculateMergedData';
 import Chart from './Chart';
-import Chatting from './chatting/Chatting';
+import ChattingCache from './chatting/ChattingCache';
 import { Chart_Skeleton } from './loading/Chart_Skeleton';
 import PriceInfo from './PriceInfo';
 import Tab from './Tab';
@@ -59,7 +59,7 @@ const InfoCoin = () => {
           )}
         </div>
       )}
-      {tab === 'community' && <Chatting />}
+      {tab === 'community' && <ChattingCache />}
     </div>
   );
 };
