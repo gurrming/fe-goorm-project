@@ -40,7 +40,7 @@ export const deleteZero = (coin: string): string => {
 // 소숫점 8째자리까지 표시하기 (소숫점 9째자리부터는 반올림되어 표시되지 않음)
 // 뒷자리 0 나열 제거
 export const dotQuantity = (point: number): string => {
-  if (point === 0) return '';
+  if (point === 0) return '0';
   return point.toFixed(8).replace(/\.?0+$/, '');
 };
 
