@@ -81,8 +81,7 @@ function OrderBookItem({ item, isSell = true, maxVolume, flashPrice, openPrice }
         isSell
           ? 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6]'
           : 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1]',
-        isLastPriceRow &&
-          "after:content-[''] after:absolute after:inset-0 after:pointer-events-none after:z-10 after:border-2",
+        isLastPriceRow && 'after:absolute after:inset-0 after:pointer-events-none after:border-2',
       )}
     >
       {/* 좌측 영역 */}
