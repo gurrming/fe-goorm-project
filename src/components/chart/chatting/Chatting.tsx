@@ -1,6 +1,7 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 import Chat from './Chat';
+import { ChatInput } from './ChatInput';
 import { Chatting_Skeleton } from './loading/Chatting_Skeleton';
 import { useGetInfiniteChat } from '../../../hooks/infinite/useGetInfiniteChat';
 import { useChatting } from '../../../hooks/websocket/useChatting';
@@ -10,9 +11,6 @@ import { calculateMergedData } from '../CalculateMergedData';
 import type { TChat } from '../../../types/chat';
 
 const Chatting = () => {
-  const [message, setMessage] = useState('');
-  const [isComposing, setIsComposing] = useState(false);
-  const [textLength, setTextLength] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef<number>(0);
   const prevChatListLengthRef = useRef<number>(0);
@@ -32,10 +30,18 @@ const Chatting = () => {
     return calculateMergedData<TChat>(
       infiniteData,
       chatHistory,
-      (chat) => chat.chatId, 
+      (chat) => chat.chatId,
       (a, b) => a.chatId - b.chatId,
     );
   }, [infiniteData, chatHistory]);
+
+  const handleSendMessage = useCallback(
+    (message: string) => {
+      isScrollingToBottomRef.current = true;
+      sendChat(message);
+    },
+    [sendChat],
+  );
 
   // 무한 스크롤: 이전 메시지 불러오기
   useEffect(() => {
@@ -90,15 +96,6 @@ const Chatting = () => {
     prevChatListLengthRef.current = currentLength;
   }, [mergedChatList, user?.id]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && message.trim() !== '' && !isComposing && isConnected) {
-      isScrollingToBottomRef.current = true;
-      sendChat(message);
-      setMessage('');
-      setTextLength(0);
-    }
-  };
-
   if (isPending) {
     return <Chatting_Skeleton />;
   }
@@ -116,15 +113,10 @@ const Chatting = () => {
           </div>
         )}
         <div ref={ref} />
-        {mergedChatList.map((chat) => {
-          const prevChat = chat.chatId > 0 ? mergedChatList.find((c) => c.chatId === chat.chatId - 1) : null;
-          let hideDay = false;
+        {mergedChatList.map((chat, index) => {
+          const prevChat = index > 0 ? mergedChatList[index - 1] : null;
           const sendDay = chat.chatTime.split('T')[0];
-
-          if (prevChat) {
-            // 날짜가 다르면 hideDay = false (날짜 표시), 같으면 hideDay = true (날짜 숨김)
-            hideDay = sendDay === prevChat.chatTime?.split('T')?.[0];
-          }
+          const hideDay = prevChat ? sendDay === prevChat.chatTime?.split('T')?.[0] : false;
 
           return (
             <Chat
@@ -138,28 +130,7 @@ const Chatting = () => {
           );
         })}
       </div>
-      {user && (
-        <div className="flex items-center gap-2 p-4 border-t border-gray-200">
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            placeholder="메시지를 입력해주세요."
-            value={message}
-            onChange={(e) => {
-              setMessage(e.target.value);
-              setTextLength(e.target.value.length);
-              if (e.target.value.length > 500) {
-                setMessage(e.target.value.slice(0, 500));
-                setTextLength(500);
-              }
-            }}
-            onKeyDown={handleKeyDown}
-            onCompositionStart={() => setIsComposing(true)}
-            onCompositionEnd={() => setIsComposing(false)}
-          />
-          <p className="text-xs text-gray-500">{textLength}/500</p>
-        </div>
-      )}
+      {user && <ChatInput sendChat={handleSendMessage} isConnected={isConnected} />}
     </div>
   );
 };
