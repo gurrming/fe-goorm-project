@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 import Chat from './Chat';
 import { ChatInput } from './ChatInput';
@@ -10,7 +10,12 @@ import useUserStore from '../../../store/useUserStore';
 import { calculateMergedData } from '../CalculateMergedData';
 import type { TChat } from '../../../types/chat';
 
-const Chatting = () => {
+interface IChattingProps {
+  categoryId?: number;
+}
+
+/** categoryId를 prop으로 받아 스토어 구독 없이 사용 (캐시용, 리렌더 방지) */
+const ChattingContent = memo(({ categoryId }: { categoryId: number }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeightRef = useRef<number>(0);
   const prevChatListLengthRef = useRef<number>(0);
@@ -19,7 +24,6 @@ const Chatting = () => {
     threshold: 0,
   });
 
-  const categoryId = useCategoryIdStore((state) => state.categoryId);
   const { user } = useUserStore();
 
   const { isConnected, sendChat, chatHistory } = useChatting({ categoryId });
@@ -133,6 +137,15 @@ const Chatting = () => {
       {user && <ChatInput sendChat={handleSendMessage} isConnected={isConnected} />}
     </div>
   );
+});
+
+ChattingContent.displayName = 'ChattingContent';
+
+const Chatting = (props: IChattingProps) => {
+  const categoryIdFromStore = useCategoryIdStore((state) => state.categoryId);
+  const categoryId = props.categoryId ?? categoryIdFromStore;
+  return <ChattingContent categoryId={categoryId} />;
 };
 
 export default Chatting;
+export { ChattingContent };
