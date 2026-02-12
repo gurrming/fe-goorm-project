@@ -13,7 +13,7 @@ vi.mock('../Chart.tsx', () => ({
 vi.mock('../PriceInfo.tsx', () => ({
   default: () => <div data-testid="mock-price-info">종목 정보 영역</div>,
 }));
-vi.mock('../chatting/Chatting.tsx', () => ({
+vi.mock('../chatting/ChattingCache.tsx', () => ({
   default: () => <div data-testid="mock-chatting">채팅 영역</div>,
 }));
 

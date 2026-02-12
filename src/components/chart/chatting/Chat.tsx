@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { IsMe } from './IsMe';
 
 const Chat = ({
@@ -28,12 +29,12 @@ const Chat = ({
       <p className="text-sm font-bold">
         {nickname} {isMe ? '(Me)' : ''}
       </p>
-      <div className="flex gap-1 items-end">
-        <p className={`${isMe ? 'bg-[#ebf2ff]' : 'bg-gray-100'} p-2 rounded-md text-sm`}>{message}</p>
+      <div className="flex gap-1 items-end w-[900px]">
+        <p className={`${isMe ? 'bg-[#ebf2ff]' : 'bg-gray-100'} p-2 rounded-md text-sm break-keep`}>{message}</p>
         <p className="text-xs text-gray-500">{TIME}</p>
       </div>
     </div>
   );
 };
 
-export default Chat;
+export default memo(Chat);
