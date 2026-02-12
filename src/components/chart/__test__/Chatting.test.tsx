@@ -13,7 +13,7 @@ import render from '@/lib/test/render';
 vi.mock('../Chart.tsx', () => ({
   default: () => <div data-testid="mock-chart">차트 영역</div>,
 }));
-vi.mock('../chatting/Chatting.tsx', () => ({
+vi.mock('../chatting/ChattingCache.tsx', () => ({
   default: () => <div data-testid="mock-chatting">채팅 영역</div>,
 }));
 vi.mock('../PriceInfo.tsx', () => ({
@@ -503,39 +503,78 @@ describe('<Chatting /> 통합 테스트', () => {
 
       expect(screen.getByText('A 종목 메시지')).toBeInTheDocument();
 
+      const sendChatMockB = vi.fn();
+      (useChatting as Mock).mockImplementation(({ categoryId }: { categoryId: number }) => {
+        if (categoryId === 2) {
+          return {
+            chatHistory: [],
+            sendChat: sendChatMockB,
+            isConnected: true,
+          };
+        }
+        return {
+          chatHistory: [
+            {
+              chatId: 1,
+              chatContent: 'A 종목 메시지',
+              chatTime: '2024-01-01T12:00:00',
+              memberId: 1,
+              memberNickname: '나',
+              categoryId: 1,
+            },
+          ],
+          sendChat: sendChatMockA,
+          isConnected: true,
+        };
+      });
+
       act(() => {
         mockUseCategoryIdStore({ categoryId: 2 });
       });
 
-      const sendChatMockB = vi.fn();
-      (useChatting as Mock).mockReturnValue({
-        chatHistory: [],
-        sendChat: sendChatMockB,
-        isConnected: true,
-      });
-
       rerender(<ChattingComponent />);
 
-      expect(screen.queryByText('A 종목 메시지')).not.toBeInTheDocument();
+      await waitFor(() => {
+        const aMessage = screen.queryByText('A 종목 메시지');
+        expect(aMessage).not.toBeInTheDocument();
+      });
 
       const inputB = screen.getByPlaceholderText('메시지를 입력해주세요.');
       await user.type(inputB, 'B 종목 메시지{Enter}');
 
       expect(sendChatMockB).toHaveBeenCalledWith('B 종목 메시지');
 
-      (useChatting as Mock).mockReturnValue({
-        chatHistory: [
-          {
-            chatId: 2,
-            chatContent: 'B 종목 메시지',
-            chatTime: '2024-01-01T12:05:00',
-            memberId: 1,
-            memberNickname: '나',
-            categoryId: 2,
-          },
-        ],
-        sendChat: sendChatMockB,
-        isConnected: true,
+      (useChatting as Mock).mockImplementation(({ categoryId }: { categoryId: number }) => {
+        if (categoryId === 2) {
+          return {
+            chatHistory: [
+              {
+                chatId: 2,
+                chatContent: 'B 종목 메시지',
+                chatTime: '2024-01-01T12:05:00',
+                memberId: 1,
+                memberNickname: '나',
+                categoryId: 2,
+              },
+            ],
+            sendChat: sendChatMockB,
+            isConnected: true,
+          };
+        }
+        return {
+          chatHistory: [
+            {
+              chatId: 1,
+              chatContent: 'A 종목 메시지',
+              chatTime: '2024-01-01T12:00:00',
+              memberId: 1,
+              memberNickname: '나',
+              categoryId: 1,
+            },
+          ],
+          sendChat: sendChatMockA,
+          isConnected: true,
+        };
       });
 
       rerender(<ChattingComponent />);
