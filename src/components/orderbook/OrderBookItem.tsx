@@ -77,11 +77,11 @@ function OrderBookItem({ item, isSell = true, maxVolume, flashPrice, openPrice }
     <div
       data-testid="orderbook-item"
       className={cn(
-        'group grid px-2 text-xs border-t border-white transition-colors w-full items-center justify-center',
+        'group relative grid px-2 text-xs border-t border-white transition-colors w-full items-center justify-center',
         isSell
           ? 'grid-cols-[1fr_4fr_5fr] bg-[#ebf2ff] hover:bg-[#d3e3f6]'
           : 'grid-cols-[5fr_4fr_1fr] bg-[#fff2f2] hover:bg-[#ffd1d1]',
-        isLastPriceRow && 'ring-2 ring-black ring-inset',
+        isLastPriceRow && 'after:absolute after:inset-0 after:pointer-events-none after:border-2',
       )}
     >
       {/* 좌측 영역 */}
