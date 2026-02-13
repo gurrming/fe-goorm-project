@@ -25,8 +25,8 @@ jobs:
       # 4. .env 파일 생성 (★ 매우 중요: 필요한 모든 변수를 다 적어야 함)
       - name: Create .env file
         run: |
-          echo "VITE_API_URL=${{ secrets.VITE_API_URL_REAL }}" >> .env
-          echo "VITE_WEBSOCKET_URL=${{ secrets.VITE_WEBSOCKET_URL_REAL }}" >> .env
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
+          echo "VITE_WEBSOCKET_URL=${{ secrets.VITE_WEBSOCKET_URL }}" >> .env
         shell: bash
 
       # 5. 빌드 (이때 .env 내용이 JS 파일로 변환됨)
