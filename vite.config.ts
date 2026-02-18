@@ -31,4 +31,14 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@canvasjs/react-stockcharts', '@canvasjs/stockcharts'],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom', 'zustand', '@tanstack/react-query'],
+          charts: ['lightweight-charts', '@canvasjs/react-stockcharts', '@canvasjs/stockcharts'],
+        },
+      },
+    },
+  },
 });
