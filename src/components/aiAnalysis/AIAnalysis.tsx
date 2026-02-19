@@ -16,17 +16,15 @@ const formatScore = (value: number | undefined) => {
   return Math.round(score);
 };
 
-// [색상 강화] 더 진하고 선명한 색상 사용
 const getSignalColorClass = (label: string, score: number) => {
   const safeLabel = label?.toUpperCase();
-  if (safeLabel === 'BUY') return 'text-[#C84A31]'; // 업비트 빨강 (진함)
-  if (safeLabel === 'SELL') return 'text-[#1261C4]'; // 업비트 파랑 (진함)
+  if (safeLabel === 'BUY') return 'text-[#C84A31]'; 
+  if (safeLabel === 'SELL') return 'text-[#1261C4]'; 
   return score >= 50 ? 'text-[#C84A31]' : 'text-[#1261C4]';
 };
 
 const getSignalBadgeStyle = (label: string, score: number) => {
   const safeLabel = label?.toUpperCase();
-  // 배경색도 조금 더 진하게 조정
   if (safeLabel === 'BUY') return 'bg-[#FEF0EF] text-[#C84A31] border-[#C84A31]';
   if (safeLabel === 'SELL') return 'bg-[#F1F5FF] text-[#1261C4] border-[#1261C4]';
   
@@ -59,7 +57,7 @@ export default function AIAnalysis() {
     queryFn: () => getAnalysis(categoryId),
     refetchInterval: 60000,
     refetchIntervalInBackground: true, 
-    refetchOnWindowFocus: true, // 사용자가 탭을 다시 클릭했을 때도 갱신
+    refetchOnWindowFocus: true,
   });  
   const { data: categories } = useGetCategories();
   const [selectedCoin, setSelectedCoin] = useState('BTC');
@@ -85,7 +83,6 @@ export default function AIAnalysis() {
     return (score / 100) * 180 - 90; 
   }, [score]);
 
-  // [수정] 게이지 테두리 색상도 진하게
   const gaugeColorClass = useMemo(() => {
     if (!selectedData) return 'border-gray-200';
     if (score >= 50) return 'border-l-[#C84A31] border-t-[#C84A31]';
@@ -110,7 +107,7 @@ export default function AIAnalysis() {
                   onClick={() => setSelectedCoin(coin)}
                   className={`px-6 py-2.5 rounded-lg font-bold transition-all text-sm ${
                     selectedCoin === coin
-                      ? 'bg-[#0A264F] text-white shadow-md' // 더 진한 네이비색
+                      ? 'bg-[#0A264F] text-white shadow-md'
                       : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
                   }`}
                 >
@@ -144,7 +141,6 @@ export default function AIAnalysis() {
               
               {/* A. 종합 점수 & 캐릭터 */}
               <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center justify-center text-center relative overflow-hidden group">
-                {/* 오라 효과 강화 */}
                 <div className={`absolute top-0 left-0 w-full h-1.5 opacity-80 bg-gradient-to-r ${auraClass}`}></div>
                 
                 <div className="mb-6 transform transition-transform group-hover:scale-110 duration-500">
@@ -162,8 +158,8 @@ export default function AIAnalysis() {
                   AI 확신도 {score}%
                 </div>
 
-                {/* 게이지 차트 */}
-                <div className="relative w-52 h-26 overflow-hidden mt-2">
+                {/* [수정됨] 게이지 차트 컨테이너 높이를 h-28로 변경하여 하단 짤림 방지 */}
+                <div className="relative w-52 h-28 overflow-hidden mt-2">
                   <div className="absolute w-52 h-52 bg-gray-100 rounded-full border-[24px] border-gray-100 box-border top-0 left-0"></div>
                   <div 
                     className={`absolute w-52 h-52 rounded-full border-[24px] box-border top-0 left-0 border-transparent ${gaugeColorClass}`}
@@ -188,18 +184,16 @@ export default function AIAnalysis() {
                     </p>
                  </div>
 
-                 {/* RSI 카드 (설명 툴팁 추가 & 색상 강화) */}
+                 {/* RSI 카드 */}
                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative group overflow-visible">
                     <div className="flex justify-between items-start mb-6">
                       <div className="flex flex-col">
                         <div className="flex items-center gap-1.5 mb-1 cursor-help relative group/tooltip">
                           <h4 className="text-gray-600 font-bold text-sm">RSI (상대강도지수)</h4>
-                          {/* 물음표 아이콘 */}
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
                             <circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line>
                           </svg>
                           
-                          {/* [기능 추가] RSI 툴팁 설명 */}
                           <div className="absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover/tooltip:opacity-100 transition-opacity z-50 pointer-events-none">
                             <p className="font-bold mb-1 text-yellow-400">RSI란?</p>
                             <p>가격의 상승압력과 하락압력 간의 상대적인 강도를 나타냅니다.</p>
@@ -218,15 +212,10 @@ export default function AIAnalysis() {
                       </span>
                     </div>
 
-                    {/* RSI Bar (Gradient 강화) */}
                     <div className="relative mb-6">
                         <div className="w-full h-4 bg-gradient-to-r from-[#1261C4] via-gray-200 to-[#C84A31] rounded-full opacity-30"></div>
-                        
-                        {/* 30/70 기준선 */}
                         <div className="absolute top-0 bottom-0 left-[30%] w-0.5 bg-white z-10"></div>
                         <div className="absolute top-0 bottom-0 left-[70%] w-0.5 bg-white z-10"></div>
-                        
-                        {/* 현재 위치 마커 */}
                         <div 
                            className={`absolute top-[-4px] h-6 w-1 rounded bg-gray-900 shadow-lg transition-all duration-700 z-20`}
                            style={{left: `${Math.min(Math.max(selectedData.rsi, 0), 100)}%`}}
@@ -244,14 +233,14 @@ export default function AIAnalysis() {
                     </div>
                  </div>
 
-                 {/* 뉴스/커뮤니티 (프로그레스 바 강화) */}
+                 {/* 뉴스/커뮤니티 */}
                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                     <h4 className="text-gray-600 font-bold text-sm mb-6 flex items-center gap-2">
                        시장 심리 데이터
                        <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">24시간 기준</span>
                     </h4>
                     
-                    {/* 뉴스 */}
+                    {/* [수정됨] 뉴스 막대 색상 동적 변경 적용 */}
                     <div className="mb-6">
                       <div className="flex justify-between text-xs mb-2">
                         <span className="text-gray-500 font-medium">뉴스 긍정/부정</span>
@@ -261,11 +250,14 @@ export default function AIAnalysis() {
                         </span>
                       </div>
                       <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                        <div className="bg-[#1261C4] h-full transition-all duration-1000" style={{ width: `${Math.min(formatScore(selectedData.newsResult), 100)}%` }} />
+                        <div 
+                          className={`h-full transition-all duration-1000 ${formatScore(selectedData.newsResult) >= 50 ? 'bg-[#C84A31]' : 'bg-[#1261C4]'}`} 
+                          style={{ width: `${Math.min(formatScore(selectedData.newsResult), 100)}%` }} 
+                        />
                       </div>
                     </div>
 
-                    {/* 커뮤니티 */}
+                    {/* [수정됨] 커뮤니티 막대 색상 동적 변경 적용 */}
                     <div>
                       <div className="flex justify-between text-xs mb-2">
                         <span className="text-gray-500 font-medium">커뮤니티 반응</span>
@@ -275,7 +267,10 @@ export default function AIAnalysis() {
                         </span>
                       </div>
                       <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                        <div className="bg-[#C84A31] h-full transition-all duration-1000" style={{ width: `${Math.min(formatScore(selectedData.communityResult), 100)}%` }} />
+                        <div 
+                          className={`h-full transition-all duration-1000 ${formatScore(selectedData.communityResult) >= 50 ? 'bg-[#C84A31]' : 'bg-[#1261C4]'}`} 
+                          style={{ width: `${Math.min(formatScore(selectedData.communityResult), 100)}%` }} 
+                        />
                       </div>
                     </div>
                  </div>
