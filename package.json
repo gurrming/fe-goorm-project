@@ -11,7 +11,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "preview": "vite preview",
-    "analyze": "BUNDLE_ANALYZE=1 vite build", 
+    "analyze": "BUNDLE_ANALYZE=1 vite build",
     "chromatic": "npx chromatic --project-token=chpt_529eed7eb3e5b87"
   },
   "dependencies": {
@@ -75,6 +75,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4",
+    "vite-plugin-compression": "^0.5.1",
     "vitest": "^4.0.17"
   },
   "msw": {

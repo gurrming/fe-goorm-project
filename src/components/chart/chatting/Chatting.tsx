@@ -119,8 +119,9 @@ const ChattingContent = memo(({ categoryId }: { categoryId: number }) => {
         <div ref={ref} />
         {mergedChatList.map((chat, index) => {
           const prevChat = index > 0 ? mergedChatList[index - 1] : null;
-          const sendDay = chat.chatTime.split('T')[0];
-          const hideDay = prevChat ? sendDay === prevChat.chatTime?.split('T')?.[0] : false;
+          const sendDay = chat.chatTime?.split('T')[0] ?? '';
+          const hideDay =
+            prevChat && sendDay && prevChat.chatTime ? sendDay === prevChat.chatTime.split('T')[0] : false;
 
           return (
             <Chat
