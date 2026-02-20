@@ -1,9 +1,9 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown'; 
 import { getAnalysis } from '@/api/useGetAnalysis';
 import { useGetCategories } from '@/api/useGetCategories';
 import useCategoryIdStore from '@/store/useCategoryId';
-import { useQuery } from '@tanstack/react-query';
 
 // --- 설정 및 유틸리티 ---
 const COINS = ['BTC', 'ETH', 'SOL', 'XRP'] as const;
