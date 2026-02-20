@@ -8,12 +8,15 @@ import useUserStore from '../../store/useUserStore';
 import { useNotificationStore } from '../../store/websocket/useNotificationStore';
 import Button from '../common/Button';
 
+const NotificationWebSocketHandler = ({ userId }: { userId: number }) => {
+  useNotification(userId);
+  return null;
+};
+
 const Header = () => {
   const user = useUserStore((state) => state.user);
   const { notificationData, popNotification } = useNotificationStore();
   const postLogout = usePostLogout();
-
-  useNotification(user?.id ?? 0);
 
   const handleTickerEnd = useCallback(() => {
     popNotification();
@@ -37,6 +40,7 @@ const Header = () => {
         <div className="flex items-center gap-8">
           {user ? (
             <>
+              <NotificationWebSocketHandler userId={user.id} />
               <p className="text-white text-sm font-semibold text-nowrap">{user.nickname}님, 환영합니다.</p>
               <IconSection />
               <Button

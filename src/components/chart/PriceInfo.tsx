@@ -1,4 +1,5 @@
 import React from 'react';
+import { Info_Skeleton } from './loading/Info_Skeleton';
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
 import { formatInteger, formatNumber } from '../../lib/price';
 import { useTickerStore } from '../../store/websocket/useTickerStore';
@@ -12,7 +13,7 @@ type PriceInfoProps = {
 
 const PriceInfo = ({ categoryId, quote = 'KRW', symbol }: PriceInfoProps) => {
   const ticker = useTickerStore((item) => item.tickerByCategoryId[categoryId]);
-  const { data: categoryInfo } = useGetCategoryInfo(categoryId);
+  const { data: categoryInfo, isPending } = useGetCategoryInfo(categoryId);
 
   const price = ticker?.price ?? categoryInfo?.tradePrice ?? 0;
   const changeAmount = ticker?.changeAmount ?? categoryInfo?.changeAmount ?? 0;
@@ -21,6 +22,8 @@ const PriceInfo = ({ categoryId, quote = 'KRW', symbol }: PriceInfoProps) => {
   const low = ticker?.low ?? categoryInfo?.dailyLow ?? 0;
   const volume = ticker?.volume ?? categoryInfo?.accVolume ?? 0;
   const amount = ticker?.amount ?? categoryInfo?.accAmount ?? 0;
+
+  if (isPending) return <Info_Skeleton />;
 
   return (
     <div className="flex items-center my-2">

@@ -1,17 +1,12 @@
-import { useMemo, useState } from 'react';
-import { calculateMergedData } from './CalculateMergedData';
-import Chart from './Chart';
+import { memo, useCallback, useState } from 'react';
+import ChartDataWrapper from './ChartDataWrapper';
 import ChattingCache from './chatting/ChattingCache';
-import { Chart_Skeleton } from './loading/Chart_Skeleton';
 import PriceInfo from './PriceInfo';
 import Tab from './Tab';
 import { useGetCategoryInfo } from '../../api/useGetCategoryInfo';
-import { useGetInfiniteChart } from '../../hooks/infinite/useGetInfiniteChart';
 import { useChart } from '../../hooks/websocket/useChart';
 import { useTicker } from '../../hooks/websocket/useTicker';
 import useCategoryIdStore from '../../store/useCategoryId';
-import { useChartStore } from '../../store/websocket/useChartStore';
-import type { ChartData } from '../../types/websocket';
 
 const InfoCoin = () => {
   const [tab, setTab] = useState('price');
@@ -19,29 +14,12 @@ const InfoCoin = () => {
   const { data: categoryInfo } = useGetCategoryInfo(categoryId);
   const TITLE = `${categoryInfo?.categoryName} (${categoryInfo?.symbol}-KRW)`;
 
-  // 웹소켓 구독 시작 (차트 데이터 수신)
   useChart(categoryId);
   useTicker([categoryId]);
 
-  const handleTab = (tab: string) => {
+  const handleTab = useCallback((tab: string) => {
     setTab(tab);
-  };
-
-  const realtimeData = useChartStore((state) => state.chartDataList);
-  const { data: infiniteData, fetchNextPage, hasNextPage, isPending } = useGetInfiniteChart(categoryId, 300);
-
-  const mergedData = useMemo(() => {
-    return calculateMergedData<ChartData>(
-      infiniteData,
-      realtimeData,
-      (data) => data.t,
-      (a, b) => a.t - b.t,
-    );
-  }, [infiniteData, realtimeData]);
-
-  if (isPending) {
-    return <Chart_Skeleton />;
-  }
+  }, []);
 
   return (
     <div className="flex flex-col bg-white">
@@ -49,14 +27,7 @@ const InfoCoin = () => {
       {tab === 'price' && (
         <div className="flex flex-col">
           <PriceInfo categoryId={categoryId} quote="KRW" symbol={categoryInfo?.symbol} />
-          {isPending && <Chart_Skeleton />}
-          {mergedData && mergedData.length > 0 ? (
-            <Chart data={mergedData} fetchNextPage={fetchNextPage} hasMore={hasNextPage} />
-          ) : (
-            <div className="flex justify-center items-center h-[450px]">
-              <p className="text-center text-gray-500">차트 데이터가 없습니다.</p>
-            </div>
-          )}
+          <ChartDataWrapper categoryId={categoryId} />
         </div>
       )}
       {tab === 'community' && <ChattingCache />}
@@ -64,4 +35,4 @@ const InfoCoin = () => {
   );
 };
 
-export default InfoCoin;
+export default memo(InfoCoin);
