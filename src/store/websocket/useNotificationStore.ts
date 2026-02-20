@@ -8,44 +8,44 @@ interface INotificationStore {
   popNotification: () => void;
 }
 
-const MAX_QUEUE_SIZE = 50;
+const MAX_QUEUE_SIZE = 30;
 
 export const useNotificationStore = create<INotificationStore>((set) => ({
   notificationData: null,
-  addNotificationData: (data) => set((state) => {
-    const currentQueue = state.notificationData || [];
+  addNotificationData: (data) =>
+    set((state) => {
+      const currentQueue = state.notificationData || [];
 
-    if(currentQueue.some(item => item.notificationId === data.notificationId)) {
-      return { notificationData: currentQueue };
-    };
-
-    let newQueue = [...currentQueue];
-
-    if(data.notificationType === 'SYSTEM') {
-      const firstTradeIndex = newQueue.findIndex(item => item.notificationType === 'TRADE');
-
-      if(firstTradeIndex === -1) {
-        newQueue.push(data);
-      } else {
-        newQueue.splice(firstTradeIndex, 0, data);
+      if (currentQueue.some((item) => item.notificationId === data.notificationId)) {
+        return { notificationData: currentQueue };
       }
-    } else {
-      newQueue.push(data);
-    }
 
-    if(newQueue.length > MAX_QUEUE_SIZE) {
-      const lastTradeIndex = newQueue.reverse().findIndex(item => item.notificationType === 'TRADE');
-        
-        if (lastTradeIndex !== -1) {
-           newQueue = newQueue.slice(0, MAX_QUEUE_SIZE); 
+      let newQueue = [...currentQueue];
+
+      if (data.notificationType === 'SYSTEM') {
+        const firstTradeIndex = newQueue.findIndex((item) => item.notificationType === 'TRADE');
+
+        if (firstTradeIndex === -1) {
+          newQueue.push(data);
         } else {
-             newQueue = newQueue.slice(0, MAX_QUEUE_SIZE);
+          newQueue.splice(firstTradeIndex, 0, data);
         }
-    }
+      } else {
+        newQueue.push(data);
+      }
 
-    return { notificationData: newQueue.slice(0, MAX_QUEUE_SIZE) };
-  }),
+      if (newQueue.length > MAX_QUEUE_SIZE) {
+        const lastTradeIndex = newQueue.reverse().findIndex((item) => item.notificationType === 'TRADE');
 
+        if (lastTradeIndex !== -1) {
+          newQueue = newQueue.slice(0, MAX_QUEUE_SIZE);
+        } else {
+          newQueue = newQueue.slice(0, MAX_QUEUE_SIZE);
+        }
+      }
+
+      return { notificationData: newQueue.slice(0, MAX_QUEUE_SIZE) };
+    }),
 
   clearNotificationData: () => set({ notificationData: null }),
   popNotification: () =>

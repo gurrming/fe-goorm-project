@@ -35,7 +35,7 @@ const AssetItem = memo(
           {formatInteger(currentEvaluationAmount)}
         </td>
         <td
-          className={`pr-2 py-3 text-xs text-[#333333] text-right border-r border-gray-200 ${currentEvaluationProfit && currentEvaluationProfit > 0 ? 'text-red-500' : 'text-blue-500'}`}
+          className={`pr-2 py-3 text-xs text-[#333333] text-right border-gray-200 ${currentEvaluationProfit && currentEvaluationProfit > 0 ? 'text-red-500' : 'text-blue-500'}`}
         >
           {formatInteger(currentEvaluationProfit)}
         </td>
